@@ -35,15 +35,5 @@ Acesse: http://localhost:5000
 ## 📁 Estrutura
 
 `
-MediTech/
-├── src/
-│   ├── app.py          # Aplicação Flask
-│   ├── models/         # Modelos (em desenvolvimento)
-│   ├── routes/         # Rotas (em desenvolvimento)
-│   ├── templates/      # Templates HTML
-│   └── static/         # Arquivos estáticos
-├── requirements.txt
-├── docker-compose.yml
-├── Dockerfile
-└── .env
+A ser definida
 `
