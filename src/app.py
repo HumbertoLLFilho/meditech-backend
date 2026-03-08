@@ -5,15 +5,21 @@ Aplicação Flask simples
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
+from dotenv import load_dotenv
+from urllib.parse import quote
+
+load_dotenv()
 
 app = Flask(__name__)
 
-# Configuração do banco de dados SQLite
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-db_path = os.path.join(base_dir, 'instance', 'meditech.db')
-os.makedirs(os.path.dirname(db_path), exist_ok=True)
+# Configuração do banco de dados PostgreSQL
+db_user = os.getenv('DB_USER', 'postgres')
+db_password = quote(os.getenv('DB_PASSWORD', 'postgres'), safe='')
+db_host = os.getenv('DB_HOST', 'localhost')
+db_port = os.getenv('DB_PORT', '5432')
+db_name = os.getenv('DB_NAME', 'meditech')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path.replace(chr(92), "/")}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
 
