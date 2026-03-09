@@ -9,12 +9,14 @@ class CadastrarUsuarioRequest:
     data_nascimento: date
     genero: str
     email: str
+    senha: str
+    tipo: str
     cpf: str | None
     rg: str | None
 
     @staticmethod
     def from_dict(data: dict) -> "CadastrarUsuarioRequest":
-        campos_obrigatorios = ["nome", "sobrenome", "data_nascimento", "genero", "email"]
+        campos_obrigatorios = ["nome", "sobrenome", "data_nascimento", "genero", "email", "senha"]
         for campo in campos_obrigatorios:
             if not data.get(campo):
                 raise ValueError(f"Campo obrigatório ausente: {campo}")
@@ -30,6 +32,8 @@ class CadastrarUsuarioRequest:
             data_nascimento=data_nascimento,
             genero=data["genero"],
             email=data["email"],
+            senha=data["senha"],
+            tipo=data.get("tipo", "paciente"),
             cpf=data.get("cpf"),
             rg=data.get("rg"),
         )

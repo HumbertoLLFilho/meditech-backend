@@ -1,5 +1,5 @@
 from src.application.usuario_repository_port import UsuarioRepositoryPort
-from src.domain.usuario import Genero, Usuario
+from src.domain.usuario import Genero, TipoUsuario, Usuario
 from src.infrastructure.database import db
 from src.infrastructure.usuario_model import UsuarioModel
 
@@ -15,6 +15,8 @@ class UsuarioRepository(UsuarioRepositoryPort):
             data_nascimento=usuario.data_nascimento,
             genero=usuario.genero.value,
             email=usuario.email,
+            senha=usuario.senha,
+            tipo=usuario.tipo.value,
         )
         db.session.add(model)
         db.session.commit()
@@ -39,4 +41,6 @@ class UsuarioRepository(UsuarioRepositoryPort):
             data_nascimento=model.data_nascimento,
             genero=Genero(model.genero),
             email=model.email,
+            senha=model.senha,
+            tipo=TipoUsuario(model.tipo),
         )

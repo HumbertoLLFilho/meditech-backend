@@ -10,6 +10,12 @@ class Genero(str, Enum):
     PREFIRO_NAO_INFORMAR = "prefiro_nao_informar"
 
 
+class TipoUsuario(str, Enum):
+    PACIENTE = "paciente"
+    DOUTOR = "doutor"
+    ADMIN = "admin"
+
+
 @dataclass
 class Usuario:
     nome: str
@@ -17,6 +23,8 @@ class Usuario:
     data_nascimento: date
     genero: Genero
     email: str
+    senha: str
+    tipo: TipoUsuario = TipoUsuario.PACIENTE
     cpf: str | None = None
     rg: str | None = None
     id: int | None = None
