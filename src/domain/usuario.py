@@ -25,6 +25,5 @@ class Usuario:
     email: str
     senha: str
     tipo: TipoUsuario = TipoUsuario.PACIENTE
-    cpf: str | None = None
-    rg: str | None = None
+    documentos: list = field(default_factory=list)  # Lista de Documento
     id: int | None = None

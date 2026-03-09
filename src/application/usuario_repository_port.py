@@ -13,5 +13,5 @@ class UsuarioRepositoryPort(ABC):
         ...
 
     @abstractmethod
-    def buscar_por_cpf(self, cpf: str) -> Usuario | None:
+    def buscar_por_documento(self, tipo: str, numero: str) -> Usuario | None:
         ...

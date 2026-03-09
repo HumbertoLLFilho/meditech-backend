@@ -23,6 +23,7 @@ def cadastrar_usuario():
             "sobrenome": usuario.sobrenome,
             "email": usuario.email,
             "tipo": usuario.tipo.value,
+            "documentos": [{"tipo": doc.tipo.value, "numero": doc.numero} for doc in usuario.documentos],
             "mensagem": "Usuário cadastrado com sucesso!",
         }), 201
 

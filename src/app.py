@@ -44,6 +44,7 @@ def _init_extensions(app: Flask) -> None:
 
 def _register_models() -> None:
     import src.infrastructure.usuario_model  # noqa: F401
+    import src.infrastructure.documento_model  # noqa: F401
 
 
 def _register_blueprints(app: Flask) -> None:

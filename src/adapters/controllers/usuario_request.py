@@ -3,6 +3,12 @@ from datetime import date, datetime
 
 
 @dataclass
+class DocumentoRequest:
+    tipo: str
+    numero: str
+
+
+@dataclass
 class CadastrarUsuarioRequest:
     nome: str
     sobrenome: str
@@ -11,8 +17,7 @@ class CadastrarUsuarioRequest:
     email: str
     senha: str
     tipo: str
-    cpf: str | None
-    rg: str | None
+    documentos: list[DocumentoRequest]
 
     @staticmethod
     def from_dict(data: dict) -> "CadastrarUsuarioRequest":
@@ -26,6 +31,17 @@ class CadastrarUsuarioRequest:
         except ValueError:
             raise ValueError("Formato de data inválido. Use YYYY-MM-DD.")
 
+        # Validar documentos
+        documentos_data = data.get("documentos", [])
+        if not documentos_data:
+            raise ValueError("Pelo menos um documento (CPF, RG, etc) deve ser informado.")
+
+        documentos = []
+        for doc in documentos_data:
+            if not doc.get("tipo") or not doc.get("numero"):
+                raise ValueError("Cada documento deve ter 'tipo' e 'numero'.")
+            documentos.append(DocumentoRequest(tipo=doc["tipo"], numero=doc["numero"]))
+
         return CadastrarUsuarioRequest(
             nome=data["nome"],
             sobrenome=data["sobrenome"],
@@ -34,6 +50,5 @@ class CadastrarUsuarioRequest:
             email=data["email"],
             senha=data["senha"],
             tipo=data.get("tipo", "paciente"),
-            cpf=data.get("cpf"),
-            rg=data.get("rg"),
+            documentos=documentos,
         )
