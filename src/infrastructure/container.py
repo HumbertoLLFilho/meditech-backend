@@ -1,4 +1,4 @@
-from src.adapters.repoositories.usuario_repository import UsuarioRepository
+from src.adapters.repositories.usuario_repository import UsuarioRepository
 from src.usecases.cadastrar_usuario_usecase import CadastrarUsuarioUseCase
 from src.usecases.login_usuario_usecase import LoginUsuarioUseCase
 

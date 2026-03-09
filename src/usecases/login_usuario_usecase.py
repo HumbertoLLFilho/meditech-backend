@@ -27,7 +27,9 @@ class LoginUsuarioUseCase:
             "exp": datetime.now(timezone.utc) + timedelta(hours=24),
         }
 
-        secret = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret")
+        secret = os.getenv("JWT_SECRET_KEY")
+        if not secret:
+            raise RuntimeError("JWT_SECRET_KEY environment variable is not set.")
         token = jwt.encode(payload, secret, algorithm="HS256")
 
         return {
