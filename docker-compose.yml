@@ -33,6 +33,7 @@ services:
     environment:
       - FLASK_APP=run.py
       - PYTHONUNBUFFERED=1
+      - DB_HOST=db
     ports:
       - "5000:5000"
     volumes:

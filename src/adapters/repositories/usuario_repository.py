@@ -31,13 +31,21 @@ class UsuarioRepository(UsuarioRepositoryPort):
             )
             db.session.add(doc_model)
 
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
         usuario.id = model.id
-        
-        # Atualizar IDs dos documentos
-        for i, doc_model in enumerate(model.documentos):
-            usuario.documentos[i].id = doc_model.id
-            usuario.documentos[i].usuario_id = model.id
+
+        # Atualizar IDs dos documentos por tipo e número para garantir correspondência correta
+        doc_map = {(doc.tipo, doc.numero): doc for doc in model.documentos}
+        for doc in usuario.documentos:
+            doc_model = doc_map.get((doc.tipo.value, doc.numero))
+            if doc_model:
+                doc.id = doc_model.id
+                doc.usuario_id = model.id
 
         return usuario
 
