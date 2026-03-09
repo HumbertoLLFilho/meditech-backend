@@ -12,30 +12,25 @@ class CadastrarUsuarioUseCase:
         self.repository = repository
 
     def executar(self, request: CadastrarUsuarioRequest) -> Usuario:
-        # Validar e-mail único
         if self.repository.buscar_por_email(request.email):
             raise ValueError("E-mail já cadastrado.")
 
-        # Validar documentos únicos
         for doc_request in request.documentos:
             if self.repository.buscar_por_documento(doc_request.tipo, doc_request.numero):
                 raise ValueError(f"Documento {doc_request.tipo.upper()} '{doc_request.numero}' já cadastrado.")
 
-        # Validar gênero
         try:
             genero_enum = Genero(request.genero)
         except ValueError:
             valores = [g.value for g in Genero]
             raise ValueError(f"Gênero inválido. Valores aceitos: {valores}")
 
-        # Validar tipo de usuário
         try:
             tipo_enum = TipoUsuario(request.tipo)
         except ValueError:
             valores = [t.value for t in TipoUsuario]
             raise ValueError(f"Tipo de usuário inválido. Valores aceitos: {valores}")
 
-        # Validar e criar documentos
         documentos = []
         for doc_request in request.documentos:
             try:
@@ -52,7 +47,6 @@ class CadastrarUsuarioUseCase:
         # Hash da senha
         senha_hash = generate_password_hash(request.senha)
 
-        # Criar usuário
         usuario = Usuario(
             nome=request.nome,
             sobrenome=request.sobrenome,
