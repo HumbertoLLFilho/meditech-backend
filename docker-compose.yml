@@ -2,17 +2,24 @@ version: '3.8'
 
 services:
   # Serviço PostgreSQL
-  postgres:
-    image: postgres:15-alpine
-    container_name: meditech-postgres
+  db:
+    image: postgres:16-alpine
+    container_name: meditech-db
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=${DB_USER:-postgres}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
-      - POSTGRES_DB=${DB_NAME:-meditech}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   # Serviço Flask
@@ -21,26 +28,21 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: meditech-app
-    depends_on:
-      - postgres
-    ports:
-      - "5000:5000"
+    env_file:
+      - .env
     environment:
       - FLASK_APP=run.py
-      - FLASK_ENV=development
-      - FLASK_DEBUG=1
       - PYTHONUNBUFFERED=1
-      - DB_HOST=postgres
-      - DB_USER=${DB_USER:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD:-postgres}
-      - DB_PORT=5432
-      - DB_NAME=${DB_NAME:-meditech}
-      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+      - DB_HOST=db
+    ports:
+      - "5000:5000"
     volumes:
       - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
     command: python run.py
     restart: unless-stopped
 
 volumes:
-  postgres-data:
-    driver: local
+  postgres_data:
