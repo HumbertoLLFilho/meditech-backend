@@ -4,18 +4,17 @@ Aplicação Flask - Application Factory
 """
 import os
 from urllib.parse import quote
-
+from flask_cors import CORS
 from dotenv import load_dotenv
 from flask import Flask
-
 from src.infrastructure.database import db
+
 
 load_dotenv()
 
-
 def create_app() -> Flask:
     app = Flask(__name__)
-
+    CORS(app)
     _configure_database(app)
     _init_extensions(app)
     _register_models()
@@ -28,7 +27,7 @@ def create_app() -> Flask:
 
 def _configure_database(app: Flask) -> None:
     db_user = os.getenv('DB_USER', 'postgres')
-    db_password = quote(os.getenv('DB_PASSWORD', 'postgres'), safe='')
+    db_password = quote(os.getenv('DB_PASSWORD', 'admadm'), safe='')
     db_host = os.getenv('DB_HOST', 'localhost')
     db_port = os.getenv('DB_PORT', '5432')
     db_name = os.getenv('DB_NAME', 'meditech')
@@ -36,7 +35,6 @@ def _configure_database(app: Flask) -> None:
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
-
 
 def _init_extensions(app: Flask) -> None:
     db.init_app(app)
@@ -49,7 +47,9 @@ def _register_models() -> None:
 
 def _register_blueprints(app: Flask) -> None:
     from src.adapters.controllers.usuario_controller import usuario_bp
+
     app.register_blueprint(usuario_bp)
+
 
 
 def _register_routes(app: Flask) -> None:

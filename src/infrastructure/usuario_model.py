@@ -11,7 +11,5 @@ class UsuarioModel(db.Model):
     genero = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     senha = db.Column(db.String(255), nullable=False)
-    tipo = db.Column(db.String(20), nullable=False, default="paciente")
+    cpf = db.Column(db.String(11), nullable=False)
 
-    # Relacionamento com documentos
-    documentos = db.relationship('DocumentoModel', backref='usuario', lazy=True, cascade='all, delete-orphan')

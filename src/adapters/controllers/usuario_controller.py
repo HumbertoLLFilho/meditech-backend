@@ -1,10 +1,9 @@
 from flask import Blueprint, jsonify, request
-
 from src.adapters.controllers.usuario_request import CadastrarUsuarioRequest
 from src.infrastructure.container import get_cadastrar_usuario_use_case, get_login_usuario_use_case
 
-usuario_bp = Blueprint("usuario", __name__, url_prefix="/usuarios")
 
+usuario_bp = Blueprint("usuario", __name__, url_prefix="/usuarios")
 
 @usuario_bp.route("/cadastrar", methods=["POST"])
 def cadastrar_usuario():
@@ -12,9 +11,7 @@ def cadastrar_usuario():
 
     try:
         usuario_request = CadastrarUsuarioRequest.from_dict(data)
-
         use_case = get_cadastrar_usuario_use_case()
-
         usuario = use_case.executar(usuario_request)
 
         return jsonify({
@@ -22,8 +19,7 @@ def cadastrar_usuario():
             "nome": usuario.nome,
             "sobrenome": usuario.sobrenome,
             "email": usuario.email,
-            "tipo": usuario.tipo.value,
-            "documentos": [{"tipo": doc.tipo.value, "numero": doc.numero} for doc in usuario.documentos],
+            "cpf": usuario.cpf,
             "mensagem": "Usuário cadastrado com sucesso!",
         }), 201
 

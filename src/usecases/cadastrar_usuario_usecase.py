@@ -1,9 +1,7 @@
 from werkzeug.security import generate_password_hash
-
 from src.adapters.controllers.usuario_request import CadastrarUsuarioRequest
 from src.application.usuario_repository_port import UsuarioRepositoryPort
-from src.domain.documento import Documento, TipoDocumento
-from src.domain.usuario import Genero, TipoUsuario, Usuario
+from src.domain.usuario import Genero, Usuario
 
 
 class CadastrarUsuarioUseCase:
@@ -18,31 +16,11 @@ class CadastrarUsuarioUseCase:
             valores = [g.value for g in Genero]
             raise ValueError(f"Gênero inválido. Valores aceitos: {valores}")
 
-        try:
-            tipo_enum = TipoUsuario(request.tipo)
-        except ValueError:
-            valores = [t.value for t in TipoUsuario]
-            raise ValueError(f"Tipo de usuário inválido. Valores aceitos: {valores}")
-
-        documentos = []
-        for doc_request in request.documentos:
-            try:
-                tipo_doc_enum = TipoDocumento(doc_request.tipo)
-            except ValueError:
-                valores = [t.value for t in TipoDocumento]
-                raise ValueError(f"Tipo de documento inválido: '{doc_request.tipo}'. Valores aceitos: {valores}")
-
-            documentos.append(Documento(
-                tipo=tipo_doc_enum,
-                numero=doc_request.numero,
-            ))
-
         if self.repository.buscar_por_email(request.email):
             raise ValueError("E-mail já cadastrado.")
 
-        for doc in documentos:
-            if self.repository.buscar_por_documento(doc.tipo.value, doc.numero):
-                raise ValueError(f"Documento {doc.tipo.value.upper()} '{doc.numero}' já cadastrado.")
+        if self.repository.buscar_por_cpf(request.cpf):
+            raise ValueError("CPF já cadastrado.")
 
         # Hash da senha
         senha_hash = generate_password_hash(request.senha)
@@ -54,8 +32,7 @@ class CadastrarUsuarioUseCase:
             genero=genero_enum,
             email=request.email,
             senha=senha_hash,
-            tipo=tipo_enum,
-            documentos=documentos,
+            cpf=request.cpf
         )
 
         return self.repository.salvar(usuario)
