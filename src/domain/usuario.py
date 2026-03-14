@@ -1,20 +1,13 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date
 from enum import Enum
 
 
 class Genero(str, Enum):
-    MASCULINO = "masculino"
-    FEMININO = "feminino"
-    OUTRO = "outro"
-    PREFIRO_NAO_INFORMAR = "prefiro_nao_informar"
-
-
-class TipoUsuario(str, Enum):
-    PACIENTE = "paciente"
-    DOUTOR = "doutor"
-    ADMIN = "admin"
-
+    MASCULINO = "Masculino"
+    FEMININO = "Feminino"
+    OUTRO = "Outro"
+    PREFIRO_NAO_INFORMAR = "Prefiro não Informar"
 
 @dataclass
 class Usuario:
@@ -24,6 +17,4 @@ class Usuario:
     genero: Genero
     email: str
     senha: str
-    tipo: TipoUsuario = TipoUsuario.PACIENTE
-    documentos: list = field(default_factory=list)  # Lista de Documento
-    id: int | None = None
+    cpf: str
