@@ -17,7 +17,7 @@ class LoginUsuarioUseCase:
             raise ValueError("E-mail ou senha inválidos.")
 
         payload = {
-            "sub": usuario.id,
+            "sub": str(usuario.id),
             "email": usuario.email,
             "cpf": usuario.cpf,
             "nome": f"{usuario.nome} {usuario.sobrenome}",
@@ -31,6 +31,7 @@ class LoginUsuarioUseCase:
         token = jwt.encode(payload, secret, algorithm="HS256")
 
         return {
+            "id": usuario.id,
             "access_token": token,
             "nome": f"{usuario.nome} {usuario.sobrenome}",
         }

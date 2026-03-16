@@ -42,13 +42,14 @@ def _init_extensions(app: Flask) -> None:
 
 def _register_models() -> None:
     import src.infrastructure.usuario_model  # noqa: F401
-    import src.infrastructure.documento_model  # noqa: F401
 
 
 def _register_blueprints(app: Flask) -> None:
     from src.adapters.controllers.usuario_controller import usuario_bp
+    from src.adapters.controllers.consulta_controller import consulta_bp
 
     app.register_blueprint(usuario_bp)
+    app.register_blueprint(consulta_bp)
 
 
 

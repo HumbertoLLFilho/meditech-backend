@@ -13,3 +13,4 @@ class UsuarioModel(db.Model):
     senha = db.Column(db.String(255), nullable=False)
     cpf = db.Column(db.String(11), nullable=False)
 
+    consultas = db.relationship("ConsultaModel", backref="usuario")

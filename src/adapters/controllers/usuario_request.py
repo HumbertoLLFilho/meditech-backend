@@ -25,6 +25,7 @@ class CadastrarUsuarioRequest:
             raise ValueError("Formato de data inválido. Use YYYY-MM-DD.")
 
         return CadastrarUsuarioRequest(
+
             nome=data["nome"],
             sobrenome=data["sobrenome"],
             data_nascimento=data_nascimento,
