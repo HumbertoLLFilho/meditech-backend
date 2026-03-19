@@ -3,7 +3,7 @@ from flasgger import swag_from
 from flask_jwt_extended import create_access_token
 
 from src.application.docs.usuarios_docs import USUARIO_CADASTRAR_DOC, USUARIO_LOGIN_DOC
-from src.infrastructure.container import get_cadastrar_usuario_use_case, get_login_usuario_use_case
+from src.application.dependencies.container import get_cadastrar_usuario_use_case, get_login_usuario_use_case
 from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
 from src.usecases.login_usuario.login_usuario_input import LoginUsuarioInput
 

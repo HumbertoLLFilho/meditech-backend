@@ -3,7 +3,7 @@ from flasgger import swag_from
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from src.application.docs.consultas_docs import CONSULTA_CADASTRAR_DOC, CONSULTA_LISTAR_DOC
-from src.infrastructure.container import get_cadastrar_consulta_use_case, get_listar_consultas
+from src.application.dependencies.container import get_cadastrar_consulta_use_case, get_listar_consultas
 from src.usecases.cadastrar_consulta.cadastrar_consulta_input import CadastrarConsultaInput
 from src.usecases.listar_consultas.listar_consultas_input import ListarConsultasInput
 
