@@ -4,10 +4,10 @@ from enum import Enum
 
 
 class Genero(str, Enum):
-    MASCULINO = "Masculino"
-    FEMININO = "Feminino"
-    OUTRO = "Outro"
-    PREFIRO_NAO_INFORMAR = "Prefiro não Informar"
+    MASCULINO = "masculino"
+    FEMININO = "feminino"
+    OUTRO = "outro"
+    PREFIRO_NAO_INFORMAR = "prefiro_nao_informar"
 
 
 @dataclass

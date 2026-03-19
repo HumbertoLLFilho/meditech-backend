@@ -23,7 +23,11 @@ USUARIO_CADASTRAR_DOC = {
                             "format": "date",
                             "example": "1999-10-23",
                         },
-                        "genero": {"type": "string", "example": "masculino"},
+                        "genero": {
+                            "type": "string",
+                            "enum": ["masculino", "feminino", "outro", "prefiro_nao_informar"],
+                            "example": "masculino",
+                        },
                         "email": {
                             "type": "string",
                             "format": "email",
