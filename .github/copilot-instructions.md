@@ -39,6 +39,6 @@ Priorize respostas e alteracoes pequenas, objetivas e alinhadas a arquitetura em
 
 ## Pontos de Atencao
 - A autenticacao usa Flask-JWT-Extended.
-- O token e gerado no login (controller) com create_access_token.
+- O token e gerado no use case de login via `TokenServiceContract`; o controller apenas retorna o token gerado.
 - As rotas de consulta usam @jwt_required() e get_jwt_identity().
 - JWT_SECRET_KEY deve estar definido para ambientes produtivos.
