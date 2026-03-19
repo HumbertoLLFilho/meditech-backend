@@ -51,11 +51,11 @@ def create_app() -> Flask:
 
 
 def _configure_database(app: Flask) -> None:
-    db_user = os.getenv("DB_USER", "postgres")
-    db_password = quote(os.getenv("DB_PASSWORD", "admadm"), safe="")
-    db_host = _resolve_db_host(os.getenv("DB_HOST", "localhost"))
+    db_user = os.getenv("DB_USER")
+    db_password = quote(os.getenv("DB_PASSWORD"), safe="")
+    db_host = _resolve_db_host(os.getenv("DB_HOST"))
     db_port = os.getenv("DB_PORT", "5432")
-    db_name = os.getenv("DB_NAME", "meditech")
+    db_name = os.getenv("DB_NAME")
 
     app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
