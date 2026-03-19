@@ -1,9 +1,9 @@
-from src.adapters.repositories.consulta_repository import ConsultaRepository
-from src.adapters.repositories.usuario_repository import UsuarioRepository
-from src.usecases.cadastrar_consulta_usecase import CadastrarConsultaUseCase
-from src.usecases.cadastrar_usuario_usecase import CadastrarUsuarioUseCase
-from src.usecases.listar_consultas_usecase import ListarConsultaUseCase
-from src.usecases.login_usuario_usecase import LoginUsuarioUseCase
+from src.repositories.consulta_repository import ConsultaRepository
+from src.repositories.usuario_repository import UsuarioRepository
+from src.usecases.cadastrar_consulta.cadastrar_consulta_usecase import CadastrarConsultaUseCase
+from src.usecases.cadastrar_usuario.cadastrar_usuario_usecase import CadastrarUsuarioUseCase
+from src.usecases.listar_consultas.listar_consultas_usecase import ListarConsultaUseCase
+from src.usecases.login_usuario.login_usuario_usecase import LoginUsuarioUseCase
 
 
 def get_cadastrar_usuario_use_case() -> CadastrarUsuarioUseCase:

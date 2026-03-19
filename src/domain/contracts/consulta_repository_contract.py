@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from src.domain.consulta import Consulta
+from src.domain.models.consulta import Consulta
 
 
-class ConsultaRepositoryPort(ABC):
+class ConsultaRepositoryContract(ABC):
 
     @abstractmethod
     def salvar(self, consulta: Consulta) -> Consulta:

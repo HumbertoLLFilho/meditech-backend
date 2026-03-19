@@ -1,10 +1,10 @@
-from src.application.consulta_repository_port import ConsultaRepositoryPort
-from src.domain.consulta import Consulta
+from src.domain.contracts.consulta_repository_contract import ConsultaRepositoryContract
+from src.domain.models.consulta import Consulta
 from src.infrastructure.database import db
 from src.infrastructure.consulta_model import ConsultaModel
 
 
-class ConsultaRepository(ConsultaRepositoryPort):
+class ConsultaRepository(ConsultaRepositoryContract):
 
     def salvar(self, consulta: Consulta) -> Consulta:
         # Criar o modelo de consulta
@@ -27,7 +27,6 @@ class ConsultaRepository(ConsultaRepositoryPort):
 
         consulta.id = model.id
         return consulta
-
 
     def listar_por_usuario(self, usuario_id: int) -> list[Consulta]:
         consultas = ConsultaModel.query.filter_by(usuario_id=usuario_id).all()

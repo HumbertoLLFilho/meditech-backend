@@ -1,24 +1,23 @@
-import os
-import jwt
 from flask import Blueprint, jsonify, request
-from src.adapters.controllers.consulta_request import CadastrarConsultaRequest
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from src.infrastructure.container import get_cadastrar_consulta_use_case, get_listar_consultas
+from src.usecases.cadastrar_consulta.cadastrar_consulta_input import CadastrarConsultaInput
+from src.usecases.listar_consultas.listar_consultas_input import ListarConsultasInput
+
 
 consulta_bp = Blueprint("consulta", __name__)
 
 
 @consulta_bp.route("/consultas", methods=["POST"])
+@jwt_required()
 def cadastrar_consulta():
     data = request.get_json(silent=True) or {}
     try:
-        auth = request.headers.get("Authorization")
-        token = auth.replace("Bearer ", "")
-        payload = jwt.decode(token, os.getenv("SECRET_KEY", "secret-jullya-teste-18"), algorithms=["HS256"])
-        usuario_id = int(payload["sub"])
+        usuario_id = int(get_jwt_identity())
 
-        consulta_request = CadastrarConsultaRequest.from_dict(data)
+        consulta_input = CadastrarConsultaInput.from_dict(data, usuario_id)
         use_case = get_cadastrar_consulta_use_case()
-        consulta = use_case.executar(consulta_request, usuario_id)
+        consulta = use_case.executar(consulta_input)
 
         return jsonify({
             "especialidade": consulta.especialidade,
@@ -31,22 +30,18 @@ def cadastrar_consulta():
     except ValueError as e:
         return jsonify({"erro": str(e)}), 422
 
-    except Exception as e:
-        return jsonify({
-            "erro": "Erro interno no servidor",
-            "detalhe": str(e)
-        }), 500
+    except Exception:
+        return jsonify({"erro": "Erro interno no servidor"}), 500
 
 
 @consulta_bp.route("/consultas", methods=["GET"])
+@jwt_required()
 def listar_consultas():
-    auth = request.headers.get("Authorization")
-    token = auth.replace("Bearer ", "")
-    payload = jwt.decode(token, os.getenv("SECRET_KEY", "secret-jullya-teste-18"), algorithms=["HS256"])
-    usuario_id = payload["sub"]
+    usuario_id = int(get_jwt_identity())
 
+    listar_input = ListarConsultasInput(usuario_id=usuario_id)
     use_case = get_listar_consultas()
-    consultas = use_case.listar(usuario_id)
+    consultas = use_case.listar(listar_input)
 
     result = [
         {

@@ -1,0 +1,2 @@
+from .consulta_repository_contract import ConsultaRepositoryContract
+from .usuario_repository_contract import UsuarioRepositoryContract

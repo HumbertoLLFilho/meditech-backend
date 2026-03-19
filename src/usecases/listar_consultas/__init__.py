@@ -1,0 +1,2 @@
+from .listar_consultas_input import ListarConsultasInput
+from .listar_consultas_usecase import ListarConsultaUseCase

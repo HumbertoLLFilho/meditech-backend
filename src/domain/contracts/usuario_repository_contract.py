@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from src.domain.usuario import Usuario
+from src.domain.models.usuario import Usuario
 
 
-class UsuarioRepositoryPort(ABC):
+class UsuarioRepositoryContract(ABC):
 
     @abstractmethod
     def salvar(self, usuario: Usuario) -> Usuario:

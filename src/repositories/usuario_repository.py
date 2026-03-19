@@ -1,10 +1,10 @@
-from src.application.usuario_repository_port import UsuarioRepositoryPort
-from src.domain.usuario import Usuario
+from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
+from src.domain.models.usuario import Usuario
 from src.infrastructure.database import db
 from src.infrastructure.usuario_model import UsuarioModel
 
 
-class UsuarioRepository(UsuarioRepositoryPort):
+class UsuarioRepository(UsuarioRepositoryContract):
 
     def salvar(self, usuario: Usuario) -> Usuario:
         # Criar o modelo de usuário

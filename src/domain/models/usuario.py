@@ -9,6 +9,7 @@ class Genero(str, Enum):
     OUTRO = "Outro"
     PREFIRO_NAO_INFORMAR = "Prefiro não Informar"
 
+
 @dataclass
 class Usuario:
     nome: str

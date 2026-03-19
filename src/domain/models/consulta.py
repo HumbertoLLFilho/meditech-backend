@@ -9,4 +9,3 @@ class Consulta:
     medico: str
     data: date
     horario: str
-

@@ -1,0 +1,37 @@
+from werkzeug.security import generate_password_hash
+from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
+from src.domain.models.usuario import Genero, Usuario
+from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
+
+
+class CadastrarUsuarioUseCase:
+
+    def __init__(self, repository: UsuarioRepositoryContract):
+        self.repository = repository
+
+    def executar(self, input_data: CadastrarUsuarioInput) -> Usuario:
+        try:
+            genero_enum = Genero(input_data.genero)
+        except ValueError:
+            valores = [g.value for g in Genero]
+            raise ValueError(f"Genero invalido. Valores aceitos: {valores}")
+
+        if self.repository.buscar_por_email(input_data.email):
+            raise ValueError("E-mail ja cadastrado.")
+
+        if self.repository.buscar_por_cpf(input_data.cpf):
+            raise ValueError("CPF ja cadastrado.")
+
+        senha_hash = generate_password_hash(input_data.senha)
+
+        usuario = Usuario(
+            nome=input_data.nome,
+            sobrenome=input_data.sobrenome,
+            data_nascimento=input_data.data_nascimento,
+            genero=genero_enum,
+            email=input_data.email,
+            senha=senha_hash,
+            cpf=input_data.cpf,
+        )
+
+        return self.repository.salvar(usuario)
