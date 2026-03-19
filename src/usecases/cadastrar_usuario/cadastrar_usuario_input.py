@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from datetime import date, datetime
 
-
 @dataclass
 class CadastrarUsuarioInput:
     nome: str
@@ -11,10 +10,11 @@ class CadastrarUsuarioInput:
     email: str
     senha: str
     cpf: str
+    telefone: str
 
     @staticmethod
     def from_dict(data: dict) -> "CadastrarUsuarioInput":
-        campos_obrigatorios = ["nome", "sobrenome", "data_nascimento", "genero", "email", "senha", "cpf"]
+        campos_obrigatorios = ["nome", "sobrenome", "data_nascimento", "genero", "email", "senha", "cpf", "telefone"]
         for campo in campos_obrigatorios:
             if not data.get(campo):
                 raise ValueError(f"Campo obrigatorio ausente: {campo}")
@@ -32,4 +32,5 @@ class CadastrarUsuarioInput:
             email=data["email"],
             senha=data["senha"],
             cpf=data["cpf"],
+            telefone=data["telefone"]
         )

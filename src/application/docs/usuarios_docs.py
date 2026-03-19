@@ -14,6 +14,8 @@ USUARIO_CADASTRAR_DOC = {
                         "email",
                         "senha",
                         "cpf",
+                        "telefone",
+                        "tipo"
                     ],
                     "properties": {
                         "nome": {"type": "string", "example": "Joao"},
@@ -35,6 +37,7 @@ USUARIO_CADASTRAR_DOC = {
                         },
                         "senha": {"type": "string", "example": "senha123"},
                         "cpf": {"type": "string", "example": "12345678901"},
+                        "telefone": {"type": "string", "example": "11999999999"}
                     },
                 }
             }

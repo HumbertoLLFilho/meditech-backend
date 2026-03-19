@@ -12,5 +12,7 @@ class UsuarioModel(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     senha = db.Column(db.String(255), nullable=False)
     cpf = db.Column(db.String(11), nullable=False)
+    telefone = db.Column(db.String(20), nullable=False)
+    tipo = db.Column(db.String(30), nullable=False)
 
     consultas = db.relationship("ConsultaModel", backref="usuario")

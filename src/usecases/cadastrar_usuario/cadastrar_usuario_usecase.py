@@ -1,6 +1,6 @@
 from src.domain.contracts.password_service_contract import PasswordServiceContract
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
-from src.domain.models.usuario import Genero, Usuario
+from src.domain.models.usuario import Genero, TipoUsuario, Usuario
 from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
 
 
@@ -11,12 +11,15 @@ class CadastrarUsuarioUseCase:
         self.password_service = password_service
 
     def executar(self, input_data: CadastrarUsuarioInput) -> Usuario:
+        
+        # Validar se o genero e tipo sao validos
         try:
             genero_enum = Genero(input_data.genero)
         except ValueError:
             valores = [g.value for g in Genero]
             raise ValueError(f"Genero invalido. Valores aceitos: {valores}")
 
+        # busca pra ver se o email ou cpf ja estao cadastrados
         if self.repository.buscar_por_email(input_data.email):
             raise ValueError("E-mail ja cadastrado.")
 
@@ -33,6 +36,8 @@ class CadastrarUsuarioUseCase:
             email=input_data.email,
             senha=senha_hash,
             cpf=input_data.cpf,
+            telefone=input_data.telefone,
+            tipo=TipoUsuario.PACIENTE
         )
 
         return self.repository.salvar(usuario)
