@@ -81,8 +81,8 @@ HTTP Request
 2. Login (`POST /usuarios/login`)
 	 - Controller recebe credenciais.
 	 - Input DTO valida formato/campos obrigatorios.
-	 - Use case valida usuario e senha.
-	 - Controller gera JWT com `create_access_token`.
+	 - Use case valida usuario e senha e, em caso de sucesso, gera o JWT via `TokenServiceContract`/`JwtTokenService`.
+	 - Controller apenas orquestra a chamada ao use case e retorna o token na resposta.
 	 - Retorno esperado: token e status `200`.
 
 3. Consultas (`POST /consultas` e `GET /consultas`)
