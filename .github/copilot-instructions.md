@@ -18,6 +18,8 @@ Priorize respostas e alteracoes pequenas, objetivas e alinhadas a arquitetura em
 - Validacoes de input devem ficar em input DTOs dos usecases ou nos proprios usecases.
 - Controllers devem traduzir erros para codigos HTTP consistentes.
 - Repositories devem encapsular acesso ao banco e commits/rollbacks.
+- Sempre que uma rota nova for criada ou alterada, atualize a documentacao Swagger/OpenAPI da rota no controller.
+- Sempre que uma nova controller for criada, verifique se existe documentacao Swagger/OpenAPI para todas as suas rotas antes de finalizar.
 - Evite mudancas grandes sem necessidade.
 
 ## Checklist Antes de Finalizar

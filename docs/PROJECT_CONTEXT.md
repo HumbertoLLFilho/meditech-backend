@@ -5,6 +5,7 @@
 - Flask 3
 - Flask-SQLAlchemy
 - Flask-JWT-Extended
+- Flasgger (Swagger UI)
 - PostgreSQL 16
 - Docker Compose
 
@@ -19,6 +20,7 @@ Entry point atual: run.py -> src/application/app_factory.py:create_app
 ### Docker
 1. docker compose up --build
 2. API em http://localhost:5000
+3. Swagger UI em http://localhost:5000/apidocs
 
 ## Variaveis de Ambiente
 - DB_HOST
@@ -62,6 +64,7 @@ Controller -> Input DTO -> UseCase -> Repository Contract -> Repository -> SQLAl
 
 ## Estrutura de Pastas (Atual)
 - src/application/controllers
+- src/application/docs (especificacoes Swagger via dicionarios Python)
 - src/repositories
 - src/domain/models
 - src/domain/contracts
@@ -71,3 +74,7 @@ Controller -> Input DTO -> UseCase -> Repository Contract -> Repository -> SQLAl
 ## Debitos Tecnicos Observados
 - Repositories retornam modelos ORM em buscas, em vez de entidades de dominio.
 - Nao ha suite de testes automatizados no repositorio atual.
+
+## Regra de Documentacao de API
+- Sempre que uma rota nova for criada ou alterada, a documentacao Swagger/OpenAPI da rota deve ser atualizada no controller.
+- Sempre que uma nova controller for criada, e obrigatorio conferir que todas as rotas da controller possuem documentacao Swagger/OpenAPI.

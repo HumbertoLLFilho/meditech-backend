@@ -1,5 +1,8 @@
 from flask import Blueprint, jsonify, request
+from flasgger import swag_from
 from flask_jwt_extended import create_access_token
+
+from src.application.docs.usuarios_docs import USUARIO_CADASTRAR_DOC, USUARIO_LOGIN_DOC
 from src.infrastructure.container import get_cadastrar_usuario_use_case, get_login_usuario_use_case
 from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
 from src.usecases.login_usuario.login_usuario_input import LoginUsuarioInput
@@ -9,6 +12,7 @@ usuario_bp = Blueprint("usuario", __name__, url_prefix="/usuarios")
 
 
 @usuario_bp.route("/cadastrar", methods=["POST"])
+@swag_from(USUARIO_CADASTRAR_DOC)
 def cadastrar_usuario():
     data = request.get_json(silent=True) or {}
 
@@ -17,14 +21,16 @@ def cadastrar_usuario():
         use_case = get_cadastrar_usuario_use_case()
         usuario = use_case.executar(usuario_input)
 
-        return jsonify({
-            "id": usuario.id,
-            "nome": usuario.nome,
-            "sobrenome": usuario.sobrenome,
-            "email": usuario.email,
-            "cpf": usuario.cpf,
-            "mensagem": "Usuário cadastrado com sucesso!",
-        }), 201
+        return jsonify(
+            {
+                "id": usuario.id,
+                "nome": usuario.nome,
+                "sobrenome": usuario.sobrenome,
+                "email": usuario.email,
+                "cpf": usuario.cpf,
+                "mensagem": "Usuário cadastrado com sucesso!",
+            }
+        ), 201
 
     except ValueError as e:
         return jsonify({"erro": str(e)}), 422
@@ -33,6 +39,7 @@ def cadastrar_usuario():
 
 
 @usuario_bp.route("/login", methods=["POST"])
+@swag_from(USUARIO_LOGIN_DOC)
 def login_usuario():
     data = request.get_json(silent=True) or {}
     email = data.get("email")

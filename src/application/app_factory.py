@@ -8,6 +8,7 @@ from datetime import timedelta
 from urllib.parse import quote
 
 from dotenv import load_dotenv
+from flasgger import Swagger
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -81,6 +82,35 @@ def _resolve_db_host(configured_host: str) -> str:
 def _init_extensions(app: Flask) -> None:
     db.init_app(app)
     jwt.init_app(app)
+    _init_swagger(app)
+
+
+def _init_swagger(app: Flask) -> None:
+    app.config["SWAGGER"] = {
+        "title": "MediTech API",
+        "uiversion": 3,
+        "openapi": "3.0.2",
+    }
+
+    template = {
+        "openapi": "3.0.2",
+        "info": {
+            "title": "MediTech API",
+            "version": "0.1.0",
+            "description": "API para usuarios e consultas medicas.",
+        },
+        "components": {
+            "securitySchemes": {
+                "BearerAuth": {
+                    "type": "http",
+                    "scheme": "bearer",
+                    "bearerFormat": "JWT",
+                }
+            }
+        },
+    }
+
+    Swagger(app, template=template)
 
 
 def _register_models() -> None:
