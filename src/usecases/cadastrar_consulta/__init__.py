@@ -1,0 +1,2 @@
+from .cadastrar_consulta_input import CadastrarConsultaInput
+from .cadastrar_consulta_usecase import CadastrarConsultaUseCase
