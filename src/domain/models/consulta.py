@@ -9,3 +9,4 @@ class Consulta:
     medico: str
     data: date
     horario: str
+    id: int | None = None

@@ -30,8 +30,8 @@ HTTP Request
 	 -> Input DTO (usecases/*/*_input.py)
 	 -> UseCase (usecases/*/*_usecase.py)
 	 -> Repository Contract (domain/contracts)
-	 -> Repository SQLAlchemy (repositories)
-	 -> PostgreSQL (infrastructure/database.py + models)
+	 -> Repository SQLAlchemy (repositories + mapeamento ORM -> dominio)
+	 -> PostgreSQL (infrastructure/config/database.py + infrastructure/models)
 ```
 
 ### Responsabilidade de Cada Camada
@@ -61,9 +61,13 @@ HTTP Request
 - `src/repositories`
 	- Implementacoes concretas dos contratos.
 	- Encapsula acesso ao banco via SQLAlchemy.
+	- Faz mapeamento entre modelos ORM e entidades de dominio.
 
 - `src/infrastructure`
-	- Configuracao de banco, modelos ORM e container de dependencias.
+	- Camada tecnica com adaptadores e configuracoes.
+	- `config/`: configuracao do banco (`database.py`).
+	- `models/`: modelos ORM SQLAlchemy.
+	- `services/`: servicos tecnicos (ex.: hash/verificacao de senha).
 
 ### Fluxos Principais da API
 
@@ -76,6 +80,7 @@ HTTP Request
 
 2. Login (`POST /usuarios/login`)
 	 - Controller recebe credenciais.
+	 - Input DTO valida formato/campos obrigatorios.
 	 - Use case valida usuario e senha.
 	 - Controller gera JWT com `create_access_token`.
 	 - Retorno esperado: token e status `200`.
@@ -176,4 +181,7 @@ src/
 		listar_consultas/
 	repositories/
 	infrastructure/
+		config/
+		models/
+		services/
 ```

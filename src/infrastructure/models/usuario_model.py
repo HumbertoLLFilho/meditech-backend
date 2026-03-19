@@ -1,4 +1,4 @@
-from src.infrastructure.database import db
+from src.infrastructure.config.database import db
 
 
 class UsuarioModel(db.Model):

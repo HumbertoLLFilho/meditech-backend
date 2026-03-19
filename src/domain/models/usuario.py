@@ -19,3 +19,4 @@ class Usuario:
     email: str
     senha: str
     cpf: str
+    id: int | None = None

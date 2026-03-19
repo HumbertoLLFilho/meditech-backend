@@ -42,14 +42,9 @@ def cadastrar_usuario():
 @swag_from(USUARIO_LOGIN_DOC)
 def login_usuario():
     data = request.get_json(silent=True) or {}
-    email = data.get("email")
-    senha = data.get("senha")
-
-    if not email or not senha:
-        return jsonify({"erro": "E-mail e senha são obrigatórios."}), 422
 
     try:
-        login_input = LoginUsuarioInput(email=email, senha=senha)
+        login_input = LoginUsuarioInput.from_dict(data)
         use_case = get_login_usuario_use_case()
         resultado = use_case.executar(login_input)
 

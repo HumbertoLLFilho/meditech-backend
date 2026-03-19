@@ -1,4 +1,4 @@
-from werkzeug.security import generate_password_hash
+from src.domain.contracts.password_service_contract import PasswordServiceContract
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
 from src.domain.models.usuario import Genero, Usuario
 from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
@@ -6,8 +6,9 @@ from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsua
 
 class CadastrarUsuarioUseCase:
 
-    def __init__(self, repository: UsuarioRepositoryContract):
+    def __init__(self, repository: UsuarioRepositoryContract, password_service: PasswordServiceContract):
         self.repository = repository
+        self.password_service = password_service
 
     def executar(self, input_data: CadastrarUsuarioInput) -> Usuario:
         try:
@@ -22,7 +23,7 @@ class CadastrarUsuarioUseCase:
         if self.repository.buscar_por_cpf(input_data.cpf):
             raise ValueError("CPF ja cadastrado.")
 
-        senha_hash = generate_password_hash(input_data.senha)
+        senha_hash = self.password_service.hash(input_data.senha)
 
         usuario = Usuario(
             nome=input_data.nome,

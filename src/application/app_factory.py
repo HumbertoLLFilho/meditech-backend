@@ -13,7 +13,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
-from src.infrastructure.database import db
+from src.infrastructure.config.database import db
 
 
 load_dotenv()
@@ -114,7 +114,7 @@ def _init_swagger(app: Flask) -> None:
 
 
 def _register_models() -> None:
-    import src.infrastructure.usuario_model  # noqa: F401
+    import src.infrastructure.models.usuario_model  # noqa: F401
 
 
 def _register_blueprints(app: Flask) -> None:

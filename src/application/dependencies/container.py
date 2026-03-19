@@ -1,5 +1,6 @@
 from flask import g, has_request_context
 
+from src.infrastructure.services.password_service import PasswordService
 from src.repositories.consulta_repository import ConsultaRepository
 from src.repositories.usuario_repository import UsuarioRepository
 from src.usecases.cadastrar_consulta.cadastrar_consulta_usecase import CadastrarConsultaUseCase
@@ -35,17 +36,21 @@ def _get_consulta_repository() -> ConsultaRepository:
     return _scoped("consulta_repository", ConsultaRepository)
 
 
+def _get_password_service() -> PasswordService:
+    return _scoped("password_service", PasswordService)
+
+
 def get_cadastrar_usuario_use_case() -> CadastrarUsuarioUseCase:
     return _scoped(
         "cadastrar_usuario_use_case",
-        lambda: CadastrarUsuarioUseCase(_get_usuario_repository()),
+        lambda: CadastrarUsuarioUseCase(_get_usuario_repository(), _get_password_service()),
     )
 
 
 def get_login_usuario_use_case() -> LoginUsuarioUseCase:
     return _scoped(
         "login_usuario_use_case",
-        lambda: LoginUsuarioUseCase(_get_usuario_repository()),
+        lambda: LoginUsuarioUseCase(_get_usuario_repository(), _get_password_service()),
     )
 
 
