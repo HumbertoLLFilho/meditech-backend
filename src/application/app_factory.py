@@ -115,6 +115,7 @@ def _init_swagger(app: Flask) -> None:
 
 def _register_models() -> None:
     import src.infrastructure.models.usuario_model  # noqa: F401
+    import src.infrastructure.models.consulta_model  # noqa: F401
 
 
 def _register_blueprints(app: Flask) -> None:

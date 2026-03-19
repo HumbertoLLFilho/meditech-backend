@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify, request
 from flasgger import swag_from
-from flask_jwt_extended import create_access_token
 
 from src.application.docs.usuarios_docs import USUARIO_CADASTRAR_DOC, USUARIO_LOGIN_DOC
 from src.application.dependencies.container import get_cadastrar_usuario_use_case, get_login_usuario_use_case
 from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
 from src.usecases.login_usuario.login_usuario_input import LoginUsuarioInput
+from src.usecases.login_usuario.login_usuario_usecase import InvalidCredentialsError
 
 
 usuario_bp = Blueprint("usuario", __name__, url_prefix="/usuarios")
@@ -48,24 +48,16 @@ def login_usuario():
         use_case = get_login_usuario_use_case()
         resultado = use_case.executar(login_input)
 
-        token = create_access_token(
-            identity=str(resultado["id"]),
-            additional_claims={
-                "email": resultado["email"],
-                "cpf": resultado["cpf"],
-                "nome": resultado["nome"],
-            },
-        )
-
         resposta = {
-            "id": resultado["id"],
             "nome": resultado["nome"],
-            "access_token": token,
+            "access_token": resultado["access_token"],
         }
 
         return jsonify(resposta), 200
 
-    except ValueError as e:
+    except InvalidCredentialsError as e:
         return jsonify({"erro": str(e)}), 401
+    except ValueError as e:
+        return jsonify({"erro": str(e)}), 422
     except Exception:
         return jsonify({"erro": "Erro interno no servidor."}), 500

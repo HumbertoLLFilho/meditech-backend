@@ -1,5 +1,6 @@
 from flask import g, has_request_context
 
+from src.infrastructure.services.jwt_token_service import JwtTokenService
 from src.infrastructure.services.password_service import PasswordService
 from src.repositories.consulta_repository import ConsultaRepository
 from src.repositories.usuario_repository import UsuarioRepository
@@ -40,6 +41,10 @@ def _get_password_service() -> PasswordService:
     return _scoped("password_service", PasswordService)
 
 
+def _get_token_service() -> JwtTokenService:
+    return _scoped("token_service", JwtTokenService)
+
+
 def get_cadastrar_usuario_use_case() -> CadastrarUsuarioUseCase:
     return _scoped(
         "cadastrar_usuario_use_case",
@@ -50,7 +55,11 @@ def get_cadastrar_usuario_use_case() -> CadastrarUsuarioUseCase:
 def get_login_usuario_use_case() -> LoginUsuarioUseCase:
     return _scoped(
         "login_usuario_use_case",
-        lambda: LoginUsuarioUseCase(_get_usuario_repository(), _get_password_service()),
+        lambda: LoginUsuarioUseCase(
+            _get_usuario_repository(),
+            _get_password_service(),
+            _get_token_service(),
+        ),
     )
 
 
