@@ -72,7 +72,6 @@ Controller -> Input DTO -> UseCase -> Repository Contract -> Repository -> SQLAl
 - src/infrastructure
 
 ## Debitos Tecnicos Observados
-- Repositories retornam modelos ORM em buscas, em vez de entidades de dominio.
 - Nao ha suite de testes automatizados no repositorio atual.
 
 ## Regra de Documentacao de API
