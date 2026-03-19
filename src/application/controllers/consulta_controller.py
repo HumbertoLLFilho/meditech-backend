@@ -27,7 +27,7 @@ def cadastrar_consulta():
             {
                 "especialidade": consulta.especialidade,
                 "medico": consulta.medico,
-                "data": consulta.data,
+                "data": consulta.data.strftime("%Y-%m-%d"),
                 "horario": consulta.horario,
                 "mensagem": "Consulta realizada com sucesso!",
             }
