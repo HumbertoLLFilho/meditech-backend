@@ -14,5 +14,6 @@ class UsuarioModel(db.Model):
     cpf = db.Column(db.String(11), nullable=False)
     telefone = db.Column(db.String(20), nullable=False)
     tipo = db.Column(db.String(30), nullable=False)
+    ativo = db.Column(db.Boolean, default=False)
 
     consultas = db.relationship("ConsultaModel", backref="usuario")

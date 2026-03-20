@@ -18,7 +18,8 @@ class UsuarioRepository(UsuarioRepositoryContract):
             senha=model.senha,
             cpf=model.cpf,
             telefone=model.telefone,
-            tipo=model.tipo
+            tipo=model.tipo,
+            ativo=model.ativo
         )
 
     def salvar(self, usuario: Usuario) -> Usuario:
