@@ -17,6 +17,8 @@ class UsuarioRepository(UsuarioRepositoryContract):
             email=model.email,
             senha=model.senha,
             cpf=model.cpf,
+            telefone=model.telefone,
+            tipo=model.tipo
         )
 
     def salvar(self, usuario: Usuario) -> Usuario:
@@ -28,6 +30,8 @@ class UsuarioRepository(UsuarioRepositoryContract):
             email=usuario.email,
             senha=usuario.senha,
             cpf=usuario.cpf,
+            telefone=usuario.telefone,
+            tipo=usuario.tipo.value
         )
         db.session.add(model)
         db.session.flush()  # Para obter o ID antes de commitar

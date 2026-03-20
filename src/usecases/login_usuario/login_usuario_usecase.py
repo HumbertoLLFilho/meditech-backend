@@ -32,6 +32,7 @@ class LoginUsuarioUseCase:
             email=usuario.email,
             cpf=usuario.cpf,
             nome=nome_completo,
+            tipo=usuario.tipo,
         )
 
         return {

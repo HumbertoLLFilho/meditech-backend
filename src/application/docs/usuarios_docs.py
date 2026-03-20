@@ -14,6 +14,8 @@ USUARIO_CADASTRAR_DOC = {
                         "email",
                         "senha",
                         "cpf",
+                        "telefone",
+                        "tipo"
                     ],
                     "properties": {
                         "nome": {"type": "string", "example": "Joao"},
@@ -35,6 +37,7 @@ USUARIO_CADASTRAR_DOC = {
                         },
                         "senha": {"type": "string", "example": "senha123"},
                         "cpf": {"type": "string", "example": "12345678901"},
+                        "telefone": {"type": "string", "example": "11999999999"}
                     },
                 }
             }
@@ -42,6 +45,59 @@ USUARIO_CADASTRAR_DOC = {
     },
     "responses": {
         201: {"description": "Usuario cadastrado com sucesso"},
+        422: {"description": "Erro de validacao"},
+        500: {"description": "Erro interno do servidor"},
+    },
+}
+
+USUARIO_CADASTRAR_ADMIN_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": [
+                        "nome",
+                        "sobrenome",
+                        "data_nascimento",
+                        "genero",
+                        "email",
+                        "senha",
+                        "cpf",
+                        "telefone",
+                    ],
+                    "properties": {
+                        "nome": {"type": "string", "example": "Maria"},
+                        "sobrenome": {"type": "string", "example": "Souza"},
+                        "data_nascimento": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "1985-03-15",
+                        },
+                        "genero": {
+                            "type": "string",
+                            "enum": ["masculino", "feminino", "outro", "prefiro_nao_informar"],
+                            "example": "feminino",
+                        },
+                        "email": {
+                            "type": "string",
+                            "format": "email",
+                            "example": "maria.admin@email.com",
+                        },
+                        "senha": {"type": "string", "example": "senhaSegura123"},
+                        "cpf": {"type": "string", "example": "98765432100"},
+                        "telefone": {"type": "string", "example": "11988887777"},
+                    },
+                }
+            }
+        },
+    },
+    "responses": {
+        201: {"description": "Admin cadastrado com sucesso"},
+        403: {"description": "Acesso negado — requer token de admin"},
         422: {"description": "Erro de validacao"},
         500: {"description": "Erro interno do servidor"},
     },
