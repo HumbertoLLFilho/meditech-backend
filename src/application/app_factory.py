@@ -10,6 +10,7 @@ from urllib.parse import quote
 from dotenv import load_dotenv
 from flasgger import Swagger
 from flask import Flask
+import click
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
@@ -45,6 +46,7 @@ def create_app() -> Flask:
     _register_models()
     _register_blueprints(app)
     _register_routes(app)
+    _register_commands(app)
     _create_tables(app)
 
     return app
@@ -154,3 +156,43 @@ def _jwt_expired_token(_jwt_header, _jwt_payload):
 def _create_tables(app: Flask) -> None:
     with app.app_context():
         db.create_all()
+
+
+def _register_commands(app: Flask) -> None:
+    @app.cli.command("criar-admin")
+    @click.option("--nome", prompt=True)
+    @click.option("--sobrenome", prompt=True)
+    @click.option("--email", prompt=True)
+    @click.option("--senha", prompt=True, hide_input=True, confirmation_prompt=True)
+    @click.option("--cpf", prompt=True)
+    @click.option("--telefone", prompt=True)
+    @click.option("--data-nascimento", prompt=True, help="Formato: YYYY-MM-DD")
+    @click.option("--genero", prompt=True, type=click.Choice(["masculino", "feminino", "outro", "prefiro_nao_informar"]))
+    def criar_admin(nome, sobrenome, email, senha, cpf, telefone, data_nascimento, genero):
+        """Cria o primeiro usuario administrador do sistema."""
+        from datetime import datetime
+        from src.domain.models.usuario import Genero, TipoUsuario, Usuario
+        from src.infrastructure.models.usuario_model import UsuarioModel
+        from src.infrastructure.services.password_service import PasswordService
+
+        try:
+            data_nasc = datetime.strptime(data_nascimento, "%Y-%m-%d").date()
+        except ValueError:
+            raise click.BadParameter("Use o formato YYYY-MM-DD para data-nascimento.")
+
+        senha_hash = PasswordService().hash(senha)
+
+        model = UsuarioModel(
+            nome=nome,
+            sobrenome=sobrenome,
+            data_nascimento=data_nasc,
+            genero=genero,
+            email=email,
+            senha=senha_hash,
+            cpf=cpf,
+            telefone=telefone,
+            tipo=TipoUsuario.ADMIN.value,
+        )
+        db.session.add(model)
+        db.session.commit()
+        click.echo(f"Admin '{nome} {sobrenome}' criado com sucesso (id={model.id}).")
