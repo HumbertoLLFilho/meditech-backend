@@ -10,7 +10,7 @@ class CadastrarUsuarioUseCase:
         self.repository = repository
         self.password_service = password_service
 
-    def executar(self, input_data: CadastrarUsuarioInput, tipo: TipoUsuario = TipoUsuario.PACIENTE) -> Usuario:
+    def executar(self, input_data: CadastrarUsuarioInput, tipo: TipoUsuario = TipoUsuario.PACIENTE, ativo: bool = False) -> Usuario:
         
         # Validar se o genero e tipo sao validos
         try:
@@ -38,6 +38,7 @@ class CadastrarUsuarioUseCase:
             cpf=input_data.cpf,
             telefone=input_data.telefone,
             tipo=tipo,
+            ativo=ativo
         )
 
         return self.repository.salvar(usuario)

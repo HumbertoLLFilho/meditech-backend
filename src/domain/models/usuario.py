@@ -23,5 +23,6 @@ class Usuario:
     senha: str
     telefone: str
     tipo: TipoUsuario
+    ativo: bool
     cpf: str
     id: int | None = None

@@ -100,6 +100,57 @@ USUARIO_CADASTRAR_ADMIN_DOC = {
         403: {"description": "Acesso negado — requer token de admin"},
         422: {"description": "Erro de validacao"},
         500: {"description": "Erro interno do servidor"},
+        },
+}
+
+USUARIO_CADASTRAR_MEDICO_DOC = {
+    "tags": ["Usuarios"],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": [
+                        "nome",
+                        "sobrenome",
+                        "data_nascimento",
+                        "genero",
+                        "email",
+                        "senha",
+                        "cpf",
+                        "telefone"
+                    ],
+                    "properties": {
+                        "nome": {"type": "string", "example": "Dr. Carlos"},
+                        "sobrenome": {"type": "string", "example": "Mendes"},
+                        "data_nascimento": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "1975-05-10",
+                        },
+                        "genero": {
+                            "type": "string",
+                            "enum": ["masculino", "feminino", "outro", "prefiro_nao_informar"],
+                            "example": "masculino",
+                        },
+                        "email": {
+                            "type": "string",
+                            "format": "email",
+                            "example": "carlos.medico@email.com",
+                        },
+                        "senha": {"type": "string", "example": "senhaSegura456"},
+                        "cpf": {"type": "string", "example": "11223344556"},
+                        "telefone": {"type": "string", "example": "11977776666"},
+                    },
+                }
+            }
+        },
+     },
+    "responses": {
+        201: {"description": "Medico cadastrado com sucesso"},
+        422: {"description": "Erro de validacao"},
+        500: {"description": "Erro interno do servidor"},
     },
 }
 
