@@ -20,9 +20,8 @@ def _minutos(hora: str) -> int:
 
 
 def sobrepostos(hora_a: str, hora_b: str) -> bool:
-    """Retorna True se duas consultas de 1h iniciando em hora_a e hora_b se sobrepoem."""
+    """Retorna True se o slot hora_a cai dentro da janela de 1h a partir de hora_b."""
     a = _minutos(hora_a)
     b = _minutos(hora_b)
-    diff = abs(a - b)
-    diff = min(diff, 24 * 60 - diff)  # wrap meia-noite
+    diff = (a - b) % (24 * 60)  # distância de b até a, para frente
     return diff < 60
