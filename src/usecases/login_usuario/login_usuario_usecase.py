@@ -27,16 +27,8 @@ class LoginUsuarioUseCase:
             raise InvalidCredentialsError("E-mail ou senha invalidos.")
 
         nome_completo = f"{usuario.nome} {usuario.sobrenome}"
-        token = self.token_service.generate_access_token(
-            user_id=usuario.id,
-            email=usuario.email,
-            cpf=usuario.cpf,
-            nome=nome_completo,
-            tipo=usuario.tipo,
-        )
+        token = self.token_service.generate_access_token(usuario)
 
         return {
-            "nome": nome_completo,
-            "email": usuario.email,
             "access_token": token,
         }

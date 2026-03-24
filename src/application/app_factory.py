@@ -121,9 +121,11 @@ def _register_models() -> None:
 
 
 def _register_blueprints(app: Flask) -> None:
+    from src.application.controllers.auth_controller import auth_bp
     from src.application.controllers.consulta_controller import consulta_bp
     from src.application.controllers.usuario_controller import usuario_bp
 
+    app.register_blueprint(auth_bp)
     app.register_blueprint(usuario_bp)
     app.register_blueprint(consulta_bp)
 

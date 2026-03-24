@@ -8,7 +8,7 @@ class CadastrarConsultaUseCase:
     def __init__(self, repository: ConsultaRepositoryContract):
         self.repository = repository
 
-    def executar(self, input_data: CadastrarConsultaInput) -> Consulta:
+    def executar(self, input_data: CadastrarConsultaInput) -> dict:
         consulta = Consulta(
             usuario_id=input_data.usuario_id,
             especialidade=input_data.especialidade,
@@ -17,4 +17,13 @@ class CadastrarConsultaUseCase:
             horario=input_data.horario,
         )
 
-        return self.repository.salvar(consulta)
+        salva = self.repository.salvar(consulta)
+
+        return {
+            "id": salva.id,
+            "especialidade": salva.especialidade,
+            "medico": salva.medico,
+            "data": salva.data.strftime("%Y-%m-%d"),
+            "horario": salva.horario,
+            "mensagem": "Consulta realizada com sucesso!",
+        }

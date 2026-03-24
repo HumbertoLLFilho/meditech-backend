@@ -8,10 +8,10 @@ from src.usecases.cadastrar_consulta.cadastrar_consulta_input import CadastrarCo
 from src.usecases.listar_consultas.listar_consultas_input import ListarConsultasInput
 
 
-consulta_bp = Blueprint("consulta", __name__)
+consulta_bp = Blueprint("consulta", __name__, url_prefix="/consultas")
 
 
-@consulta_bp.route("/consultas", methods=["POST"])
+@consulta_bp.route("", methods=["POST"])
 @jwt_required()
 @swag_from(CONSULTA_CADASTRAR_DOC)
 def cadastrar_consulta():
@@ -21,17 +21,9 @@ def cadastrar_consulta():
 
         consulta_input = CadastrarConsultaInput.from_dict(data, usuario_id)
         use_case = get_cadastrar_consulta_use_case()
-        consulta = use_case.executar(consulta_input)
+        resultado = use_case.executar(consulta_input)
 
-        return jsonify(
-            {
-                "especialidade": consulta.especialidade,
-                "medico": consulta.medico,
-                "data": consulta.data.strftime("%Y-%m-%d"),
-                "horario": consulta.horario,
-                "mensagem": "Consulta realizada com sucesso!",
-            }
-        ), 201
+        return jsonify(resultado), 201
 
     except ValueError as e:
         return jsonify({"erro": str(e)}), 422
@@ -40,7 +32,7 @@ def cadastrar_consulta():
         return jsonify({"erro": "Erro interno no servidor"}), 500
 
 
-@consulta_bp.route("/consultas", methods=["GET"])
+@consulta_bp.route("", methods=["GET"])
 @jwt_required()
 @swag_from(CONSULTA_LISTAR_DOC)
 def listar_consultas():
@@ -48,16 +40,6 @@ def listar_consultas():
 
     listar_input = ListarConsultasInput(usuario_id=usuario_id)
     use_case = get_listar_consultas()
-    consultas = use_case.listar(listar_input)
+    resultado = use_case.listar(listar_input)
 
-    result = [
-        {
-            "especialidade": c.especialidade,
-            "medico": c.medico,
-            "data": c.data.strftime("%Y-%m-%d"),
-            "horario": c.horario,
-        }
-        for c in consultas
-    ]
-
-    return jsonify(result), 200
+    return jsonify(resultado), 200
