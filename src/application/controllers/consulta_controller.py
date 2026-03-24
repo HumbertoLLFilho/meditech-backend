@@ -19,7 +19,7 @@ def cadastrar_consulta():
     try:
         usuario_id = int(get_jwt_identity())
 
-        consulta_input = CadastrarConsultaInput.from_dict(data, usuario_id)
+        consulta_input = CadastrarConsultaInput.from_dict(data, paciente_id=usuario_id)
         use_case = get_cadastrar_consulta_use_case()
         resultado = use_case.executar(consulta_input)
 

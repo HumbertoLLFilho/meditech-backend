@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from enum import Enum
 
 class Genero(str, Enum):
@@ -26,3 +26,4 @@ class Usuario:
     ativo: bool
     cpf: str
     id: int | None = None
+    data_cadastro: datetime | None = None

@@ -118,16 +118,22 @@ def _init_swagger(app: Flask) -> None:
 def _register_models() -> None:
     import src.infrastructure.models.usuario_model  # noqa: F401
     import src.infrastructure.models.consulta_model  # noqa: F401
+    import src.infrastructure.models.especialidade_model  # noqa: F401
+    import src.infrastructure.models.horario_disponivel_model  # noqa: F401
 
 
 def _register_blueprints(app: Flask) -> None:
     from src.application.controllers.auth_controller import auth_bp
     from src.application.controllers.consulta_controller import consulta_bp
+    from src.application.controllers.especialidade_controller import especialidade_bp
+    from src.application.controllers.horario_disponivel_controller import horario_disponivel_bp
     from src.application.controllers.usuario_controller import usuario_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(usuario_bp)
     app.register_blueprint(consulta_bp)
+    app.register_blueprint(especialidade_bp)
+    app.register_blueprint(horario_disponivel_bp)
 
 
 def _register_routes(app: Flask) -> None:

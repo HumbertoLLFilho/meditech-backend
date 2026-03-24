@@ -3,10 +3,20 @@ from flask import g, has_request_context
 from src.infrastructure.services.jwt_token_service import JwtTokenService
 from src.infrastructure.services.password_service import PasswordService
 from src.repositories.consulta_repository import ConsultaRepository
+from src.repositories.especialidade_repository import EspecialidadeRepository
+from src.repositories.horario_disponivel_repository import HorarioDisponivelRepository
 from src.repositories.usuario_repository import UsuarioRepository
+from src.usecases.adicionar_horario_disponivel.adicionar_horario_disponivel_usecase import AdicionarHorarioDisponivelUseCase
+from src.usecases.associar_especialidade_medico.associar_especialidade_medico_usecase import AssociarEspecialidadeMedicoUseCase
 from src.usecases.cadastrar_consulta.cadastrar_consulta_usecase import CadastrarConsultaUseCase
+from src.usecases.consultar_disponibilidade.consultar_disponibilidade_usecase import ConsultarDisponibilidadeUseCase
+from src.usecases.listar_horarios_disponivel_medico.listar_horarios_disponivel_medico_usecase import ListarHorariosDisponivelMedicoUseCase
+from src.usecases.cadastrar_especialidade.cadastrar_especialidade_usecase import CadastrarEspecialidadeUseCase
 from src.usecases.cadastrar_usuario.cadastrar_usuario_usecase import CadastrarUsuarioUseCase
 from src.usecases.listar_consultas.listar_consultas_usecase import ListarConsultaUseCase
+from src.usecases.listar_especialidades.listar_especialidades_usecase import ListarEspecialidadesUseCase
+from src.usecases.listar_especialidades_medico.listar_especialidades_medico_usecase import ListarEspecialidadesMedicoUseCase
+from src.usecases.listar_usuarios.listar_usuarios_usecase import ListarUsuariosUseCase
 from src.usecases.login_usuario.login_usuario_usecase import LoginUsuarioUseCase
 
 
@@ -35,6 +45,18 @@ def _get_usuario_repository() -> UsuarioRepository:
 
 def _get_consulta_repository() -> ConsultaRepository:
     return _scoped("consulta_repository", ConsultaRepository)
+
+
+def _get_especialidade_repository() -> EspecialidadeRepository:
+    return _scoped("especialidade_repository", EspecialidadeRepository)
+
+
+def _get_horario_disponivel_repository() -> HorarioDisponivelRepository:
+    return _scoped("horario_disponivel_repository", HorarioDisponivelRepository)
+
+
+def get_horario_disponivel_repository() -> HorarioDisponivelRepository:
+    return _get_horario_disponivel_repository()
 
 
 def _get_password_service() -> PasswordService:
@@ -66,7 +88,18 @@ def get_login_usuario_use_case() -> LoginUsuarioUseCase:
 def get_cadastrar_consulta_use_case() -> CadastrarConsultaUseCase:
     return _scoped(
         "cadastrar_consulta_use_case",
-        lambda: CadastrarConsultaUseCase(_get_consulta_repository()),
+        lambda: CadastrarConsultaUseCase(
+            _get_consulta_repository(),
+            _get_especialidade_repository(),
+            _get_horario_disponivel_repository(),
+        ),
+    )
+
+
+def get_listar_usuarios() -> ListarUsuariosUseCase:
+    return _scoped(
+        "listar_usuarios_use_case",
+        lambda: ListarUsuariosUseCase(_get_usuario_repository()),
     )
 
 
@@ -74,4 +107,62 @@ def get_listar_consultas() -> ListarConsultaUseCase:
     return _scoped(
         "listar_consultas_use_case",
         lambda: ListarConsultaUseCase(_get_consulta_repository()),
+    )
+
+
+def get_cadastrar_especialidade() -> CadastrarEspecialidadeUseCase:
+    return _scoped(
+        "cadastrar_especialidade_use_case",
+        lambda: CadastrarEspecialidadeUseCase(_get_especialidade_repository()),
+    )
+
+
+def get_listar_especialidades() -> ListarEspecialidadesUseCase:
+    return _scoped(
+        "listar_especialidades_use_case",
+        lambda: ListarEspecialidadesUseCase(_get_especialidade_repository()),
+    )
+
+
+def get_listar_especialidades_medico() -> ListarEspecialidadesMedicoUseCase:
+    return _scoped(
+        "listar_especialidades_medico_use_case",
+        lambda: ListarEspecialidadesMedicoUseCase(_get_especialidade_repository()),
+    )
+
+
+def get_adicionar_horario_disponivel() -> AdicionarHorarioDisponivelUseCase:
+    return _scoped(
+        "adicionar_horario_disponivel_use_case",
+        lambda: AdicionarHorarioDisponivelUseCase(
+            _get_horario_disponivel_repository(),
+            _get_usuario_repository(),
+        ),
+    )
+
+
+def get_listar_horarios_disponivel_medico() -> ListarHorariosDisponivelMedicoUseCase:
+    return _scoped(
+        "listar_horarios_disponivel_medico_use_case",
+        lambda: ListarHorariosDisponivelMedicoUseCase(_get_horario_disponivel_repository()),
+    )
+
+
+def get_consultar_disponibilidade() -> ConsultarDisponibilidadeUseCase:
+    return _scoped(
+        "consultar_disponibilidade_use_case",
+        lambda: ConsultarDisponibilidadeUseCase(
+            _get_horario_disponivel_repository(),
+            _get_consulta_repository(),
+        ),
+    )
+
+
+def get_associar_especialidade_medico() -> AssociarEspecialidadeMedicoUseCase:
+    return _scoped(
+        "associar_especialidade_medico_use_case",
+        lambda: AssociarEspecialidadeMedicoUseCase(
+            _get_especialidade_repository(),
+            _get_usuario_repository(),
+        ),
     )

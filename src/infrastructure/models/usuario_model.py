@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from src.infrastructure.config.database import db
 
 
@@ -15,5 +17,20 @@ class UsuarioModel(db.Model):
     telefone = db.Column(db.String(20), nullable=False)
     tipo = db.Column(db.String(30), nullable=False)
     ativo = db.Column(db.Boolean, default=False)
+    data_cadastro = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-    consultas = db.relationship("ConsultaModel", backref="usuario")
+    consultas_paciente = db.relationship(
+        "ConsultaModel",
+        foreign_keys="ConsultaModel.paciente_id",
+        backref="paciente",
+    )
+    consultas_medico = db.relationship(
+        "ConsultaModel",
+        foreign_keys="ConsultaModel.medico_id",
+        backref="medico",
+    )
+    horarios_disponiveis = db.relationship(
+        "HorarioDisponivelModel",
+        foreign_keys="HorarioDisponivelModel.medico_id",
+        backref="medico_horarios",
+    )

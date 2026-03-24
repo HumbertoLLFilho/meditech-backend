@@ -2,13 +2,35 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt, jwt_required
 from flasgger import swag_from
 
-from src.application.docs.usuarios_docs import USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC
-from src.application.dependencies.container import get_cadastrar_usuario_use_case
+from src.application.docs.usuarios_docs import USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_LISTAR_DOC
+from src.application.dependencies.container import get_cadastrar_usuario_use_case, get_listar_usuarios
 from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
+from src.usecases.listar_usuarios.listar_usuarios_input import ListarUsuariosInput
 from src.domain.models.usuario import TipoUsuario
 
 
 usuario_bp = Blueprint("usuario", __name__, url_prefix="/usuarios")
+
+
+@usuario_bp.route("", methods=["GET"])
+@jwt_required()
+@swag_from(USUARIO_LISTAR_DOC)
+def listar_usuarios():
+    claims = get_jwt()
+    if claims.get("tipo") != TipoUsuario.ADMIN.value:
+        return jsonify({"erro": "Acesso negado. Apenas admins podem listar usuarios."}), 403
+
+    try:
+        listar_input = ListarUsuariosInput.from_args(request.args)
+        use_case = get_listar_usuarios()
+        resultado = use_case.listar(listar_input)
+
+        return jsonify(resultado), 200
+
+    except ValueError as e:
+        return jsonify({"erro": str(e)}), 422
+    except Exception as e:
+        return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500
 
 
 @usuario_bp.route("", methods=["POST"])
@@ -25,8 +47,8 @@ def cadastrar_usuario():
 
     except ValueError as e:
         return jsonify({"erro": str(e)}), 422
-    except Exception:
-        return jsonify({"erro": "Erro interno no servidor."}), 500
+    except Exception as e:
+        return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500
 
 
 @usuario_bp.route("/admin", methods=["POST"])
@@ -48,8 +70,8 @@ def cadastrar_admin():
 
     except ValueError as e:
         return jsonify({"erro": str(e)}), 422
-    except Exception:
-        return jsonify({"erro": "Erro interno no servidor."}), 500
+    except Exception as e:
+        return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500
 
 
 @usuario_bp.route("/medico", methods=["POST"])
@@ -66,5 +88,5 @@ def cadastrar_medico():
 
     except ValueError as e:
         return jsonify({"erro": str(e)}), 422
-    except Exception:
-        return jsonify({"erro": "Erro interno no servidor."}), 500
+    except Exception as e:
+        return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500

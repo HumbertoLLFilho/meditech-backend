@@ -1,3 +1,58 @@
+USUARIO_LISTAR_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "ativo",
+            "in": "query",
+            "required": False,
+            "schema": {"type": "boolean"},
+            "description": "Filtrar por status ativo (true ou false)",
+        },
+        {
+            "name": "tipo",
+            "in": "query",
+            "required": False,
+            "schema": {
+                "type": "string",
+                "enum": ["admin", "medico", "paciente"],
+            },
+            "description": "Filtrar por tipo de usuario",
+        },
+        {
+            "name": "nome",
+            "in": "query",
+            "required": False,
+            "schema": {"type": "string"},
+            "description": "Filtrar por nome ou sobrenome (busca parcial)",
+        },
+        {
+            "name": "cpf",
+            "in": "query",
+            "required": False,
+            "schema": {"type": "string"},
+            "description": "Filtrar por CPF (busca exata)",
+        },
+        {
+            "name": "ordem",
+            "in": "query",
+            "required": False,
+            "schema": {
+                "type": "string",
+                "enum": ["asc", "desc"],
+                "default": "desc",
+            },
+            "description": "Ordenacao por data de cadastro (padrao: desc)",
+        },
+    ],
+    "responses": {
+        200: {"description": "Lista de usuarios"},
+        401: {"description": "Token ausente, invalido ou expirado"},
+        403: {"description": "Acesso negado — requer token de admin"},
+        422: {"description": "Valor invalido nos filtros"},
+    },
+}
+
 USUARIO_CADASTRAR_DOC = {
     "tags": ["Usuarios"],
     "requestBody": {

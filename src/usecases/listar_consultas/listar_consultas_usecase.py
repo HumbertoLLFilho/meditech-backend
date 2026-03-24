@@ -13,10 +13,13 @@ class ListarConsultaUseCase:
         return [
             {
                 "id": c.id,
-                "especialidade": c.especialidade,
-                "medico": c.medico,
-                "data": c.data.strftime("%Y-%m-%d"),
-                "horario": c.horario,
+                "paciente_id": c.paciente_id,
+                "medico_id": c.medico_id,
+                "especialidade_id": c.especialidade_id,
+                "data_agendada": c.data_agendada.strftime("%Y-%m-%d"),
+                "hora": c.hora,
+                "data_cadastrada": c.data_cadastrada.strftime("%Y-%m-%dT%H:%M:%S") if c.data_cadastrada else None,
+                "cancelada": c.cancelada,
             }
             for c in consultas
         ]

@@ -7,23 +7,23 @@ CONSULTA_CADASTRAR_DOC = {
             "application/json": {
                 "schema": {
                     "type": "object",
-                    "required": ["especialidade", "medico", "data", "horario"],
+                    "required": ["medico_id", "especialidade_id", "data_agendada", "hora"],
                     "properties": {
-                        "especialidade": {"type": "string", "example": "Cardiologia"},
-                        "medico": {"type": "string", "example": "Dr. Pedro"},
-                        "data": {
+                        "medico_id": {"type": "integer", "example": 2},
+                        "especialidade_id": {"type": "integer", "example": 1},
+                        "data_agendada": {
                             "type": "string",
                             "format": "date",
-                            "example": "2026-03-25",
+                            "example": "2026-04-10",
                         },
-                        "horario": {"type": "string", "example": "14:30"},
+                        "hora": {"type": "string", "example": "14:30"},
                     },
                 }
             }
         },
     },
     "responses": {
-        201: {"description": "Consulta cadastrada com sucesso"},
+        201: {"description": "Consulta agendada com sucesso"},
         401: {"description": "Token ausente, invalido ou expirado"},
         422: {"description": "Erro de validacao"},
         500: {"description": "Erro interno do servidor"},
@@ -34,7 +34,7 @@ CONSULTA_LISTAR_DOC = {
     "tags": ["Consultas"],
     "security": [{"BearerAuth": []}],
     "responses": {
-        200: {"description": "Lista de consultas"},
+        200: {"description": "Lista de consultas do paciente autenticado"},
         401: {"description": "Token ausente, invalido ou expirado"},
     },
 }

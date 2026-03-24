@@ -16,7 +16,7 @@ class CadastrarUsuarioUseCase:
         try:
             genero_enum = Genero(input_data.genero)
         except ValueError:
-            valores = [g.value for g in Genero]
+            valores = [g for g in Genero]
             raise ValueError(f"Genero invalido. Valores aceitos: {valores}")
 
         # busca pra ver se o email ou cpf ja estao cadastrados
@@ -44,5 +44,5 @@ class CadastrarUsuarioUseCase:
         self.repository.salvar(usuario)
 
         return {
-            "mensagem": f"{tipo} cadastrado com sucesso!"
+            "mensagem": f"{tipo.value} cadastrado com sucesso!"
         }

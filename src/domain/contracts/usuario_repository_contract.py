@@ -15,3 +15,18 @@ class UsuarioRepositoryContract(ABC):
     @abstractmethod
     def buscar_por_cpf(self, cpf: str) -> Usuario | None:
         ...
+
+    @abstractmethod
+    def buscar_por_id(self, usuario_id: int) -> Usuario | None:
+        ...
+
+    @abstractmethod
+    def listar(
+        self,
+        ativo: bool | None = None,
+        tipo: str | None = None,
+        nome: str | None = None,
+        cpf: str | None = None,
+        ordem: str = "desc",
+    ) -> list[Usuario]:
+        ...
