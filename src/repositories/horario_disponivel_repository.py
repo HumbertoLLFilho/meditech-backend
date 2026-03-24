@@ -12,14 +12,14 @@ class HorarioDisponivelRepository(HorarioDisponivelRepositoryContract):
             id=model.id,
             medico_id=model.medico_id,
             dia_semana=model.dia_semana,
-            hora=model.hora,
+            periodo=model.periodo,
         )
 
     def salvar(self, horario: HorarioDisponivel) -> HorarioDisponivel:
         model = HorarioDisponivelModel(
             medico_id=horario.medico_id,
             dia_semana=horario.dia_semana,
-            hora=horario.hora,
+            periodo=horario.periodo,
         )
         db.session.add(model)
 
@@ -33,27 +33,25 @@ class HorarioDisponivelRepository(HorarioDisponivelRepositoryContract):
 
     def listar_por_medico(self, medico_id: int) -> list[HorarioDisponivel]:
         models = HorarioDisponivelModel.query.filter_by(medico_id=medico_id).order_by(
-            HorarioDisponivelModel.dia_semana, HorarioDisponivelModel.hora
+            HorarioDisponivelModel.dia_semana, HorarioDisponivelModel.periodo
         ).all()
         return [self._to_domain(m) for m in models]
 
-    def listar_por_medico_e_dia(self, medico_id: int, dia_semana: int) -> list[HorarioDisponivel]:
-        models = HorarioDisponivelModel.query.filter_by(
-            medico_id=medico_id, dia_semana=dia_semana
-        ).order_by(HorarioDisponivelModel.hora).all()
-        return [self._to_domain(m) for m in models]
-
-    def buscar(self, medico_id: int, dia_semana: int, hora: str) -> HorarioDisponivel | None:
+    def buscar_por_periodo(
+        self, medico_id: int, dia_semana: int, periodo: str
+    ) -> HorarioDisponivel | None:
         model = HorarioDisponivelModel.query.filter_by(
-            medico_id=medico_id, dia_semana=dia_semana, hora=hora
+            medico_id=medico_id, dia_semana=dia_semana, periodo=periodo
         ).first()
         return self._to_domain(model) if model else None
 
-    def listar_por_especialidade_e_dia(self, especialidade_id: int, dia_semana: int) -> list[HorarioDisponivel]:
+    def listar_medicos_por_especialidade_dia_periodo(
+        self, especialidade_id: int, dia_semana: int, periodo: str
+    ) -> list[int]:
         from src.infrastructure.models.especialidade_model import medico_especialidades
 
-        models = (
-            HorarioDisponivelModel.query
+        rows = (
+            db.session.query(HorarioDisponivelModel.medico_id)
             .join(
                 medico_especialidades,
                 HorarioDisponivelModel.medico_id == medico_especialidades.c.medico_id,
@@ -61,11 +59,18 @@ class HorarioDisponivelRepository(HorarioDisponivelRepositoryContract):
             .filter(
                 medico_especialidades.c.especialidade_id == especialidade_id,
                 HorarioDisponivelModel.dia_semana == dia_semana,
+                HorarioDisponivelModel.periodo == periodo,
             )
-            .order_by(HorarioDisponivelModel.medico_id, HorarioDisponivelModel.hora)
+            .distinct()
             .all()
         )
-        return [self._to_domain(m) for m in models]
+        return [row.medico_id for row in rows]
+
+    def listar_periodos_do_medico(self, medico_id: int, dia_semana: int) -> list[str]:
+        rows = HorarioDisponivelModel.query.filter_by(
+            medico_id=medico_id, dia_semana=dia_semana
+        ).all()
+        return [r.periodo for r in rows]
 
     def buscar_por_id(self, horario_id: int) -> HorarioDisponivel | None:
         model = HorarioDisponivelModel.query.get(horario_id)

@@ -22,13 +22,13 @@ class AdicionarHorarioDisponivelUseCase:
         if medico.tipo != TipoUsuario.MEDICO:
             raise ValueError("Usuario informado nao e um medico.")
 
-        if self.repository.buscar(input_data.medico_id, input_data.dia_semana, input_data.hora):
-            raise ValueError("Horario ja cadastrado para este medico neste dia.")
+        if self.repository.buscar_por_periodo(input_data.medico_id, input_data.dia_semana, input_data.periodo):
+            raise ValueError("Periodo ja cadastrado para este medico neste dia.")
 
         horario = HorarioDisponivel(
             medico_id=input_data.medico_id,
             dia_semana=input_data.dia_semana,
-            hora=input_data.hora,
+            periodo=input_data.periodo,
         )
         salvo = self.repository.salvar(horario)
 
@@ -36,6 +36,6 @@ class AdicionarHorarioDisponivelUseCase:
             "id": salvo.id,
             "medico_id": salvo.medico_id,
             "dia_semana": salvo.dia_semana,
-            "hora": salvo.hora,
+            "periodo": salvo.periodo,
             "mensagem": "Horario disponivel cadastrado com sucesso!",
         }

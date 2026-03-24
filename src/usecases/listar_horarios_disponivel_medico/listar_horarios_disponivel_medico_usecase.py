@@ -10,6 +10,6 @@ class ListarHorariosDisponivelMedicoUseCase:
         horarios = self.repository.listar_por_medico(medico_id)
 
         return [
-            {"id": h.id, "dia_semana": h.dia_semana, "hora": h.hora}
+            {"id": h.id, "dia_semana": h.dia_semana, "periodo": h.periodo}
             for h in horarios
         ]

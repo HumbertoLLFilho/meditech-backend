@@ -154,6 +154,7 @@ def get_consultar_disponibilidade() -> ConsultarDisponibilidadeUseCase:
         lambda: ConsultarDisponibilidadeUseCase(
             _get_horario_disponivel_repository(),
             _get_consulta_repository(),
+            _get_usuario_repository(),
         ),
     )
 

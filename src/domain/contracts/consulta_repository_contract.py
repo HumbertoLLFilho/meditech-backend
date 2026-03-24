@@ -15,5 +15,5 @@ class ConsultaRepositoryContract(ABC):
         ...
 
     @abstractmethod
-    def existe_consulta_ativa(self, medico_id: int, data_agendada: date, hora: str) -> bool:
+    def listar_por_medico_e_data(self, medico_id: int, data_agendada: date) -> list[Consulta]:
         ...

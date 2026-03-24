@@ -14,15 +14,19 @@ class HorarioDisponivelRepositoryContract(ABC):
         ...
 
     @abstractmethod
-    def listar_por_medico_e_dia(self, medico_id: int, dia_semana: int) -> list[HorarioDisponivel]:
+    def buscar_por_periodo(
+        self, medico_id: int, dia_semana: int, periodo: str
+    ) -> "HorarioDisponivel | None":
         ...
 
     @abstractmethod
-    def buscar(self, medico_id: int, dia_semana: int, hora: str) -> HorarioDisponivel | None:
+    def listar_medicos_por_especialidade_dia_periodo(
+        self, especialidade_id: int, dia_semana: int, periodo: str
+    ) -> list[int]:
         ...
 
     @abstractmethod
-    def listar_por_especialidade_e_dia(self, especialidade_id: int, dia_semana: int) -> list[HorarioDisponivel]:
+    def listar_periodos_do_medico(self, medico_id: int, dia_semana: int) -> list[str]:
         ...
 
     @abstractmethod

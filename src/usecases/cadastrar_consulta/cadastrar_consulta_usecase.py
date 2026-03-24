@@ -3,6 +3,7 @@ from src.domain.contracts.especialidade_repository_contract import Especialidade
 from src.domain.contracts.horario_disponivel_repository_contract import HorarioDisponivelRepositoryContract
 from src.domain.models.consulta import Consulta
 from src.usecases.cadastrar_consulta.cadastrar_consulta_input import CadastrarConsultaInput
+from src.usecases.horario_utils import SLOTS_POR_PERIODO, sobrepostos
 
 
 class CadastrarConsultaUseCase:
@@ -24,14 +25,18 @@ class CadastrarConsultaUseCase:
         if input_data.especialidade_id not in ids_especialidades:
             raise ValueError("Especialidade nao pertence ao medico informado.")
 
-        # 2. Médico tem disponibilidade neste dia da semana e horário?
+        # 2. Horário solicitado é um slot válido para o médico neste dia?
         dia_semana = input_data.data_agendada.weekday()
-        horario = self.horario_repository.buscar(input_data.medico_id, dia_semana, input_data.hora)
-        if horario is None:
+        periodos = self.horario_repository.listar_periodos_do_medico(input_data.medico_id, dia_semana)
+        slots_validos = [slot for p in periodos for slot in SLOTS_POR_PERIODO[p]]
+        if input_data.hora not in slots_validos:
             raise ValueError("O medico nao possui disponibilidade neste dia e horario.")
 
-        # 3. Slot já está ocupado por outra consulta ativa?
-        if self.repository.existe_consulta_ativa(input_data.medico_id, input_data.data_agendada, input_data.hora):
+        # 3. Slot não conflita com outra consulta ativa (janela de 1h)?
+        consultas_do_dia = self.repository.listar_por_medico_e_data(
+            input_data.medico_id, input_data.data_agendada
+        )
+        if any(sobrepostos(input_data.hora, c.hora) for c in consultas_do_dia):
             raise ValueError("Este horario ja esta reservado para outro paciente.")
 
         consulta = Consulta(

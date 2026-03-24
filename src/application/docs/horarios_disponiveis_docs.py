@@ -7,16 +7,21 @@ HORARIO_ADICIONAR_DOC = {
             "application/json": {
                 "schema": {
                     "type": "object",
-                    "required": ["dia_semana", "hora"],
+                    "required": ["dia_semana", "periodo"],
                     "properties": {
                         "dia_semana": {
                             "type": "integer",
                             "minimum": 0,
                             "maximum": 6,
-                            "example": 0,
+                            "example": 1,
                             "description": "0=segunda, 1=terca, 2=quarta, 3=quinta, 4=sexta, 5=sabado, 6=domingo",
                         },
-                        "hora": {"type": "string", "example": "08:00"},
+                        "periodo": {
+                            "type": "string",
+                            "enum": ["manha", "tarde", "noite"],
+                            "example": "manha",
+                            "description": "Periodo em que o medico atende neste dia",
+                        },
                         "medico_id": {
                             "type": "integer",
                             "example": 2,

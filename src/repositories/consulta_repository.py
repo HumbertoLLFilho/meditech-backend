@@ -45,10 +45,10 @@ class ConsultaRepository(ConsultaRepositoryContract):
         consultas = ConsultaModel.query.filter_by(paciente_id=usuario_id).all()
         return [self._to_domain(c) for c in consultas]
 
-    def existe_consulta_ativa(self, medico_id: int, data_agendada: date, hora: str) -> bool:
-        return ConsultaModel.query.filter_by(
+    def listar_por_medico_e_data(self, medico_id: int, data_agendada: date) -> list[Consulta]:
+        models = ConsultaModel.query.filter_by(
             medico_id=medico_id,
             data_agendada=data_agendada,
-            hora=hora,
             cancelada=False,
-        ).first() is not None
+        ).all()
+        return [self._to_domain(m) for m in models]
