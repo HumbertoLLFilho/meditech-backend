@@ -34,7 +34,51 @@ CONSULTA_LISTAR_DOC = {
     "tags": ["Consultas"],
     "security": [{"BearerAuth": []}],
     "responses": {
-        200: {"description": "Lista de consultas do paciente autenticado"},
+        200: {
+            "description": "Lista de consultas do paciente autenticado",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "integer"},
+                                "data_agendada": {"type": "string", "format": "date", "example": "2026-04-10"},
+                                "hora": {"type": "string", "example": "14:30"},
+                                "cancelada": {"type": "boolean"},
+                                "data_cadastrada": {"type": "string", "format": "date-time"},
+                                "medico": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {"type": "integer"},
+                                        "nome": {"type": "string"},
+                                        "sobrenome": {"type": "string"},
+                                        "email": {"type": "string"},
+                                        "telefone": {"type": "string"},
+                                    },
+                                },
+                                "paciente": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {"type": "integer"},
+                                        "nome": {"type": "string"},
+                                        "sobrenome": {"type": "string"},
+                                    },
+                                },
+                                "especialidade": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {"type": "integer"},
+                                        "nome": {"type": "string", "example": "Cardiologia"},
+                                    },
+                                },
+                            },
+                        },
+                    }
+                }
+            },
+        },
         401: {"description": "Token ausente, invalido ou expirado"},
     },
 }

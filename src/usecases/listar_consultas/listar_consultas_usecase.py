@@ -8,18 +8,34 @@ class ListarConsultaUseCase:
         self.repository = repository
 
     def listar(self, input_data: ListarConsultasInput) -> list[dict]:
-        consultas = self.repository.listar_por_usuario(input_data.usuario_id)
+        consultas = self.repository.listar_por_usuario_com_detalhes(input_data.usuario_id)
 
         return [
             {
                 "id": c.id,
-                "paciente_id": c.paciente_id,
-                "medico_id": c.medico_id,
-                "especialidade_id": c.especialidade_id,
                 "data_agendada": c.data_agendada.strftime("%Y-%m-%d"),
                 "hora": c.hora,
-                "data_cadastrada": c.data_cadastrada.strftime("%Y-%m-%dT%H:%M:%S") if c.data_cadastrada else None,
                 "cancelada": c.cancelada,
+                "data_cadastrada": (
+                    c.data_cadastrada.strftime("%Y-%m-%dT%H:%M:%S")
+                    if c.data_cadastrada else None
+                ),
+                "medico": {
+                    "id": c.medico.id,
+                    "nome": c.medico.nome,
+                    "sobrenome": c.medico.sobrenome,
+                    "email": c.medico.email,
+                    "telefone": c.medico.telefone,
+                },
+                "paciente": {
+                    "id": c.paciente.id,
+                    "nome": c.paciente.nome,
+                    "sobrenome": c.paciente.sobrenome,
+                },
+                "especialidade": {
+                    "id": c.especialidade.id,
+                    "nome": c.especialidade.nome,
+                },
             }
             for c in consultas
         ]
