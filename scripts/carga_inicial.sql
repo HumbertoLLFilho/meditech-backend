@@ -206,73 +206,90 @@ BEGIN
     -- ----------------------------------------------------------
     -- Horários disponíveis — 50 médicos ativos, 8 padrões rotacionados
     -- dia_semana: 0=seg 1=ter 2=qua 3=qui 4=sex 5=sab
+    -- especialidade_id obtido via JOIN com medico_especialidades (1 espec por médico ativo)
     -- ----------------------------------------------------------
 
     -- Padrão 0 — seg/qua/sex manhã  (índices 0,8,16,24,32,40,48)
-    INSERT INTO horarios_disponiveis (medico_id, dia_semana, periodo)
-    SELECT u.id, d.dia, d.periodo FROM usuarios u
+    INSERT INTO horarios_disponiveis (medico_id, especialidade_id, dia_semana, periodo)
+    SELECT u.id, me.especialidade_id, d.dia, d.periodo
+    FROM usuarios u
+    JOIN medico_especialidades me ON me.medico_id = u.id
     CROSS JOIN (VALUES (0,'manha'),(2,'manha'),(4,'manha')) AS d(dia,periodo)
     WHERE u.email IN ('ana.lima@meditech.com','eduardo.rocha@meditech.com','gabriel.ribeiro@meditech.com',
                       'tatiane.correia@meditech.com','marcelo.cunha@meditech.com',
                       'gabriela.alves@meditech.com','olivia.ribeiro@meditech.com')
-    ON CONFLICT ON CONSTRAINT uq_medico_dia_periodo DO NOTHING;
+    ON CONFLICT ON CONSTRAINT uq_medico_esp_dia_periodo DO NOTHING;
 
     -- Padrão 1 — ter/qui tarde  (índices 1,9,17,25,33,41,49)
-    INSERT INTO horarios_disponiveis (medico_id, dia_semana, periodo)
-    SELECT u.id, d.dia, d.periodo FROM usuarios u
+    INSERT INTO horarios_disponiveis (medico_id, especialidade_id, dia_semana, periodo)
+    SELECT u.id, me.especialidade_id, d.dia, d.periodo
+    FROM usuarios u
+    JOIN medico_especialidades me ON me.medico_id = u.id
     CROSS JOIN (VALUES (1,'tarde'),(3,'tarde')) AS d(dia,periodo)
     WHERE u.email IN ('joao.pereira@meditech.com','camila.oliveira@meditech.com','isabela.martins@meditech.com',
                       'elena.costa@meditech.com','priscila.lopes@meditech.com',
                       'helena.braga@meditech.com','pedro.jardim@meditech.com')
-    ON CONFLICT ON CONSTRAINT uq_medico_dia_periodo DO NOTHING;
+    ON CONFLICT ON CONSTRAINT uq_medico_esp_dia_periodo DO NOTHING;
 
     -- Padrão 2 — seg/qua/sex tarde  (índices 2,10,18,26,34,42)
-    INSERT INTO horarios_disponiveis (medico_id, dia_semana, periodo)
-    SELECT u.id, d.dia, d.periodo FROM usuarios u
+    INSERT INTO horarios_disponiveis (medico_id, especialidade_id, dia_semana, periodo)
+    SELECT u.id, me.especialidade_id, d.dia, d.periodo
+    FROM usuarios u
+    JOIN medico_especialidades me ON me.medico_id = u.id
     CROSS JOIN (VALUES (0,'tarde'),(2,'tarde'),(4,'tarde')) AS d(dia,periodo)
     WHERE u.email IN ('carlos.mendes@meditech.com','henrique.souza@meditech.com','rafael.teixeira@meditech.com',
                       'viviane.pereira@meditech.com','gustavo.ramos@meditech.com','igor.campos@meditech.com')
-    ON CONFLICT ON CONSTRAINT uq_medico_dia_periodo DO NOTHING;
+    ON CONFLICT ON CONSTRAINT uq_medico_esp_dia_periodo DO NOTHING;
 
     -- Padrão 3 — ter/qui/sab manhã  (índices 3,11,19,27,35,43)
-    INSERT INTO horarios_disponiveis (medico_id, dia_semana, periodo)
-    SELECT u.id, d.dia, d.periodo FROM usuarios u
+    INSERT INTO horarios_disponiveis (medico_id, especialidade_id, dia_semana, periodo)
+    SELECT u.id, me.especialidade_id, d.dia, d.periodo
+    FROM usuarios u
+    JOIN medico_especialidades me ON me.medico_id = u.id
     CROSS JOIN (VALUES (1,'manha'),(3,'manha'),(5,'manha')) AS d(dia,periodo)
     WHERE u.email IN ('fernanda.costa@meditech.com','marina.barbosa@meditech.com','juliana.gomes@meditech.com',
                       'leonardo.freitas@meditech.com','beatriz.araujo@meditech.com','joana.dias@meditech.com')
-    ON CONFLICT ON CONSTRAINT uq_medico_dia_periodo DO NOTHING;
+    ON CONFLICT ON CONSTRAINT uq_medico_esp_dia_periodo DO NOTHING;
 
     -- Padrão 4 — seg manhã, ter tarde, qui manhã, sex tarde  (índices 4,12,20,28,36,44)
-    INSERT INTO horarios_disponiveis (medico_id, dia_semana, periodo)
-    SELECT u.id, d.dia, d.periodo FROM usuarios u
+    INSERT INTO horarios_disponiveis (medico_id, especialidade_id, dia_semana, periodo)
+    SELECT u.id, me.especialidade_id, d.dia, d.periodo
+    FROM usuarios u
+    JOIN medico_especialidades me ON me.medico_id = u.id
     CROSS JOIN (VALUES (0,'manha'),(1,'tarde'),(3,'manha'),(4,'tarde')) AS d(dia,periodo)
     WHERE u.email IN ('roberto.alves@meditech.com','felipe.castro@meditech.com','bruno.santos@meditech.com',
                       'sandra.moreira@meditech.com','cesar.nogueira@meditech.com','keila.esteves@meditech.com')
-    ON CONFLICT ON CONSTRAINT uq_medico_dia_periodo DO NOTHING;
+    ON CONFLICT ON CONSTRAINT uq_medico_esp_dia_periodo DO NOTHING;
 
     -- Padrão 5 — qua/qui/sex noite  (índices 5,13,21,29,37,45)
-    INSERT INTO horarios_disponiveis (medico_id, dia_semana, periodo)
-    SELECT u.id, d.dia, d.periodo FROM usuarios u
+    INSERT INTO horarios_disponiveis (medico_id, especialidade_id, dia_semana, periodo)
+    SELECT u.id, me.especialidade_id, d.dia, d.periodo
+    FROM usuarios u
+    JOIN medico_especialidades me ON me.medico_id = u.id
     CROSS JOIN (VALUES (2,'noite'),(3,'noite'),(4,'noite')) AS d(dia,periodo)
     WHERE u.email IN ('patricia.silva@meditech.com','renata.lima@meditech.com','fernando.rocha@meditech.com',
                       'rodrigo.pinto@meditech.com','daniela.fonseca@meditech.com','leandro.faria@meditech.com')
-    ON CONFLICT ON CONSTRAINT uq_medico_dia_periodo DO NOTHING;
+    ON CONFLICT ON CONSTRAINT uq_medico_esp_dia_periodo DO NOTHING;
 
     -- Padrão 6 — seg manhã, ter noite, qua tarde, sex manhã  (índices 6,14,22,30,38,46)
-    INSERT INTO horarios_disponiveis (medico_id, dia_semana, periodo)
-    SELECT u.id, d.dia, d.periodo FROM usuarios u
+    INSERT INTO horarios_disponiveis (medico_id, especialidade_id, dia_semana, periodo)
+    SELECT u.id, me.especialidade_id, d.dia, d.periodo
+    FROM usuarios u
+    JOIN medico_especialidades me ON me.medico_id = u.id
     CROSS JOIN (VALUES (0,'manha'),(1,'noite'),(2,'tarde'),(4,'manha')) AS d(dia,periodo)
     WHERE u.email IN ('marcos.santos@meditech.com','thiago.nunes@meditech.com','leticia.cardoso@meditech.com',
                       'diego.oliveira@meditech.com','emerson.viana@meditech.com','milena.galvao@meditech.com')
-    ON CONFLICT ON CONSTRAINT uq_medico_dia_periodo DO NOTHING;
+    ON CONFLICT ON CONSTRAINT uq_medico_esp_dia_periodo DO NOTHING;
 
     -- Padrão 7 — ter manhã, qui tarde, sab manhã  (índices 7,15,23,31,39,47)
-    INSERT INTO horarios_disponiveis (medico_id, dia_semana, periodo)
-    SELECT u.id, d.dia, d.periodo FROM usuarios u
+    INSERT INTO horarios_disponiveis (medico_id, especialidade_id, dia_semana, periodo)
+    SELECT u.id, me.especialidade_id, d.dia, d.periodo
+    FROM usuarios u
+    JOIN medico_especialidades me ON me.medico_id = u.id
     CROSS JOIN (VALUES (1,'manha'),(3,'tarde'),(5,'manha')) AS d(dia,periodo)
     WHERE u.email IN ('luciana.ferreira@meditech.com','carla.ferreira@meditech.com','andre.monteiro@meditech.com',
                       'aline.sousa@meditech.com','fabiana.azevedo@meditech.com','nathan.henriques@meditech.com')
-    ON CONFLICT ON CONSTRAINT uq_medico_dia_periodo DO NOTHING;
+    ON CONFLICT ON CONSTRAINT uq_medico_esp_dia_periodo DO NOTHING;
 
     RAISE NOTICE 'Carga inicial concluída: 10 especialidades | 1 admin | 50 médicos ativos | 10 inativos.';
     RAISE NOTICE 'Senha padrão: Meditech@2026';

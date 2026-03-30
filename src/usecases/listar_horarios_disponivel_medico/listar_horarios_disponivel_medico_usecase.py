@@ -11,9 +11,11 @@ class ListarHorariosDisponivelMedicoUseCase:
 
         return [
             {
-                "id": h.id, 
-                "dia_semana": h.dia_semana, 
-                "periodo": h.periodo
+                "id": h.id,
+                "especialidade_id": h.especialidade_id,
+                "especialidade_nome": h.especialidade.nome if h.especialidade else None,
+                "dia_semana": h.dia_semana,
+                "periodo": h.periodo,
             }
             for h in horarios
         ]

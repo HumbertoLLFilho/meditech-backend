@@ -137,6 +137,7 @@ def get_adicionar_horario_disponivel() -> AdicionarHorarioDisponivelUseCase:
         lambda: AdicionarHorarioDisponivelUseCase(
             _get_horario_disponivel_repository(),
             _get_usuario_repository(),
+            _get_especialidade_repository(),
         ),
     )
 
@@ -154,7 +155,6 @@ def get_consultar_disponibilidade() -> ConsultarDisponibilidadeUseCase:
         lambda: ConsultarDisponibilidadeUseCase(
             _get_horario_disponivel_repository(),
             _get_consulta_repository(),
-            _get_usuario_repository(),
         ),
     )
 

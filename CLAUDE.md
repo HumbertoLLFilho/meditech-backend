@@ -111,9 +111,12 @@ class Especialidade:
 @dataclass
 class HorarioDisponivel:
     medico_id: int
+    especialidade_id: int
     dia_semana: int    # 0=segunda … 6=domingo (Python date.weekday())
     periodo: str       # "manha" | "tarde" | "noite"
     id: int | None = None
+    medico: "Usuario | None" = field(default=None, compare=False)
+    especialidade: "Especialidade | None" = field(default=None, compare=False)
 ```
 
 ---
@@ -128,7 +131,7 @@ class HorarioDisponivel:
 | `medico_especialidades` | tabela associativa (many-many) |
 | `horarios_disponiveis`  | `HorarioDisponivelModel`       |
 
-`HorarioDisponivelModel` tem `UniqueConstraint(medico_id, dia_semana, periodo)`.
+`HorarioDisponivelModel` tem `UniqueConstraint(medico_id, especialidade_id, dia_semana, periodo, name="uq_medico_esp_dia_periodo")`. Um médico pode ter o mesmo dia/período para especialidades distintas.
 Tabelas criadas automaticamente no `create_app()` via `db.create_all()`.
 
 ---

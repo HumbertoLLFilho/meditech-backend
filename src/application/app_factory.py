@@ -363,15 +363,24 @@ def _register_commands(app: Flask) -> None:
         ]
         ativos = [u for u in usuarios if u[8] is True and u[7] == M]
         for idx, dado in enumerate(ativos):
-            medico = medico_map.get(dado[4])
+            email = dado[4]
+            medico = medico_map.get(email)
             if not medico:
+                continue
+            nomes_espec = associacoes.get(email, [])
+            if not nomes_espec:
+                continue
+            espec = espec_map.get(nomes_espec[0])
+            if not espec:
                 continue
             for dia, periodo in _PADROES[idx % len(_PADROES)]:
                 existe = db.session.query(HorarioDisponivelModel).filter_by(
-                    medico_id=medico.id, dia_semana=dia, periodo=periodo
+                    medico_id=medico.id, especialidade_id=espec.id, dia_semana=dia, periodo=periodo
                 ).first()
                 if not existe:
-                    db.session.add(HorarioDisponivelModel(medico_id=medico.id, dia_semana=dia, periodo=periodo))
+                    db.session.add(HorarioDisponivelModel(
+                        medico_id=medico.id, especialidade_id=espec.id, dia_semana=dia, periodo=periodo
+                    ))
         db.session.commit()
 
         click.echo(f"\nCarga inicial concluída:")

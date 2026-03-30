@@ -7,7 +7,7 @@ HORARIO_ADICIONAR_DOC = {
             "application/json": {
                 "schema": {
                     "type": "object",
-                    "required": ["dia_semana", "periodo"],
+                    "required": ["dia_semana", "periodo", "especialidade_id"],
                     "properties": {
                         "dia_semana": {
                             "type": "integer",
@@ -21,6 +21,11 @@ HORARIO_ADICIONAR_DOC = {
                             "enum": ["manha", "tarde", "noite"],
                             "example": "manha",
                             "description": "Periodo em que o medico atende neste dia",
+                        },
+                        "especialidade_id": {
+                            "type": "integer",
+                            "example": 1,
+                            "description": "Especialidade para a qual o medico estara disponivel neste horario",
                         },
                         "medico_id": {
                             "type": "integer",
@@ -53,7 +58,26 @@ HORARIO_LISTAR_MEDICO_DOC = {
         }
     ],
     "responses": {
-        200: {"description": "Lista de horarios do medico"},
+        200: {
+            "description": "Lista de horarios do medico",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "integer"},
+                                "especialidade_id": {"type": "integer"},
+                                "especialidade_nome": {"type": "string"},
+                                "dia_semana": {"type": "integer"},
+                                "periodo": {"type": "string"},
+                            },
+                        },
+                    }
+                }
+            },
+        },
         401: {"description": "Token ausente, invalido ou expirado"},
     },
 }
@@ -101,7 +125,30 @@ DISPONIBILIDADE_CONSULTAR_DOC = {
         },
     ],
     "responses": {
-        200: {"description": "Medicos e horarios disponiveis"},
+        200: {
+            "description": "Medicos e horarios disponiveis",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "medico_id": {"type": "integer"},
+                                "medico_nome": {"type": "string"},
+                                "medico_sobrenome": {"type": "string"},
+                                "especialidade_id": {"type": "integer"},
+                                "especialidade_nome": {"type": "string"},
+                                "horarios": {
+                                    "type": "array",
+                                    "items": {"type": "string", "example": "09:00"},
+                                },
+                            },
+                        },
+                    }
+                }
+            },
+        },
         401: {"description": "Token ausente, invalido ou expirado"},
         422: {"description": "Parametros invalidos"},
     },
