@@ -70,7 +70,11 @@ def _get_token_service() -> JwtTokenService:
 def get_cadastrar_usuario_use_case() -> CadastrarUsuarioUseCase:
     return _scoped(
         "cadastrar_usuario_use_case",
-        lambda: CadastrarUsuarioUseCase(_get_usuario_repository(), _get_password_service()),
+        lambda: CadastrarUsuarioUseCase(
+            _get_usuario_repository(),
+            _get_password_service(),
+            _get_especialidade_repository(),
+        ),
     )
 
 

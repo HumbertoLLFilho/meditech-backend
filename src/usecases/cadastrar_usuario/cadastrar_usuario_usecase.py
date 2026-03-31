@@ -1,3 +1,6 @@
+from typing import Optional
+
+from src.domain.contracts.especialidade_repository_contract import EspecialidadeRepositoryContract
 from src.domain.contracts.password_service_contract import PasswordServiceContract
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
 from src.domain.models.usuario import Genero, TipoUsuario, Usuario
@@ -6,12 +9,18 @@ from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsua
 
 class CadastrarUsuarioUseCase:
 
-    def __init__(self, repository: UsuarioRepositoryContract, password_service: PasswordServiceContract):
+    def __init__(
+        self,
+        repository: UsuarioRepositoryContract,
+        password_service: PasswordServiceContract,
+        especialidade_repository: Optional[EspecialidadeRepositoryContract] = None,
+    ):
         self.repository = repository
         self.password_service = password_service
+        self.especialidade_repository = especialidade_repository
 
     def executar(self, input_data: CadastrarUsuarioInput, tipo: TipoUsuario = TipoUsuario.PACIENTE, ativo: bool = False) -> dict:
-        
+
         # Validar se o genero e tipo sao validos
         try:
             genero_enum = Genero(input_data.genero)
@@ -41,7 +50,13 @@ class CadastrarUsuarioUseCase:
             ativo=ativo
         )
 
-        self.repository.salvar(usuario)
+        usuario_salvo = self.repository.salvar(usuario)
+
+        if tipo == TipoUsuario.MEDICO and input_data.especialidade_ids and self.especialidade_repository:
+            for especialidade_id in input_data.especialidade_ids:
+                if not self.especialidade_repository.buscar_por_id(especialidade_id):
+                    raise ValueError(f"Especialidade com id {especialidade_id} nao encontrada.")
+                self.especialidade_repository.associar_medico(usuario_salvo.id, especialidade_id)
 
         return {
             "mensagem": f"{tipo.value} cadastrado com sucesso!"

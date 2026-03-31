@@ -17,11 +17,18 @@ usuario_bp = Blueprint("usuario", __name__, url_prefix="/usuarios")
 @swag_from(USUARIO_LISTAR_DOC)
 def listar_usuarios():
     claims = get_jwt()
-    if claims.get("tipo") != TipoUsuario.ADMIN.value:
-        return jsonify({"erro": "Acesso negado. Apenas admins podem listar usuarios."}), 403
+    is_admin = claims.get("tipo") == TipoUsuario.ADMIN.value
 
     try:
-        listar_input = ListarUsuariosInput.from_args(request.args)
+        if is_admin:
+            listar_input = ListarUsuariosInput.from_args(request.args)
+        else:
+            # Usuarios comuns só veem médicos ativos; filtro "ativo" e "tipo" são ignorados
+            args_filtrados = {k: v for k, v in request.args.items() if k not in ("ativo", "tipo")}
+            listar_input = ListarUsuariosInput.from_args(args_filtrados)
+            listar_input.ativo = True
+            listar_input.tipo = TipoUsuario.MEDICO.value
+
         use_case = get_listar_usuarios()
         resultado = use_case.listar(listar_input)
 

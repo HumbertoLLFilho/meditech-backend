@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import get_jwt, jwt_required
 from flasgger import swag_from
 
 from src.application.docs.especialidades_docs import (
@@ -14,7 +13,6 @@ from src.application.dependencies.container import (
     get_listar_especialidades,
     get_listar_especialidades_medico,
 )
-from src.domain.models.usuario import TipoUsuario
 from src.usecases.cadastrar_especialidade.cadastrar_especialidade_input import CadastrarEspecialidadeInput
 from src.usecases.associar_especialidade_medico.associar_especialidade_medico_input import AssociarEspecialidadeMedicoInput
 
@@ -23,7 +21,6 @@ especialidade_bp = Blueprint("especialidade", __name__, url_prefix="/especialida
 
 
 @especialidade_bp.route("", methods=["GET"])
-@jwt_required()
 @swag_from(ESPECIALIDADE_LISTAR_DOC)
 def listar_especialidades():
     use_case = get_listar_especialidades()
@@ -32,13 +29,8 @@ def listar_especialidades():
 
 
 @especialidade_bp.route("", methods=["POST"])
-@jwt_required()
 @swag_from(ESPECIALIDADE_CADASTRAR_DOC)
 def cadastrar_especialidade():
-    claims = get_jwt()
-    if claims.get("tipo") != TipoUsuario.ADMIN.value:
-        return jsonify({"erro": "Acesso negado. Apenas admins podem cadastrar especialidades."}), 403
-
     data = request.get_json(silent=True) or {}
 
     try:
@@ -54,7 +46,6 @@ def cadastrar_especialidade():
 
 
 @especialidade_bp.route("/medico/<int:medico_id>", methods=["GET"])
-@jwt_required()
 @swag_from(ESPECIALIDADE_LISTAR_MEDICO_DOC)
 def listar_especialidades_medico(medico_id: int):
     use_case = get_listar_especialidades_medico()
@@ -63,13 +54,8 @@ def listar_especialidades_medico(medico_id: int):
 
 
 @especialidade_bp.route("/medico/<int:medico_id>", methods=["POST"])
-@jwt_required()
 @swag_from(ESPECIALIDADE_ASSOCIAR_MEDICO_DOC)
 def associar_especialidade_medico(medico_id: int):
-    claims = get_jwt()
-    if claims.get("tipo") != TipoUsuario.ADMIN.value:
-        return jsonify({"erro": "Acesso negado. Apenas admins podem associar especialidades."}), 403
-
     data = request.get_json(silent=True) or {}
 
     try:

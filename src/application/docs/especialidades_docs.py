@@ -1,6 +1,5 @@
 ESPECIALIDADE_CADASTRAR_DOC = {
     "tags": ["Especialidades"],
-    "security": [{"BearerAuth": []}],
     "requestBody": {
         "required": True,
         "content": {
@@ -17,8 +16,6 @@ ESPECIALIDADE_CADASTRAR_DOC = {
     },
     "responses": {
         201: {"description": "Especialidade cadastrada com sucesso"},
-        401: {"description": "Token ausente, invalido ou expirado"},
-        403: {"description": "Acesso negado — requer token de admin"},
         422: {"description": "Erro de validacao"},
         500: {"description": "Erro interno do servidor"},
     },
@@ -26,16 +23,13 @@ ESPECIALIDADE_CADASTRAR_DOC = {
 
 ESPECIALIDADE_LISTAR_DOC = {
     "tags": ["Especialidades"],
-    "security": [{"BearerAuth": []}],
     "responses": {
         200: {"description": "Lista de especialidades"},
-        401: {"description": "Token ausente, invalido ou expirado"},
     },
 }
 
 ESPECIALIDADE_LISTAR_MEDICO_DOC = {
     "tags": ["Especialidades"],
-    "security": [{"BearerAuth": []}],
     "parameters": [
         {
             "name": "medico_id",
@@ -47,13 +41,11 @@ ESPECIALIDADE_LISTAR_MEDICO_DOC = {
     ],
     "responses": {
         200: {"description": "Lista de especialidades do medico"},
-        401: {"description": "Token ausente, invalido ou expirado"},
     },
 }
 
 ESPECIALIDADE_ASSOCIAR_MEDICO_DOC = {
     "tags": ["Especialidades"],
-    "security": [{"BearerAuth": []}],
     "parameters": [
         {
             "name": "medico_id",
@@ -79,8 +71,6 @@ ESPECIALIDADE_ASSOCIAR_MEDICO_DOC = {
     },
     "responses": {
         200: {"description": "Especialidade associada ao medico com sucesso"},
-        401: {"description": "Token ausente, invalido ou expirado"},
-        403: {"description": "Acesso negado — requer token de admin"},
         422: {"description": "Erro de validacao"},
         500: {"description": "Erro interno do servidor"},
     },
