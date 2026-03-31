@@ -26,6 +26,9 @@ class LoginUsuarioUseCase:
         if not usuario or not self.password_service.verify(input_data.senha, usuario.senha):
             raise InvalidCredentialsError("E-mail ou senha invalidos.")
 
+        if not usuario.ativo:
+            raise InvalidCredentialsError("Conta inativa. Entre em contato com o administrador.")
+
         nome_completo = f"{usuario.nome} {usuario.sobrenome}"
         token = self.token_service.generate_access_token(usuario)
 
