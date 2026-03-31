@@ -17,6 +17,7 @@ from src.usecases.listar_consultas.listar_consultas_usecase import ListarConsult
 from src.usecases.listar_especialidades.listar_especialidades_usecase import ListarEspecialidadesUseCase
 from src.usecases.listar_especialidades_medico.listar_especialidades_medico_usecase import ListarEspecialidadesMedicoUseCase
 from src.usecases.listar_usuarios.listar_usuarios_usecase import ListarUsuariosUseCase
+from src.usecases.buscar_usuario.buscar_usuario_usecase import BuscarUsuarioUseCase
 from src.usecases.login_usuario.login_usuario_usecase import LoginUsuarioUseCase
 
 
@@ -160,6 +161,13 @@ def get_consultar_disponibilidade() -> ConsultarDisponibilidadeUseCase:
             _get_horario_disponivel_repository(),
             _get_consulta_repository(),
         ),
+    )
+
+
+def get_buscar_usuario() -> BuscarUsuarioUseCase:
+    return _scoped(
+        "buscar_usuario_use_case",
+        lambda: BuscarUsuarioUseCase(_get_usuario_repository()),
     )
 
 

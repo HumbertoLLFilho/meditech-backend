@@ -1,9 +1,10 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import get_jwt, jwt_required
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flasgger import swag_from
 
-from src.application.docs.usuarios_docs import USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_LISTAR_DOC
-from src.application.dependencies.container import get_cadastrar_usuario_use_case, get_listar_usuarios
+from src.application.docs.usuarios_docs import USUARIO_BUSCAR_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_LISTAR_DOC
+from src.application.dependencies.container import get_buscar_usuario, get_cadastrar_usuario_use_case, get_listar_usuarios
+from src.usecases.buscar_usuario.buscar_usuario_input import BuscarUsuarioInput
 from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
 from src.usecases.listar_usuarios.listar_usuarios_input import ListarUsuariosInput
 from src.domain.models.usuario import TipoUsuario
@@ -92,6 +93,39 @@ def cadastrar_medico():
         resultado = use_case.executar(usuario_input, tipo=TipoUsuario.MEDICO, ativo=False)
 
         return jsonify(resultado), 201
+
+    except ValueError as e:
+        return jsonify({"erro": str(e)}), 422
+    except Exception as e:
+        return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500
+
+
+@usuario_bp.route("/<int:usuario_id>", methods=["GET"])
+@jwt_required()
+@swag_from(USUARIO_BUSCAR_DOC)
+def buscar_usuario(usuario_id: int):
+    claims = get_jwt()
+    tipo_logado = claims.get("tipo")
+    id_logado = int(get_jwt_identity())
+
+    try:
+        use_case = get_buscar_usuario()
+        resultado = use_case.executar(BuscarUsuarioInput(usuario_id=usuario_id))
+
+        if resultado is None:
+            return jsonify({"erro": "Usuario nao encontrado."}), 422
+
+        is_admin = tipo_logado == TipoUsuario.ADMIN.value
+        is_proprio = id_logado == usuario_id
+        is_medico_ativo = (
+            resultado.get("tipo") == TipoUsuario.MEDICO.value
+            and resultado.get("ativo") is True
+        )
+
+        if not (is_admin or is_proprio or is_medico_ativo):
+            return jsonify({"erro": "Acesso negado."}), 403
+
+        return jsonify(resultado), 200
 
     except ValueError as e:
         return jsonify({"erro": str(e)}), 422

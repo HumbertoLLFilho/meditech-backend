@@ -157,6 +157,27 @@ USUARIO_CADASTRAR_ADMIN_DOC = {
         },
 }
 
+USUARIO_BUSCAR_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario",
+        }
+    ],
+    "responses": {
+        200: {"description": "Dados completos do usuario com relacionamentos"},
+        401: {"description": "Token ausente, invalido ou expirado"},
+        403: {"description": "Acesso negado"},
+        422: {"description": "Usuario nao encontrado"},
+        500: {"description": "Erro interno do servidor"},
+    },
+}
+
 USUARIO_CADASTRAR_MEDICO_DOC = {
     "tags": ["Usuarios"],
     "requestBody": {
