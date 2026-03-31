@@ -1,3 +1,57 @@
+USUARIO_LISTAR_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "ativo",
+            "in": "query",
+            "required": False,
+            "schema": {"type": "boolean"},
+            "description": "Filtrar por status ativo (true ou false). Apenas admins podem usar este filtro; usuarios comuns sempre veem apenas ativos.",
+        },
+        {
+            "name": "tipo",
+            "in": "query",
+            "required": False,
+            "schema": {
+                "type": "string",
+                "enum": ["admin", "medico", "paciente"],
+            },
+            "description": "Filtrar por tipo de usuario. Apenas admins podem usar este filtro; usuarios comuns sempre veem apenas medicos.",
+        },
+        {
+            "name": "nome",
+            "in": "query",
+            "required": False,
+            "schema": {"type": "string"},
+            "description": "Filtrar por nome ou sobrenome (busca parcial)",
+        },
+        {
+            "name": "cpf",
+            "in": "query",
+            "required": False,
+            "schema": {"type": "string"},
+            "description": "Filtrar por CPF (busca exata)",
+        },
+        {
+            "name": "ordem",
+            "in": "query",
+            "required": False,
+            "schema": {
+                "type": "string",
+                "enum": ["asc", "desc"],
+                "default": "desc",
+            },
+            "description": "Ordenacao por data de cadastro (padrao: desc)",
+        },
+    ],
+    "responses": {
+        200: {"description": "Lista de usuarios"},
+        401: {"description": "Token ausente, invalido ou expirado"},
+        422: {"description": "Valor invalido nos filtros"},
+    },
+}
+
 USUARIO_CADASTRAR_DOC = {
     "tags": ["Usuarios"],
     "requestBody": {
@@ -103,6 +157,27 @@ USUARIO_CADASTRAR_ADMIN_DOC = {
         },
 }
 
+USUARIO_BUSCAR_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario",
+        }
+    ],
+    "responses": {
+        200: {"description": "Dados completos do usuario com relacionamentos"},
+        401: {"description": "Token ausente, invalido ou expirado"},
+        403: {"description": "Acesso negado"},
+        422: {"description": "Usuario nao encontrado"},
+        500: {"description": "Erro interno do servidor"},
+    },
+}
+
 USUARIO_CADASTRAR_MEDICO_DOC = {
     "tags": ["Usuarios"],
     "requestBody": {
@@ -142,6 +217,12 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
                         "senha": {"type": "string", "example": "senhaSegura456"},
                         "cpf": {"type": "string", "example": "11223344556"},
                         "telefone": {"type": "string", "example": "11977776666"},
+                        "especialidade_ids": {
+                            "type": "array",
+                            "items": {"type": "integer"},
+                            "example": [1, 2],
+                            "description": "IDs das especialidades a associar ao medico (opcional)",
+                        },
                     },
                 }
             }
@@ -149,36 +230,8 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
      },
     "responses": {
         201: {"description": "Medico cadastrado com sucesso"},
-        422: {"description": "Erro de validacao"},
+        422: {"description": "Erro de validacao ou especialidade nao encontrada"},
         500: {"description": "Erro interno do servidor"},
     },
 }
 
-USUARIO_LOGIN_DOC = {
-    "tags": ["Usuarios"],
-    "requestBody": {
-        "required": True,
-        "content": {
-            "application/json": {
-                "schema": {
-                    "type": "object",
-                    "required": ["email", "senha"],
-                    "properties": {
-                        "email": {
-                            "type": "string",
-                            "format": "email",
-                            "example": "joao@email.com",
-                        },
-                        "senha": {"type": "string", "example": "senha123"},
-                    },
-                }
-            }
-        },
-    },
-    "responses": {
-        200: {"description": "Login realizado com sucesso"},
-        401: {"description": "Credenciais invalidas"},
-        422: {"description": "Campos obrigatorios ausentes"},
-        500: {"description": "Erro interno do servidor"},
-    },
-}

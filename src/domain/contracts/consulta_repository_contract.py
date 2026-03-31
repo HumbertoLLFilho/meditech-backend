@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from datetime import date
+
 from src.domain.models.consulta import Consulta
 
 
@@ -10,4 +12,12 @@ class ConsultaRepositoryContract(ABC):
 
     @abstractmethod
     def listar_por_usuario(self, usuario_id: int) -> list[Consulta]:
+        ...
+
+    @abstractmethod
+    def listar_por_medico_e_data(self, medico_id: int, data_agendada: date) -> list[Consulta]:
+        ...
+
+    @abstractmethod
+    def listar_por_usuario_com_detalhes(self, usuario_id: int) -> list[Consulta]:
         ...

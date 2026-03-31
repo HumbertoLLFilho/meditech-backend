@@ -69,45 +69,6 @@ HTTP Request
 	- `models/`: modelos ORM SQLAlchemy.
 	- `services/`: servicos tecnicos (ex.: hash/verificacao de senha).
 
-### Fluxos Principais da API
-
-1. Cadastro de usuario (`POST /usuarios/cadastrar`)
-	 - Controller recebe payload.
-	 - Input DTO valida formato e campos obrigatorios.
-	 - Use case aplica regras (ex.: email/CPF unicos).
-	 - Repository persiste no banco.
-	 - Controller retorna `201` em sucesso.
-
-2. Login (`POST /usuarios/login`)
-	 - Controller recebe credenciais.
-	 - Input DTO valida formato/campos obrigatorios.
-	 - Use case valida usuario e senha e, em caso de sucesso, gera o JWT via `TokenServiceContract`/`JwtTokenService`.
-	 - Controller apenas orquestra a chamada ao use case e retorna o token na resposta.
-	 - Retorno esperado: token e status `200`.
-
-3. Consultas (`POST /consultas` e `GET /consultas`)
-	 - Rotas protegidas com `@jwt_required()`.
-	 - Usuario autenticado e identificado com `get_jwt_identity()`.
-	 - Use cases cadastram/listam consultas do usuario.
-	 - Retornos esperados: `201` para cadastro, `200` para listagem.
-
-## 🔌 Endpoints Principais
-
-- `GET /`
-	- Health check simples da API.
-
-- `POST /usuarios/cadastrar`
-	- Cadastro de usuario.
-
-- `POST /usuarios/login`
-	- Autenticacao e retorno de JWT.
-
-- `POST /consultas`
-	- Cadastro de consulta para usuario autenticado.
-
-- `GET /consultas`
-	- Listagem de consultas do usuario autenticado.
-
 ## 🚀 Como Executar
 
 ### Com Docker Compose (recomendado)
@@ -152,6 +113,37 @@ Observação Docker:
 
 - API publicada em `localhost:5000`
 - PostgreSQL publicado em `localhost:5433` (porta interna do container continua `5432`)
+
+### Carga Inicial de Dados
+
+Popula o banco com dados de exemplo: 10 especialidades, 1 admin, 50 médicos ativos e 10 inativos (com especialidades e horários).
+
+**Senha padrão de todos os usuários:** `Meditech@2026`
+
+#### Opção 1 — Comando Flask (local ou Docker)
+
+```bash
+# Local (venv ativo, banco rodando)
+flask carga-inicial
+
+# Dentro do container da API
+docker compose exec api flask carga-inicial
+
+# Para usar uma senha diferente
+flask carga-inicial --senha "OutraSenha@123"
+```
+
+#### Opção 2 — Script SQL direto no banco
+
+```bash
+# Local
+psql -U <DB_USER> -d <DB_NAME> -f scripts/carga_inicial.sql
+
+# Via Docker Compose (banco rodando)
+docker compose exec -T db psql -U <DB_USER> -d <DB_NAME> < scripts/carga_inicial.sql
+```
+
+> Ambas as opções são idempotentes: podem ser executadas mais de uma vez sem duplicar dados.
 
 ### Documentacao da API (Swagger)
 

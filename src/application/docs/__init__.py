@@ -1,11 +1,3 @@
+from src.application.docs.auth_docs import AUTH_LOGIN_DOC
 from src.application.docs.consultas_docs import CONSULTA_CADASTRAR_DOC, CONSULTA_LISTAR_DOC
-from src.application.docs.usuarios_docs import USUARIO_CADASTRAR_DOC, USUARIO_LOGIN_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_MEDICO_DOC
-
-__all__ = [
-    "USUARIO_CADASTRAR_DOC",
-    "USUARIO_LOGIN_DOC",
-    "CONSULTA_CADASTRAR_DOC",
-    "CONSULTA_LISTAR_DOC",
-    "USUARIO_CADASTRAR_ADMIN_DOC",
-    "USUARIO_CADASTRAR_MEDICO_DOC",
-]
+from src.application.docs.usuarios_docs import USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_MEDICO_DOC

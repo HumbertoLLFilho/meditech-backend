@@ -1,5 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime
+from typing import Optional
 
 @dataclass
 class CadastrarUsuarioInput:
@@ -11,6 +12,7 @@ class CadastrarUsuarioInput:
     senha: str
     cpf: str
     telefone: str
+    especialidade_ids: Optional[list[int]] = field(default=None)
 
     @staticmethod
     def from_dict(data: dict) -> "CadastrarUsuarioInput":
@@ -24,6 +26,11 @@ class CadastrarUsuarioInput:
         except ValueError:
             raise ValueError("Formato de data invalido. Use YYYY-MM-DD.")
 
+        especialidade_ids = data.get("especialidade_ids")
+        if especialidade_ids is not None:
+            if not isinstance(especialidade_ids, list) or not all(isinstance(i, int) for i in especialidade_ids):
+                raise ValueError("especialidade_ids deve ser uma lista de inteiros.")
+
         return CadastrarUsuarioInput(
             nome=data["nome"],
             sobrenome=data["sobrenome"],
@@ -32,5 +39,6 @@ class CadastrarUsuarioInput:
             email=data["email"],
             senha=data["senha"],
             cpf=data["cpf"],
-            telefone=data["telefone"]
+            telefone=data["telefone"],
+            especialidade_ids=especialidade_ids,
         )

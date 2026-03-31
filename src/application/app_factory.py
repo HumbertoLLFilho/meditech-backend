@@ -118,14 +118,22 @@ def _init_swagger(app: Flask) -> None:
 def _register_models() -> None:
     import src.infrastructure.models.usuario_model  # noqa: F401
     import src.infrastructure.models.consulta_model  # noqa: F401
+    import src.infrastructure.models.especialidade_model  # noqa: F401
+    import src.infrastructure.models.horario_disponivel_model  # noqa: F401
 
 
 def _register_blueprints(app: Flask) -> None:
+    from src.application.controllers.auth_controller import auth_bp
     from src.application.controllers.consulta_controller import consulta_bp
+    from src.application.controllers.especialidade_controller import especialidade_bp
+    from src.application.controllers.horario_disponivel_controller import horario_disponivel_bp
     from src.application.controllers.usuario_controller import usuario_bp
 
+    app.register_blueprint(auth_bp)
     app.register_blueprint(usuario_bp)
     app.register_blueprint(consulta_bp)
+    app.register_blueprint(especialidade_bp)
+    app.register_blueprint(horario_disponivel_bp)
 
 
 def _register_routes(app: Flask) -> None:
@@ -159,40 +167,21 @@ def _create_tables(app: Flask) -> None:
 
 
 def _register_commands(app: Flask) -> None:
-    @app.cli.command("criar-admin")
-    @click.option("--nome", prompt=True)
-    @click.option("--sobrenome", prompt=True)
-    @click.option("--email", prompt=True)
-    @click.option("--senha", prompt=True, hide_input=True, confirmation_prompt=True)
-    @click.option("--cpf", prompt=True)
-    @click.option("--telefone", prompt=True)
-    @click.option("--data-nascimento", prompt=True, help="Formato: YYYY-MM-DD")
-    @click.option("--genero", prompt=True, type=click.Choice(["masculino", "feminino", "outro", "prefiro_nao_informar"]))
-    def criar_admin(nome, sobrenome, email, senha, cpf, telefone, data_nascimento, genero):
-        """Cria o primeiro usuario administrador do sistema."""
-        from datetime import datetime
-        from src.domain.models.usuario import Genero, TipoUsuario, Usuario
-        from src.infrastructure.models.usuario_model import UsuarioModel
-        from src.infrastructure.services.password_service import PasswordService
+    @app.cli.command("carga-inicial")
+    @click.confirmation_option(prompt="Isso vai inserir dados iniciais no banco. Continuar?")
+    def carga_inicial():
+        """Insere carga inicial executando scripts/carga_inicial.sql."""
+        from sqlalchemy import text
 
-        try:
-            data_nasc = datetime.strptime(data_nascimento, "%Y-%m-%d").date()
-        except ValueError:
-            raise click.BadParameter("Use o formato YYYY-MM-DD para data-nascimento.")
+        sql_path = os.path.join(os.path.dirname(app.root_path), "scripts", "carga_inicial.sql")
+        if not os.path.exists(sql_path):
+            click.echo(f"Arquivo SQL não encontrado: {sql_path}", err=True)
+            raise SystemExit(1)
 
-        senha_hash = PasswordService().hash(senha)
+        sql = open(sql_path, encoding="utf-8").read()
 
-        model = UsuarioModel(
-            nome=nome,
-            sobrenome=sobrenome,
-            data_nascimento=data_nasc,
-            genero=genero,
-            email=email,
-            senha=senha_hash,
-            cpf=cpf,
-            telefone=telefone,
-            tipo=TipoUsuario.ADMIN.value,
-        )
-        db.session.add(model)
-        db.session.commit()
-        click.echo(f"Admin '{nome} {sobrenome}' criado com sucesso (id={model.id}).")
+        with db.engine.connect() as conn:
+            conn.execute(text(sql))
+            conn.commit()
+
+        click.echo("Carga inicial concluída. Senha padrão: Meditech@2026")

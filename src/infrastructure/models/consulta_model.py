@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from src.infrastructure.config.database import db
 
 
@@ -5,8 +7,10 @@ class ConsultaModel(db.Model):
     __tablename__ = "consulta"
 
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=False)
-    especialidade = db.Column(db.String(150), nullable=False)
-    medico = db.Column(db.String(150), nullable=False)
-    data = db.Column(db.Date, nullable=False)
-    horario = db.Column(db.String(30), nullable=False)
+    paciente_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=False)
+    medico_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=False)
+    data_agendada = db.Column(db.Date, nullable=False)
+    hora = db.Column(db.String(30), nullable=False)
+    especialidade_id = db.Column(db.Integer, db.ForeignKey("especialidades.id"), nullable=False)
+    data_cadastrada = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    cancelada = db.Column(db.Boolean, default=False, nullable=False)

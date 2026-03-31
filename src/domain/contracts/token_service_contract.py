@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
 
+from src.domain.models.usuario import Usuario
+
 
 class TokenServiceContract(ABC):
 
     @abstractmethod
-    def generate_access_token(self, user_id: int, email: str, cpf: str, nome: str, tipo: str) -> str:
+    def generate_access_token(self, usuario: Usuario) -> str:
         ...
