@@ -173,7 +173,7 @@ def _register_commands(app: Flask) -> None:
         """Insere carga inicial executando scripts/carga_inicial.sql."""
         from sqlalchemy import text
 
-        sql_path = os.path.join(os.path.dirname(app.root_path), "scripts", "carga_inicial.sql")
+        sql_path = os.path.join(os.path.dirname(os.path.dirname(app.root_path)), "scripts", "carga_inicial.sql")
         if not os.path.exists(sql_path):
             click.echo(f"Arquivo SQL não encontrado: {sql_path}", err=True)
             raise SystemExit(1)
