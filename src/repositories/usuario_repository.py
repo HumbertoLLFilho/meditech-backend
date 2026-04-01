@@ -41,8 +41,10 @@ class UsuarioRepository(UsuarioRepositoryContract):
             senha=usuario.senha,
             cpf=usuario.cpf,
             telefone=usuario.telefone,
-            tipo=usuario.tipo
+            tipo=usuario.tipo,
+            ativo = usuario.ativo
         )
+        
         db.session.add(model)
         db.session.flush()  # Para obter o ID antes de commitar
 
