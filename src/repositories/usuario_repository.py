@@ -192,3 +192,16 @@ class UsuarioRepository(UsuarioRepositoryContract):
         usuario.especialidades = especialidades
         usuario.horarios_disponiveis = horarios
         return usuario
+
+    def atualizar(self, usuario: Usuario) -> None:
+        model = UsuarioModel.query.get(usuario.id)
+        if not model:
+            raise ValueError("Usuario nao encontrado")
+
+        model.ativo = usuario.ativo
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise

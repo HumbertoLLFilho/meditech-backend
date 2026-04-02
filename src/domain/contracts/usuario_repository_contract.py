@@ -34,3 +34,7 @@ class UsuarioRepositoryContract(ABC):
     @abstractmethod
     def buscar_por_id_com_detalhes(self, usuario_id: int) -> Usuario | None:
         ...
+
+    @abstractmethod
+    def atualizar(self, usuario: Usuario) -> None:
+        ...

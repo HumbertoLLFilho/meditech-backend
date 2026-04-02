@@ -7,6 +7,7 @@ from src.repositories.especialidade_repository import EspecialidadeRepository
 from src.repositories.horario_disponivel_repository import HorarioDisponivelRepository
 from src.repositories.usuario_repository import UsuarioRepository
 from src.usecases.adicionar_horario_disponivel.adicionar_horario_disponivel_usecase import AdicionarHorarioDisponivelUseCase
+from src.usecases.alterar_status_usuario.alterar_status_usuario_usecase import AlterarStatusUsuarioUseCase
 from src.usecases.associar_especialidade_medico.associar_especialidade_medico_usecase import AssociarEspecialidadeMedicoUseCase
 from src.usecases.cadastrar_consulta.cadastrar_consulta_usecase import CadastrarConsultaUseCase
 from src.usecases.consultar_disponibilidade.consultar_disponibilidade_usecase import ConsultarDisponibilidadeUseCase
@@ -178,4 +179,10 @@ def get_associar_especialidade_medico() -> AssociarEspecialidadeMedicoUseCase:
             _get_especialidade_repository(),
             _get_usuario_repository(),
         ),
+    )
+
+def get_alterar_status_usuario_use_case() -> AlterarStatusUsuarioUseCase:
+    return _scoped(
+        "alterar_status_usuario_use_case",
+        lambda: AlterarStatusUsuarioUseCase(_get_usuario_repository()),
     )

@@ -2,8 +2,9 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flasgger import swag_from
 
-from src.application.docs.usuarios_docs import USUARIO_BUSCAR_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_LISTAR_DOC
-from src.application.dependencies.container import get_buscar_usuario, get_cadastrar_usuario_use_case, get_listar_usuarios
+from src.application.docs.usuarios_docs import USUARIO_ALTERAR_STATUS_DOC, USUARIO_BUSCAR_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_LISTAR_DOC
+from src.application.dependencies.container import get_alterar_status_usuario_use_case, get_buscar_usuario, get_cadastrar_usuario_use_case, get_listar_usuarios
+from src.usecases.alterar_status_usuario.alterar_status_usuario_input import AlterarStatusUsuarioInput
 from src.usecases.buscar_usuario.buscar_usuario_input import BuscarUsuarioInput
 from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
 from src.usecases.listar_usuarios.listar_usuarios_input import ListarUsuariosInput
@@ -99,6 +100,27 @@ def cadastrar_medico():
     except Exception as e:
         return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500
 
+@usuario_bp.route("/<int:usuario_id>/alterarStatus", methods=["PATCH"])
+@jwt_required()
+@swag_from(USUARIO_ALTERAR_STATUS_DOC)
+def alterar_status_usuario(usuario_id: int = None):
+    claims = get_jwt()
+    if claims.get("tipo") != TipoUsuario.ADMIN.value:
+        return jsonify({"erro": "Acesso negado. Apenas admins podem alterar o status de outros usuarios."}), 403   
+    data = request.get_json(silent=True) or {}
+    data["usuario_id"] = usuario_id
+
+    try:
+        usuario_input = AlterarStatusUsuarioInput.from_dict(data)
+        use_case = get_alterar_status_usuario_use_case()
+        resultado = use_case.executar(usuario_input)
+
+        return jsonify(resultado), 201
+
+    except ValueError as e:
+        return jsonify({"erro": str(e)}), 422
+    except Exception as e:
+        return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500
 
 @usuario_bp.route("/<int:usuario_id>", methods=["GET"])
 @jwt_required()

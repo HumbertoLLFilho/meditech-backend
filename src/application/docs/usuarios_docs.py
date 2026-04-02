@@ -235,3 +235,42 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
     },
 }
 
+USUARIO_ALTERAR_STATUS_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "usuario_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario a ter o status alterado",
+        }
+    ],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["ativo"],
+                    "properties": {
+                        "ativo": {
+                            "type": "boolean",
+                            "example": True,
+                            "description": "Novo status do usuario (true para ativo, false para inativo)",
+                        },
+                    },
+                }
+            }
+        },
+    },
+    "responses": {
+        201: {"description": "Status do usuario alterado com sucesso"},
+        401: {"description": "Token ausente, invalido ou expirado"},
+        403: {"description": "Acesso negado — apenas admins podem alterar status"},
+        422: {"description": "Erro de validacao ou usuario nao encontrado"},
+        500: {"description": "Erro interno do servidor"},
+    },
+}
+
