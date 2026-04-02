@@ -4,7 +4,7 @@ from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryCo
 from src.domain.models.consulta import Consulta
 from src.domain.models.especialidade import Especialidade
 from src.domain.models.horario_disponivel import HorarioDisponivel
-from src.domain.models.usuario import Genero, TipoUsuario, Usuario
+from src.domain.models.usuario import Genero, Usuario
 from src.infrastructure.config.database import db
 from src.infrastructure.models.consulta_model import ConsultaModel
 from src.infrastructure.models.especialidade_model import EspecialidadeModel
@@ -28,8 +28,19 @@ class UsuarioRepository(UsuarioRepositoryContract):
             telefone=model.telefone,
             tipo=model.tipo,
             ativo=model.ativo,
+            sobre_mim=model.sobre_mim,
             data_cadastro=model.data_cadastro,
         )
+
+#    def _documento_to_domain(model) -> Documento:
+#        return Documento(
+#            id=model.id,
+#            usuario_id=model.usuario_id,
+#            tipo=TipoDocumento(model.tipo),
+#            nome_arquivo=model.nome_arquivo,
+#            mime_type=model.mime_type,
+#            conteudo=model.conteudo,
+#        )
 
     def salvar(self, usuario: Usuario) -> Usuario:
         model = UsuarioModel(
@@ -42,7 +53,8 @@ class UsuarioRepository(UsuarioRepositoryContract):
             cpf=usuario.cpf,
             telefone=usuario.telefone,
             tipo=usuario.tipo,
-            ativo = usuario.ativo
+            ativo = usuario.ativo,
+            sobre_mim=usuario.sobre_mim,
         )
         
         db.session.add(model)
@@ -191,6 +203,9 @@ class UsuarioRepository(UsuarioRepositoryContract):
         usuario.consultas_como_medico = consultas_medico
         usuario.especialidades = especialidades
         usuario.horarios_disponiveis = horarios
+#        usuario.documentos = [
+#            self._documento_to_domain(doc) for doc in usuario_model.documentos
+#        ]
         return usuario
 
     def atualizar(self, usuario: Usuario) -> None:

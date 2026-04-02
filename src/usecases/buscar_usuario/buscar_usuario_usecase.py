@@ -22,6 +22,7 @@ class BuscarUsuarioUseCase:
             "genero": usuario.genero.value,
             "tipo": usuario.tipo,
             "ativo": usuario.ativo,
+            "sobre_mim": usuario.sobre_mim,
             "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d"),
             "data_cadastro": (
                 usuario.data_cadastro.strftime("%Y-%m-%dT%H:%M:%S")
@@ -87,4 +88,14 @@ class BuscarUsuarioUseCase:
                 }
                 for h in (usuario.horarios_disponiveis or [])
             ],
+#            "documentos": [
+#                {
+#                    "id": d.id,
+#                    "tipo": d.tipo.value if hasattr(d.tipo, "value") else d.tipo,
+#                    "nome_arquivo": d.nome_arquivo,
+#                    "mime_type": d.mime_type,
+#                    "url_download": f"/usuarios/{usuario.id}/documentos/{d.tipo.value if hasattr(d.tipo, 'value') else d.tipo}",
+#                }
+#                for d in (usuario.documentos or [])
+#            ],
         }

@@ -13,10 +13,12 @@ class CadastrarUsuarioUseCase:
         self,
         repository: UsuarioRepositoryContract,
         password_service: PasswordServiceContract,
+#       documento_repository: Optional[DocumentoRepositoryContract] = None,
         especialidade_repository: Optional[EspecialidadeRepositoryContract] = None,
     ):
         self.repository = repository
         self.password_service = password_service
+#       self.documento_repository = documento_repository
         self.especialidade_repository = especialidade_repository
 
     def executar(self, input_data: CadastrarUsuarioInput, tipo: TipoUsuario = TipoUsuario.PACIENTE, ativo: bool = False) -> dict:
@@ -47,7 +49,8 @@ class CadastrarUsuarioUseCase:
             cpf=input_data.cpf,
             telefone=input_data.telefone,
             tipo=tipo,
-            ativo=ativo
+            ativo=ativo,
+            sobre_mim=input_data.sobre_mim
         )
 
         usuario_salvo = self.repository.salvar(usuario)
@@ -57,6 +60,10 @@ class CadastrarUsuarioUseCase:
                 if not self.especialidade_repository.buscar_por_id(especialidade_id):
                     raise ValueError(f"Especialidade com id {especialidade_id} nao encontrada.")
                 self.especialidade_repository.associar_medico(usuario_salvo.id, especialidade_id)
+#            if input_data.documentos:
+#                for doc in input_data.documentos:
+#                    documento_input = DocumentoInput(tipo=doc.tipo, dado=doc.dado, usuario_id=usuario_salvo.id)
+#                    self.repository.salvar_documento(documento_input)
 
         return {
             "mensagem": f"{tipo.value} cadastrado com sucesso!"

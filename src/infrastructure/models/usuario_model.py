@@ -18,6 +18,13 @@ class UsuarioModel(db.Model):
     tipo = db.Column(db.String(30), nullable=False)
     ativo = db.Column(db.Boolean, default=False)
     data_cadastro = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    sobre_mim = db.Column(db.Text, nullable=True)
+#   documentos = db.relationship(
+#       "DocumentoModel",
+#       backref="usuario",
+#       cascade="all, delete-orphan",
+#       lazy='joined',
+#   )
 
     consultas_paciente = db.relationship(
         "ConsultaModel",

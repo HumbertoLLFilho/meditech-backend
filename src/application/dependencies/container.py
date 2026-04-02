@@ -68,6 +68,9 @@ def _get_password_service() -> PasswordService:
 def _get_token_service() -> JwtTokenService:
     return _scoped("token_service", JwtTokenService)
 
+#def _get_documento_repository() -> DocumentoRepository:
+#    return _scoped("documento_repository", DocumentoRepository)
+
 
 def get_cadastrar_usuario_use_case() -> CadastrarUsuarioUseCase:
     return _scoped(
@@ -75,6 +78,7 @@ def get_cadastrar_usuario_use_case() -> CadastrarUsuarioUseCase:
         lambda: CadastrarUsuarioUseCase(
             _get_usuario_repository(),
             _get_password_service(),
+#            _get_documento_repository(),
             _get_especialidade_repository(),
         ),
     )
