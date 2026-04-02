@@ -16,6 +16,7 @@ class BuscarUsuarioUseCase:
             "id": usuario.id,
             "nome": usuario.nome,
             "sobrenome": usuario.sobrenome,
+            "cpf": usuario.cpf,
             "email": usuario.email,
             "telefone": usuario.telefone,
             "genero": usuario.genero.value,
