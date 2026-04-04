@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.domain.models.consulta import Consulta
+    from src.domain.models.documento import Documento
     from src.domain.models.especialidade import Especialidade
     from src.domain.models.horario_disponivel import HorarioDisponivel
 
@@ -36,11 +37,10 @@ class Usuario:
     tipo: TipoUsuario
     ativo: bool
     cpf: str
-    sobre_mim: str | None = None
     id: int | None = None
     data_cadastro: datetime | None = None
     consultas_como_paciente: "list[Consulta] | None" = field(default=None, compare=False)
     consultas_como_medico: "list[Consulta] | None" = field(default=None, compare=False)
     especialidades: "list[Especialidade] | None" = field(default=None, compare=False)
     horarios_disponiveis: "list[HorarioDisponivel] | None" = field(default=None, compare=False)
-#   documentos: "list[Documento] | None" = field(default=None, compare=False)
+    documentos: "list[Documento] | None" = field(default=None, compare=False)

@@ -2,11 +2,13 @@ from sqlalchemy.orm import aliased
 
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
 from src.domain.models.consulta import Consulta
+from src.domain.models.documento import Documento, TipoDocumento
 from src.domain.models.especialidade import Especialidade
 from src.domain.models.horario_disponivel import HorarioDisponivel
 from src.domain.models.usuario import Genero, Usuario
 from src.infrastructure.config.database import db
 from src.infrastructure.models.consulta_model import ConsultaModel
+from src.infrastructure.models.documento_model import DocumentoModel
 from src.infrastructure.models.especialidade_model import EspecialidadeModel
 from src.infrastructure.models.horario_disponivel_model import HorarioDisponivelModel
 from src.infrastructure.models.usuario_model import UsuarioModel
@@ -28,19 +30,19 @@ class UsuarioRepository(UsuarioRepositoryContract):
             telefone=model.telefone,
             tipo=model.tipo,
             ativo=model.ativo,
-            sobre_mim=model.sobre_mim,
             data_cadastro=model.data_cadastro,
         )
 
-#    def _documento_to_domain(model) -> Documento:
-#        return Documento(
-#            id=model.id,
-#            usuario_id=model.usuario_id,
-#            tipo=TipoDocumento(model.tipo),
-#            nome_arquivo=model.nome_arquivo,
-#            mime_type=model.mime_type,
-#            conteudo=model.conteudo,
-#        )
+    @staticmethod
+    def _documento_to_domain(model: DocumentoModel) -> Documento:
+        return Documento(
+            id=model.id,
+            usuario_id=model.usuario_id,
+            tipo=TipoDocumento(model.tipo),
+            nome_arquivo=model.nome_arquivo,
+            mime_type=model.mime_type,
+            conteudo=model.conteudo,
+        )
 
     def salvar(self, usuario: Usuario) -> Usuario:
         model = UsuarioModel(
@@ -53,8 +55,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
             cpf=usuario.cpf,
             telefone=usuario.telefone,
             tipo=usuario.tipo,
-            ativo = usuario.ativo,
-            sobre_mim=usuario.sobre_mim,
+            ativo=usuario.ativo,
         )
         
         db.session.add(model)
@@ -198,14 +199,15 @@ class UsuarioRepository(UsuarioRepositoryContract):
             for h, e in rows
         ]
 
+        documentos_models = DocumentoModel.query.filter_by(usuario_id=usuario_id).all()
+        documentos = [self._documento_to_domain(d) for d in documentos_models]
+
         usuario = self._to_domain(usuario_model)
         usuario.consultas_como_paciente = consultas_paciente
         usuario.consultas_como_medico = consultas_medico
         usuario.especialidades = especialidades
         usuario.horarios_disponiveis = horarios
-#        usuario.documentos = [
-#            self._documento_to_domain(doc) for doc in usuario_model.documentos
-#        ]
+        usuario.documentos = documentos
         return usuario
 
     def atualizar(self, usuario: Usuario) -> None:

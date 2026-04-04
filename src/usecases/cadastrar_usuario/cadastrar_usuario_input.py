@@ -2,12 +2,16 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Optional
 
-#@dataclass
-#class DocumentoInput:
-#    tipo: str
-#    nome_arquivo: str
-#    mime_type: str
-#    conteudo_base64: str
+from src.domain.models.documento import TipoDocumento
+
+
+@dataclass
+class DocumentoInput:
+    tipo: str
+    nome_arquivo: str
+    mime_type: str
+    conteudo_base64: str
+
 
 @dataclass
 class CadastrarUsuarioInput:
@@ -21,7 +25,7 @@ class CadastrarUsuarioInput:
     telefone: str
     sobre_mim: Optional[str] = None
     especialidade_ids: Optional[list[int]] = field(default=None)
-#    documentos: Optional[list[DocumentoInput]] = field(default=None)
+    documentos: Optional[list[DocumentoInput]] = field(default=None)
 
     @staticmethod
     def from_dict(data: dict) -> "CadastrarUsuarioInput":
@@ -40,17 +44,18 @@ class CadastrarUsuarioInput:
             if not isinstance(especialidade_ids, list) or not all(isinstance(i, int) for i in especialidade_ids):
                 raise ValueError("especialidade_ids deve ser uma lista de inteiros.")
 
-#        documentos_data = data.get("documentos", [])
-#        documentos = []
-#        for doc in documentos_data:
-#            if not all(k in doc for k in ("tipo", "nome_arquivo", "mime_type", "conteudo_base64")):
-#                raise ValueError("Cada documento deve conter os campos: tipo, nome_arquivo, mime_type, conteudo_base64.")
-#            documentos.append(DocumentoInput(
-#                tipo=doc["tipo"],
-#                nome_arquivo=doc["nome_arquivo"],
-#                mime_type=doc["mime_type"],
-#                conteudo_base64=doc["conteudo_base64"]
-#            ))
+        documentos_data = data.get("documentos", [])
+        documentos = []
+        for doc in documentos_data:
+            if not all(k in doc for k in ("tipo", "nome_arquivo", "mime_type", "conteudo_base64")):
+                raise ValueError("Cada documento deve conter os campos: tipo, nome_arquivo, mime_type, conteudo_base64.")
+            
+            documentos.append(DocumentoInput(
+                tipo=doc["tipo"],
+                nome_arquivo=doc["nome_arquivo"],
+                mime_type=doc["mime_type"],
+                conteudo_base64=doc["conteudo_base64"],
+            ))
 
         return CadastrarUsuarioInput(
             nome=data["nome"],
@@ -61,8 +66,7 @@ class CadastrarUsuarioInput:
             senha=data["senha"],
             cpf=data["cpf"],
             telefone=data["telefone"],
-            sobre_mim=data.get("sobre_mim") if data.get("sobre_mim") else None,
+            sobre_mim=data.get("sobre_mim") or None,
             especialidade_ids=especialidade_ids,
-#           documentos=documentos
+            documentos=documentos if documentos else None,
         )
-

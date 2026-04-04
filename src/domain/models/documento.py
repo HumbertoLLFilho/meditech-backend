@@ -5,6 +5,7 @@ from enum import Enum
 class TipoDocumento(str, Enum):
     CRM = "crm"
     CURRICULO = "curriculo"
+    SOBRE_MIM = "sobre_mim"
 
 @dataclass
 class Documento:

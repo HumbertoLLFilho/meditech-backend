@@ -37,9 +37,18 @@ class DocumentoRepository(DocumentoRepositoryContract):
 
         return self._to_domain(model)
 
-    def listar_por_usuario(self, usuario_id: int) -> list[Documento]:
+    def buscar_por_id(self, documento_id: int) -> Documento | None:
+        model = DocumentoModel.query.get(documento_id)
+        if not model:
+            return None
+        return self._to_domain(model)
+
+    def listar_por_usuario_id(self, usuario_id: int) -> list[Documento]:
         modelos = DocumentoModel.query.filter_by(usuario_id=usuario_id).all()
         return [self._to_domain(model) for model in modelos]
+
+    def listar_por_usuario(self, usuario_id: int) -> list[Documento]:
+        return self.listar_por_usuario_id(usuario_id)
 
     def buscar_por_usuario_e_tipo(self, usuario_id: int, tipo: str) -> Documento | None:
         models = DocumentoModel.query.filter_by(usuario_id=usuario_id, tipo=tipo).first()
