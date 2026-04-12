@@ -1,4 +1,4 @@
-from werkzeug.security import check_password_hash, generate_password_hash
+import bcrypt
 
 from src.domain.contracts.password_service_contract import PasswordServiceContract
 
@@ -6,7 +6,7 @@ from src.domain.contracts.password_service_contract import PasswordServiceContra
 class PasswordService(PasswordServiceContract):
 
     def hash(self, senha: str) -> str:
-        return generate_password_hash(senha)
+        return bcrypt.hashpw(senha.encode(), bcrypt.gensalt(12)).decode()
 
     def verify(self, senha: str, senha_hash: str) -> bool:
-        return check_password_hash(senha_hash, senha)
+        return bcrypt.checkpw(senha.encode(), senha_hash.encode())

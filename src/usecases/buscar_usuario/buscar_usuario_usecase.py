@@ -16,6 +16,7 @@ class BuscarUsuarioUseCase:
             "id": usuario.id,
             "nome": usuario.nome,
             "sobrenome": usuario.sobrenome,
+            "cpf": usuario.cpf,
             "email": usuario.email,
             "telefone": usuario.telefone,
             "genero": usuario.genero.value,
@@ -85,5 +86,14 @@ class BuscarUsuarioUseCase:
                     "especialidade_nome": h.especialidade.nome if h.especialidade else None,
                 }
                 for h in (usuario.horarios_disponiveis or [])
+            ],
+            "documentos": [
+                {
+                    "id": d.id,
+                    "tipo": d.tipo.value if hasattr(d.tipo, "value") else d.tipo,
+                    "nome_arquivo": d.nome_arquivo,
+                    "mime_type": d.mime_type,
+                }
+                for d in (usuario.documentos or [])
             ],
         }

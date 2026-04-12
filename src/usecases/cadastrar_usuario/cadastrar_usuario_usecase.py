@@ -1,8 +1,11 @@
+import base64
 from typing import Optional
 
+from src.domain.contracts.documento_repository_contract import DocumentoRepositoryContract
 from src.domain.contracts.especialidade_repository_contract import EspecialidadeRepositoryContract
 from src.domain.contracts.password_service_contract import PasswordServiceContract
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
+from src.domain.models.documento import Documento, TipoDocumento
 from src.domain.models.usuario import Genero, TipoUsuario, Usuario
 from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
 
@@ -13,10 +16,12 @@ class CadastrarUsuarioUseCase:
         self,
         repository: UsuarioRepositoryContract,
         password_service: PasswordServiceContract,
+        documento_repository: Optional[DocumentoRepositoryContract] = None,
         especialidade_repository: Optional[EspecialidadeRepositoryContract] = None,
     ):
         self.repository = repository
         self.password_service = password_service
+        self.documento_repository = documento_repository
         self.especialidade_repository = especialidade_repository
 
     def executar(self, input_data: CadastrarUsuarioInput, tipo: TipoUsuario = TipoUsuario.PACIENTE, ativo: bool = False) -> dict:
@@ -47,17 +52,42 @@ class CadastrarUsuarioUseCase:
             cpf=input_data.cpf,
             telefone=input_data.telefone,
             tipo=tipo,
-            ativo=ativo
+            ativo=ativo,
         )
 
         usuario_salvo = self.repository.salvar(usuario)
 
-        if tipo == TipoUsuario.MEDICO and input_data.especialidade_ids and self.especialidade_repository:
-            for especialidade_id in input_data.especialidade_ids:
-                if not self.especialidade_repository.buscar_por_id(especialidade_id):
-                    raise ValueError(f"Especialidade com id {especialidade_id} nao encontrada.")
-                self.especialidade_repository.associar_medico(usuario_salvo.id, especialidade_id)
+        if tipo == TipoUsuario.MEDICO:
+            if self.especialidade_repository:
+                for especialidade_id in (input_data.especialidade_ids or []):
+                    if not self.especialidade_repository.buscar_por_id(especialidade_id):
+                        raise ValueError(f"Especialidade com id {especialidade_id} nao encontrada.")
+                    self.especialidade_repository.associar_medico(usuario_salvo.id, especialidade_id)
 
+            if self.documento_repository:
+                if input_data.sobre_mim:
+                    self.documento_repository.salvar(Documento(
+                        usuario_id=usuario_salvo.id,
+                        tipo=TipoDocumento.SOBRE_MIM,
+                        nome_arquivo="sobre_mim.txt",
+                        mime_type="text/plain",
+                        conteudo=input_data.sobre_mim.encode("utf-8"),
+                    ))
+                
+                for doc in (input_data.documentos or []):
+                    try:
+                        conteudo = base64.b64decode(doc.conteudo_base64)
+                    except Exception:
+                        raise ValueError(f"conteudo_base64 invalido para o documento '{doc.tipo}'.")
+                    
+                    self.documento_repository.salvar(Documento(
+                        usuario_id=usuario_salvo.id,
+                        tipo=TipoDocumento(doc.tipo),
+                        nome_arquivo=doc.nome_arquivo,
+                        mime_type=doc.mime_type,
+                        conteudo=conteudo,
+                    ))
+        
         return {
             "mensagem": f"{tipo.value} cadastrado com sucesso!"
         }

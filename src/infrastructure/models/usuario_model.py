@@ -12,12 +12,18 @@ class UsuarioModel(db.Model):
     data_nascimento = db.Column(db.Date, nullable=False)
     genero = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
-    senha = db.Column(db.String(255), nullable=False)
+    senha = db.Column(db.String(512), nullable=False)
     cpf = db.Column(db.String(11), nullable=False)
     telefone = db.Column(db.String(20), nullable=False)
     tipo = db.Column(db.String(30), nullable=False)
     ativo = db.Column(db.Boolean, default=False)
     data_cadastro = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    documentos = db.relationship(
+        "DocumentoModel",
+        backref="usuario",
+        cascade="all, delete-orphan",
+        lazy='select',
+    )
 
     consultas_paciente = db.relationship(
         "ConsultaModel",

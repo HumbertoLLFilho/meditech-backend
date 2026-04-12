@@ -118,6 +118,7 @@ def _init_swagger(app: Flask) -> None:
 def _register_models() -> None:
     import src.infrastructure.models.usuario_model  # noqa: F401
     import src.infrastructure.models.consulta_model  # noqa: F401
+    import src.infrastructure.models.documento_model  # noqa: F401
     import src.infrastructure.models.especialidade_model  # noqa: F401
     import src.infrastructure.models.horario_disponivel_model  # noqa: F401
 
@@ -164,6 +165,16 @@ def _jwt_expired_token(_jwt_header, _jwt_payload):
 def _create_tables(app: Flask) -> None:
     with app.app_context():
         db.create_all()
+        _migrate_drop_sobre_mim()
+
+
+def _migrate_drop_sobre_mim() -> None:
+    from sqlalchemy import text
+    try:
+        db.session.execute(text("ALTER TABLE usuarios DROP COLUMN IF EXISTS sobre_mim"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
 
 
 def _register_commands(app: Flask) -> None:
@@ -173,7 +184,7 @@ def _register_commands(app: Flask) -> None:
         """Insere carga inicial executando scripts/carga_inicial.sql."""
         from sqlalchemy import text
 
-        sql_path = os.path.join(os.path.dirname(app.root_path), "scripts", "carga_inicial.sql")
+        sql_path = os.path.join(os.path.dirname(os.path.dirname(app.root_path)), "scripts", "carga_inicial.sql")
         if not os.path.exists(sql_path):
             click.echo(f"Arquivo SQL não encontrado: {sql_path}", err=True)
             raise SystemExit(1)

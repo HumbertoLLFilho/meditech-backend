@@ -3,10 +3,12 @@ from flask import g, has_request_context
 from src.infrastructure.services.jwt_token_service import JwtTokenService
 from src.infrastructure.services.password_service import PasswordService
 from src.repositories.consulta_repository import ConsultaRepository
+from src.repositories.documento_repository import DocumentoRepository
 from src.repositories.especialidade_repository import EspecialidadeRepository
 from src.repositories.horario_disponivel_repository import HorarioDisponivelRepository
 from src.repositories.usuario_repository import UsuarioRepository
 from src.usecases.adicionar_horario_disponivel.adicionar_horario_disponivel_usecase import AdicionarHorarioDisponivelUseCase
+from src.usecases.alterar_status_usuario.alterar_status_usuario_usecase import AlterarStatusUsuarioUseCase
 from src.usecases.associar_especialidade_medico.associar_especialidade_medico_usecase import AssociarEspecialidadeMedicoUseCase
 from src.usecases.cadastrar_consulta.cadastrar_consulta_usecase import CadastrarConsultaUseCase
 from src.usecases.consultar_disponibilidade.consultar_disponibilidade_usecase import ConsultarDisponibilidadeUseCase
@@ -67,6 +69,9 @@ def _get_password_service() -> PasswordService:
 def _get_token_service() -> JwtTokenService:
     return _scoped("token_service", JwtTokenService)
 
+def _get_documento_repository() -> DocumentoRepository:
+    return _scoped("documento_repository", DocumentoRepository)
+
 
 def get_cadastrar_usuario_use_case() -> CadastrarUsuarioUseCase:
     return _scoped(
@@ -74,6 +79,7 @@ def get_cadastrar_usuario_use_case() -> CadastrarUsuarioUseCase:
         lambda: CadastrarUsuarioUseCase(
             _get_usuario_repository(),
             _get_password_service(),
+            _get_documento_repository(),
             _get_especialidade_repository(),
         ),
     )
@@ -178,4 +184,10 @@ def get_associar_especialidade_medico() -> AssociarEspecialidadeMedicoUseCase:
             _get_especialidade_repository(),
             _get_usuario_repository(),
         ),
+    )
+
+def get_alterar_status_usuario_use_case() -> AlterarStatusUsuarioUseCase:
+    return _scoped(
+        "alterar_status_usuario_use_case",
+        lambda: AlterarStatusUsuarioUseCase(_get_usuario_repository()),
     )

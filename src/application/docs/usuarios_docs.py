@@ -223,6 +223,38 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
                             "example": [1, 2],
                             "description": "IDs das especialidades a associar ao medico (opcional)",
                         },
+                        "sobre_mim": {
+                            "type": "string",
+                            "example": "Especialista em cardiologia com 10 anos de experiencia.",
+                            "description": "Texto livre sobre o medico (opcional)",
+                        },
+                        "documentos": {
+                            "type": "array",
+                            "description": "Lista de documentos do medico (CRM e/ou curriculo, opcional)",
+                            "items": {
+                                "type": "object",
+                                "required": ["tipo", "nome_arquivo", "mime_type", "conteudo_base64"],
+                                "properties": {
+                                    "tipo": {
+                                        "type": "string",
+                                        "enum": ["crm", "curriculo"],
+                                        "example": "crm",
+                                    },
+                                    "nome_arquivo": {
+                                        "type": "string",
+                                        "example": "crm.pdf",
+                                    },
+                                    "mime_type": {
+                                        "type": "string",
+                                        "example": "application/pdf",
+                                    },
+                                    "conteudo_base64": {
+                                        "type": "string",
+                                        "description": "Conteudo do arquivo codificado em base64",
+                                    },
+                                },
+                            },
+                        },
                     },
                 }
             }
@@ -230,7 +262,46 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
      },
     "responses": {
         201: {"description": "Medico cadastrado com sucesso"},
-        422: {"description": "Erro de validacao ou especialidade nao encontrada"},
+        422: {"description": "Erro de validacao, base64 invalido ou especialidade nao encontrada"},
+        500: {"description": "Erro interno do servidor"},
+    },
+}
+
+USUARIO_ALTERAR_STATUS_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "usuario_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario a ter o status alterado",
+        }
+    ],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["ativo"],
+                    "properties": {
+                        "ativo": {
+                            "type": "boolean",
+                            "example": True,
+                            "description": "Novo status do usuario (true para ativo, false para inativo)",
+                        },
+                    },
+                }
+            }
+        },
+    },
+    "responses": {
+        201: {"description": "Status do usuario alterado com sucesso"},
+        401: {"description": "Token ausente, invalido ou expirado"},
+        403: {"description": "Acesso negado — apenas admins podem alterar status"},
+        422: {"description": "Erro de validacao ou usuario nao encontrado"},
         500: {"description": "Erro interno do servidor"},
     },
 }
