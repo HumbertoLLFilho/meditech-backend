@@ -7,7 +7,7 @@ from src.domain.contracts.password_service_contract import PasswordServiceContra
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
 from src.domain.models.documento import Documento, TipoDocumento
 from src.domain.models.usuario import Genero, TipoUsuario, Usuario
-from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
+from src.usecases.usuarios.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
 
 
 class CadastrarUsuarioUseCase:

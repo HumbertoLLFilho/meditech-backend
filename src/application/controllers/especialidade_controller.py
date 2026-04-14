@@ -13,8 +13,8 @@ from src.application.dependencies.container import (
     get_listar_especialidades,
     get_listar_especialidades_medico,
 )
-from src.usecases.cadastrar_especialidade.cadastrar_especialidade_input import CadastrarEspecialidadeInput
-from src.usecases.associar_especialidade_medico.associar_especialidade_medico_input import AssociarEspecialidadeMedicoInput
+from src.usecases.especialidades.cadastrar_especialidade.cadastrar_especialidade_input import CadastrarEspecialidadeInput
+from src.usecases.especialidades.associar_especialidade_medico.associar_especialidade_medico_input import AssociarEspecialidadeMedicoInput
 
 
 especialidade_bp = Blueprint("especialidade", __name__, url_prefix="/especialidades")

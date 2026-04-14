@@ -1,6 +1,6 @@
 from src.domain.contracts.especialidade_repository_contract import EspecialidadeRepositoryContract
 from src.domain.models.especialidade import Especialidade
-from src.usecases.cadastrar_especialidade.cadastrar_especialidade_input import CadastrarEspecialidadeInput
+from src.usecases.especialidades.cadastrar_especialidade.cadastrar_especialidade_input import CadastrarEspecialidadeInput
 
 
 class CadastrarEspecialidadeUseCase:

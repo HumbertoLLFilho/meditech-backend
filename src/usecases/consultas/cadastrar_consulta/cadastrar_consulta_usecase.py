@@ -2,7 +2,7 @@ from src.domain.contracts.consulta_repository_contract import ConsultaRepository
 from src.domain.contracts.especialidade_repository_contract import EspecialidadeRepositoryContract
 from src.domain.contracts.horario_disponivel_repository_contract import HorarioDisponivelRepositoryContract
 from src.domain.models.consulta import Consulta
-from src.usecases.cadastrar_consulta.cadastrar_consulta_input import CadastrarConsultaInput
+from src.usecases.consultas.cadastrar_consulta.cadastrar_consulta_input import CadastrarConsultaInput
 from src.usecases.horario_utils import SLOTS_POR_PERIODO, sobrepostos
 
 

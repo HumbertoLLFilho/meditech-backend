@@ -1,6 +1,6 @@
 from src.domain.contracts.consulta_repository_contract import ConsultaRepositoryContract
 from src.domain.contracts.horario_disponivel_repository_contract import HorarioDisponivelRepositoryContract
-from src.usecases.consultar_disponibilidade.consultar_disponibilidade_input import ConsultarDisponibilidadeInput
+from src.usecases.horarios.consultar_disponibilidade.consultar_disponibilidade_input import ConsultarDisponibilidadeInput
 from src.usecases.horario_utils import SLOTS_POR_PERIODO, sobrepostos
 
 

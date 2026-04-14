@@ -1,5 +1,5 @@
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
-from src.usecases.alterar_status_usuario.alterar_status_usuario_input import AlterarStatusUsuarioInput
+from src.usecases.usuarios.alterar_status_usuario.alterar_status_usuario_input import AlterarStatusUsuarioInput
 
 
 class AlterarStatusUsuarioUseCase:

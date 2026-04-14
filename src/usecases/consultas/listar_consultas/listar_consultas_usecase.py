@@ -1,5 +1,5 @@
 from src.domain.contracts.consulta_repository_contract import ConsultaRepositoryContract
-from src.usecases.listar_consultas.listar_consultas_input import ListarConsultasInput
+from src.usecases.consultas.listar_consultas.listar_consultas_input import ListarConsultasInput
 
 
 class ListarConsultaUseCase:

@@ -15,8 +15,8 @@ from src.application.dependencies.container import (
     get_horario_disponivel_repository,
 )
 from src.domain.models.usuario import TipoUsuario
-from src.usecases.adicionar_horario_disponivel.adicionar_horario_disponivel_input import AdicionarHorarioDisponivelInput
-from src.usecases.consultar_disponibilidade.consultar_disponibilidade_input import ConsultarDisponibilidadeInput
+from src.usecases.horarios.adicionar_horario_disponivel.adicionar_horario_disponivel_input import AdicionarHorarioDisponivelInput
+from src.usecases.horarios.consultar_disponibilidade.consultar_disponibilidade_input import ConsultarDisponibilidadeInput
 
 
 horario_disponivel_bp = Blueprint("horario_disponivel", __name__, url_prefix="/horarios-disponiveis")

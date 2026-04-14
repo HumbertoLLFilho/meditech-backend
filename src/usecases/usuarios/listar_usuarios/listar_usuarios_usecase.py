@@ -1,5 +1,5 @@
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
-from src.usecases.listar_usuarios.listar_usuarios_input import ListarUsuariosInput
+from src.usecases.usuarios.listar_usuarios.listar_usuarios_input import ListarUsuariosInput
 
 
 class ListarUsuariosUseCase:

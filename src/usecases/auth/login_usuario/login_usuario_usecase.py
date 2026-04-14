@@ -1,7 +1,7 @@
 from src.domain.contracts.password_service_contract import PasswordServiceContract
 from src.domain.contracts.token_service_contract import TokenServiceContract
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
-from src.usecases.login_usuario.login_usuario_input import LoginUsuarioInput
+from src.usecases.auth.login_usuario.login_usuario_input import LoginUsuarioInput
 
 
 class InvalidCredentialsError(Exception):

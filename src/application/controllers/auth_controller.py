@@ -3,8 +3,8 @@ from flasgger import swag_from
 
 from src.application.docs.auth_docs import AUTH_LOGIN_DOC
 from src.application.dependencies.container import get_login_usuario_use_case
-from src.usecases.login_usuario.login_usuario_input import LoginUsuarioInput
-from src.usecases.login_usuario.login_usuario_usecase import InvalidCredentialsError
+from src.usecases.auth.login_usuario.login_usuario_input import LoginUsuarioInput
+from src.usecases.auth.login_usuario.login_usuario_usecase import InvalidCredentialsError
 
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")

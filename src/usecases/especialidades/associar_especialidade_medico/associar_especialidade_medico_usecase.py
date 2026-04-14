@@ -1,7 +1,7 @@
 from src.domain.contracts.especialidade_repository_contract import EspecialidadeRepositoryContract
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
 from src.domain.models.usuario import TipoUsuario
-from src.usecases.associar_especialidade_medico.associar_especialidade_medico_input import AssociarEspecialidadeMedicoInput
+from src.usecases.especialidades.associar_especialidade_medico.associar_especialidade_medico_input import AssociarEspecialidadeMedicoInput
 
 
 class AssociarEspecialidadeMedicoUseCase:

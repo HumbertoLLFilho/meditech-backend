@@ -4,10 +4,10 @@ from flasgger import swag_from
 
 from src.application.docs.usuarios_docs import USUARIO_ALTERAR_STATUS_DOC, USUARIO_BUSCAR_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_LISTAR_DOC
 from src.application.dependencies.container import get_alterar_status_usuario_use_case, get_buscar_usuario, get_cadastrar_usuario_use_case, get_listar_usuarios
-from src.usecases.alterar_status_usuario.alterar_status_usuario_input import AlterarStatusUsuarioInput
-from src.usecases.buscar_usuario.buscar_usuario_input import BuscarUsuarioInput
-from src.usecases.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
-from src.usecases.listar_usuarios.listar_usuarios_input import ListarUsuariosInput
+from src.usecases.usuarios.alterar_status_usuario.alterar_status_usuario_input import AlterarStatusUsuarioInput
+from src.usecases.usuarios.buscar_usuario.buscar_usuario_input import BuscarUsuarioInput
+from src.usecases.usuarios.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
+from src.usecases.usuarios.listar_usuarios.listar_usuarios_input import ListarUsuariosInput
 from src.domain.models.usuario import TipoUsuario
 
 

@@ -3,7 +3,7 @@ from src.domain.contracts.horario_disponivel_repository_contract import HorarioD
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
 from src.domain.models.horario_disponivel import HorarioDisponivel
 from src.domain.models.usuario import TipoUsuario
-from src.usecases.adicionar_horario_disponivel.adicionar_horario_disponivel_input import AdicionarHorarioDisponivelInput
+from src.usecases.horarios.adicionar_horario_disponivel.adicionar_horario_disponivel_input import AdicionarHorarioDisponivelInput
 
 
 class AdicionarHorarioDisponivelUseCase:
