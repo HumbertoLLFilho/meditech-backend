@@ -86,6 +86,24 @@ class Usuario:
     ativo: bool        # médico recém-cadastrado nasce ativo=False
     id: int | None = None
     data_cadastro: datetime | None = None
+    documentos: list[Documento] | None = field(default=None, compare=False)
+```
+
+### Documento (`src/domain/models/documento.py`)
+```python
+class TipoDocumento(str, Enum):
+    CRM = "crm"
+    CURRICULO = "curriculo"
+    SOBRE_MIM = "sobre_mim"
+
+@dataclass
+class Documento:
+    tipo: TipoDocumento
+    nome_arquivo: str
+    mime_type: str
+    conteudo: bytes
+    id: int | None = None
+    usuario_id: int | None = None
 ```
 
 ### Consulta (`src/domain/models/consulta.py`)
@@ -130,6 +148,7 @@ class HorarioDisponivel:
 | `especialidades`        | `EspecialidadeModel`           |
 | `medico_especialidades` | tabela associativa (many-many) |
 | `horarios_disponiveis`  | `HorarioDisponivelModel`       |
+| `documentos`            | `DocumentoModel`               |
 
 `HorarioDisponivelModel` tem `UniqueConstraint(medico_id, especialidade_id, dia_semana, periodo, name="uq_medico_esp_dia_periodo")`. Um médico pode ter o mesmo dia/período para especialidades distintas.
 Tabelas criadas automaticamente no `create_app()` via `db.create_all()`.
@@ -149,7 +168,9 @@ Tabelas criadas automaticamente no `create_app()` via `db.create_all()`.
 | POST   | `/usuarios`         | —            | Cadastrar paciente (`tipo=paciente`, `ativo=True`) |
 | POST   | `/usuarios/admin`   | JWT (admin)  | Cadastrar admin                        |
 | POST   | `/usuarios/medico`  | —            | Cadastrar médico (`ativo=False`)       |
-| GET    | `/usuarios`         | JWT (admin)  | Listar usuários (filtros: tipo, ativo, nome, cpf, ordem) |
+| GET    | `/usuarios`         | JWT          | Listar usuários; admin vê todos, demais veem apenas médicos ativos |
+| GET    | `/usuarios/<id>`    | JWT          | Buscar usuário por ID com detalhes completos (admin/próprio/médico ativo) |
+| PATCH  | `/usuarios/<id>/alterarStatus` | JWT (admin) | Ativar/desativar usuário        |
 
 ### Consultas — `/consultas`
 | Método | Rota         | Auth | Descrição                             |
@@ -188,20 +209,29 @@ Tabelas criadas automaticamente no `create_app()` via `db.create_all()`.
 
 ## Use cases
 
-| Pasta                         | Classe UseCase                     | Responsabilidade                                     |
-|-------------------------------|------------------------------------|------------------------------------------------------|
-| `cadastrar_usuario/`          | `CadastrarUsuarioUseCase`          | Valida unicidade de e-mail/CPF, faz hash da senha    |
-| `login_usuario/`              | `LoginUsuarioUseCase`              | Verifica senha, gera token                           |
-| `listar_usuarios/`            | `ListarUsuariosUseCase`            | Listagem filtrada (admin only via controller)        |
-| `cadastrar_consulta/`         | `CadastrarConsultaUseCase`         | Valida especialidade do médico, slot disponível, conflito 1h |
-| `listar_consultas/`           | `ListarConsultaUseCase`            | Retorna consultas do usuário logado                  |
-| `cadastrar_especialidade/`    | `CadastrarEspecialidadeUseCase`    | Cria especialidade (unicidade tratada no repositório)|
-| `associar_especialidade_medico/` | `AssociarEspecialidadeMedicoUseCase` | Valida médico e especialidade, faz associação     |
-| `adicionar_horario_disponivel/` | `AdicionarHorarioDisponivelUseCase` | Valida tipo médico, unicidade do período           |
-| `listar_horarios_disponivel_medico/` | `ListarHorariosDisponivelMedicoUseCase` | Lista horários de um médico              |
-| `listar_especialidades/`      | `ListarEspecialidadesUseCase`      | Lista todas as especialidades                        |
-| `listar_especialidades_medico/` | `ListarEspecialidadesMedicoUseCase` | Lista especialidades de um médico                 |
-| `consultar_disponibilidade/`  | `ConsultarDisponibilidadeUseCase`  | Retorna slots livres por especialidade/data/período  |
+Use cases são organizados em subpastas por domínio dentro de `src/usecases/`:
+- `auth/` — autenticação
+- `consultas/` — consultas médicas
+- `especialidades/` — especialidades e associações
+- `horarios/` — horários disponíveis e disponibilidade
+- `usuarios/` — CRUD e gestão de usuários
+
+| Pasta (relativa ao domínio)           | Classe UseCase                     | Responsabilidade                                     |
+|---------------------------------------|------------------------------------|------------------------------------------------------|
+| `usuarios/cadastrar_usuario/`         | `CadastrarUsuarioUseCase`          | Valida unicidade de e-mail/CPF, faz hash da senha, salva documentos (CRM, currículo, sobre_mim). Deps: `UsuarioRepository`, `PasswordService`, `DocumentoRepository`, `EspecialidadeRepository` |
+| `auth/login_usuario/`                 | `LoginUsuarioUseCase`              | Verifica senha, gera token                           |
+| `usuarios/listar_usuarios/`           | `ListarUsuariosUseCase`            | Listagem filtrada (admin only via controller)        |
+| `usuarios/buscar_usuario/`            | `BuscarUsuarioUseCase`             | Busca usuário por ID com detalhes completos (consultas, especialidades, horários, documentos) |
+| `usuarios/alterar_status_usuario/`    | `AlterarStatusUsuarioUseCase`      | Altera campo `ativo` de um usuário (admin only via controller) |
+| `consultas/cadastrar_consulta/`       | `CadastrarConsultaUseCase`         | Valida especialidade do médico, slot disponível, conflito 1h |
+| `consultas/listar_consultas/`         | `ListarConsultaUseCase`            | Retorna consultas do usuário logado                  |
+| `especialidades/cadastrar_especialidade/` | `CadastrarEspecialidadeUseCase` | Cria especialidade (unicidade tratada no repositório)|
+| `especialidades/associar_especialidade_medico/` | `AssociarEspecialidadeMedicoUseCase` | Valida médico e especialidade, faz associação |
+| `horarios/adicionar_horario_disponivel/` | `AdicionarHorarioDisponivelUseCase` | Valida tipo médico, unicidade do período          |
+| `horarios/listar_horarios_disponivel_medico/` | `ListarHorariosDisponivelMedicoUseCase` | Lista horários de um médico             |
+| `especialidades/listar_especialidades/` | `ListarEspecialidadesUseCase`    | Lista todas as especialidades                        |
+| `especialidades/listar_especialidades_medico/` | `ListarEspecialidadesMedicoUseCase` | Lista especialidades de um médico           |
+| `horarios/consultar_disponibilidade/` | `ConsultarDisponibilidadeUseCase`  | Retorna slots livres por especialidade/data/período  |
 
 ### Input DTOs
 Cada use case tem um `*_input.py` com um `@dataclass` e método estático `from_dict(data)` ou `from_args(args)` que valida e converte os dados brutos. Erros de validação levantam `ValueError`.
@@ -228,7 +258,7 @@ def sobrepostos(hora_a, hora_b) -> bool:
 
 Sem biblioteca externa. Usa `flask.g` para cache por requisição (`_scoped(key, factory)`). Fora de contexto de requisição (testes, CLI), retorna um dict vazio (semântica best-effort).
 
-Funções públicas: `get_cadastrar_usuario_use_case()`, `get_login_usuario_use_case()`, `get_cadastrar_consulta_use_case()`, `get_listar_consultas()`, `get_listar_usuarios()`, `get_cadastrar_especialidade()`, `get_listar_especialidades()`, `get_listar_especialidades_medico()`, `get_associar_especialidade_medico()`, `get_adicionar_horario_disponivel()`, `get_listar_horarios_disponivel_medico()`, `get_consultar_disponibilidade()`, `get_horario_disponivel_repository()`.
+Funções públicas: `get_cadastrar_usuario_use_case()`, `get_login_usuario_use_case()`, `get_cadastrar_consulta_use_case()`, `get_listar_consultas()`, `get_listar_usuarios()`, `get_buscar_usuario()`, `get_alterar_status_usuario_use_case()`, `get_cadastrar_especialidade()`, `get_listar_especialidades()`, `get_listar_especialidades_medico()`, `get_associar_especialidade_medico()`, `get_adicionar_horario_disponivel()`, `get_listar_horarios_disponivel_medico()`, `get_consultar_disponibilidade()`, `get_horario_disponivel_repository()`.
 
 ---
 

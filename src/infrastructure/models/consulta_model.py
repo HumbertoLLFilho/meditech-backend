@@ -14,3 +14,4 @@ class ConsultaModel(db.Model):
     especialidade_id = db.Column(db.Integer, db.ForeignKey("especialidades.id"), nullable=False)
     data_cadastrada = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     cancelada = db.Column(db.Boolean, default=False, nullable=False)
+    descricao_cancelamento = db.Column(db.Text, nullable=True)

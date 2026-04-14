@@ -270,6 +270,13 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
 USUARIO_ALTERAR_STATUS_DOC = {
     "tags": ["Usuarios"],
     "security": [{"BearerAuth": []}],
+    "summary": "Alterar status de aprovacao de um usuario (admin only)",
+    "description": (
+        "Permite que um admin altere o status de aprovacao de um medico. "
+        "Quando o status for 'aprovado', o campo ativo e automaticamente definido como true, "
+        "liberando acesso completo ao sistema. Para os demais status, ativo fica false e o "
+        "medico so consegue acessar o proprio perfil."
+    ),
     "parameters": [
         {
             "name": "usuario_id",
@@ -285,12 +292,13 @@ USUARIO_ALTERAR_STATUS_DOC = {
             "application/json": {
                 "schema": {
                     "type": "object",
-                    "required": ["ativo"],
+                    "required": ["status_aprovacao"],
                     "properties": {
-                        "ativo": {
-                            "type": "boolean",
-                            "example": True,
-                            "description": "Novo status do usuario (true para ativo, false para inativo)",
+                        "status_aprovacao": {
+                            "type": "string",
+                            "enum": ["novo", "em_andamento", "em_analise", "aprovado", "recusado"],
+                            "example": "em_analise",
+                            "description": "Novo status de aprovacao do medico",
                         },
                     },
                 }
@@ -298,10 +306,28 @@ USUARIO_ALTERAR_STATUS_DOC = {
         },
     },
     "responses": {
-        201: {"description": "Status do usuario alterado com sucesso"},
+        200: {
+            "description": "Status alterado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "mensagem": {"type": "string"},
+                            "usuario_id": {"type": "integer"},
+                            "status_aprovacao": {
+                                "type": "string",
+                                "enum": ["novo", "em_andamento", "em_analise", "aprovado", "recusado"],
+                            },
+                            "ativo": {"type": "boolean"},
+                        },
+                    }
+                }
+            },
+        },
         401: {"description": "Token ausente, invalido ou expirado"},
         403: {"description": "Acesso negado — apenas admins podem alterar status"},
-        422: {"description": "Erro de validacao ou usuario nao encontrado"},
+        422: {"description": "Erro de validacao, status invalido ou usuario nao encontrado"},
         500: {"description": "Erro interno do servidor"},
     },
 }

@@ -22,6 +22,7 @@ class BuscarUsuarioUseCase:
             "genero": usuario.genero.value,
             "tipo": usuario.tipo,
             "ativo": usuario.ativo,
+            "status_aprovacao": usuario.status_aprovacao.value if usuario.status_aprovacao else None,
             "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d"),
             "data_cadastro": (
                 usuario.data_cadastro.strftime("%Y-%m-%dT%H:%M:%S")

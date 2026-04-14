@@ -17,6 +17,7 @@ class UsuarioModel(db.Model):
     telefone = db.Column(db.String(20), nullable=False)
     tipo = db.Column(db.String(30), nullable=False)
     ativo = db.Column(db.Boolean, default=False)
+    status_aprovacao = db.Column(db.String(20), nullable=True)
     data_cadastro = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     documentos = db.relationship(
         "DocumentoModel",

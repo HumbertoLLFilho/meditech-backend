@@ -6,7 +6,7 @@ from src.domain.contracts.especialidade_repository_contract import Especialidade
 from src.domain.contracts.password_service_contract import PasswordServiceContract
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
 from src.domain.models.documento import Documento, TipoDocumento
-from src.domain.models.usuario import Genero, TipoUsuario, Usuario
+from src.domain.models.usuario import Genero, StatusAprovacao, TipoUsuario, Usuario
 from src.usecases.usuarios.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
 
 
@@ -53,6 +53,7 @@ class CadastrarUsuarioUseCase:
             telefone=input_data.telefone,
             tipo=tipo,
             ativo=ativo,
+            status_aprovacao=StatusAprovacao.NOVO if tipo == TipoUsuario.MEDICO else None,
         )
 
         usuario_salvo = self.repository.salvar(usuario)

@@ -7,6 +7,7 @@ from src.repositories.documento_repository import DocumentoRepository
 from src.repositories.especialidade_repository import EspecialidadeRepository
 from src.repositories.horario_disponivel_repository import HorarioDisponivelRepository
 from src.repositories.usuario_repository import UsuarioRepository
+from src.usecases.consultas.cancelar_consulta.cancelar_consulta_usecase import CancelarConsultaUseCase
 from src.usecases.horarios.adicionar_horario_disponivel.adicionar_horario_disponivel_usecase import AdicionarHorarioDisponivelUseCase
 from src.usecases.usuarios.alterar_status_usuario.alterar_status_usuario_usecase import AlterarStatusUsuarioUseCase
 from src.usecases.especialidades.associar_especialidade_medico.associar_especialidade_medico_usecase import AssociarEspecialidadeMedicoUseCase
@@ -111,6 +112,13 @@ def get_listar_usuarios() -> ListarUsuariosUseCase:
     return _scoped(
         "listar_usuarios_use_case",
         lambda: ListarUsuariosUseCase(_get_usuario_repository()),
+    )
+
+
+def get_cancelar_consulta() -> CancelarConsultaUseCase:
+    return _scoped(
+        "cancelar_consulta_use_case",
+        lambda: CancelarConsultaUseCase(_get_consulta_repository()),
     )
 
 

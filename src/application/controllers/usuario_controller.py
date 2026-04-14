@@ -115,7 +115,7 @@ def alterar_status_usuario(usuario_id: int = None):
         use_case = get_alterar_status_usuario_use_case()
         resultado = use_case.executar(usuario_input)
 
-        return jsonify(resultado), 201
+        return jsonify(resultado), 200
 
     except ValueError as e:
         return jsonify({"erro": str(e)}), 422

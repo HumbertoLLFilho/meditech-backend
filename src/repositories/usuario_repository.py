@@ -5,7 +5,7 @@ from src.domain.models.consulta import Consulta
 from src.domain.models.documento import Documento, TipoDocumento
 from src.domain.models.especialidade import Especialidade
 from src.domain.models.horario_disponivel import HorarioDisponivel
-from src.domain.models.usuario import Genero, Usuario
+from src.domain.models.usuario import Genero, StatusAprovacao, Usuario
 from src.infrastructure.config.database import db
 from src.infrastructure.models.consulta_model import ConsultaModel
 from src.infrastructure.models.documento_model import DocumentoModel
@@ -31,6 +31,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
             tipo=model.tipo,
             ativo=model.ativo,
             data_cadastro=model.data_cadastro,
+            status_aprovacao=StatusAprovacao(model.status_aprovacao) if model.status_aprovacao else None,
         )
 
     @staticmethod
@@ -56,6 +57,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
             telefone=usuario.telefone,
             tipo=usuario.tipo,
             ativo=usuario.ativo,
+            status_aprovacao=usuario.status_aprovacao.value if usuario.status_aprovacao else None,
         )
         
         db.session.add(model)
@@ -216,6 +218,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
             raise ValueError("Usuario nao encontrado")
 
         model.ativo = usuario.ativo
+        model.status_aprovacao = usuario.status_aprovacao.value if usuario.status_aprovacao else None
 
         try:
             db.session.commit()

@@ -1,5 +1,6 @@
 from src.infrastructure.config.database import db
 
+
 class DocumentoModel(db.Model):
     __tablename__ = "documentos"
 
@@ -10,7 +11,6 @@ class DocumentoModel(db.Model):
     mime_type = db.Column(db.String(100), nullable=False)
     conteudo = db.Column(db.LargeBinary, nullable=False)
 
-    # Index para garantir unicidade de documentos
     __table_args__ = (
         db.UniqueConstraint('usuario_id', 'tipo', name='uq_documento_usuario_tipo'),
     )

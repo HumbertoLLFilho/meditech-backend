@@ -136,6 +136,36 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(especialidade_bp)
     app.register_blueprint(horario_disponivel_bp)
 
+    _register_medico_pendente_restriction(app)
+
+
+def _register_medico_pendente_restriction(app: Flask) -> None:
+    from flask import jsonify, request
+    from flask_jwt_extended import get_jwt, get_jwt_identity, verify_jwt_in_request
+
+    from src.domain.models.usuario import StatusAprovacao, TipoUsuario
+
+    @app.before_request
+    def _restricao_medico_pendente():
+        try:
+            verify_jwt_in_request(optional=True)
+        except Exception:
+            return  # Token invalido sera tratado pelo decorator da rota
+
+        claims = get_jwt()
+        if not claims:
+            return  # Rota publica
+
+        tipo = claims.get("tipo")
+        status = claims.get("status_aprovacao")
+
+        if tipo == TipoUsuario.MEDICO.value and status != StatusAprovacao.APROVADO.value:
+            usuario_id = get_jwt_identity()
+            rota_permitida = f"/usuarios/{usuario_id}"
+            if request.method == "GET" and request.path == rota_permitida:
+                return  # Permite acesso ao proprio perfil
+            return jsonify({"erro": "Acesso restrito. Seu cadastro ainda esta em analise."}), 403
+
 
 def _register_routes(app: Flask) -> None:
     @app.route("/")
@@ -166,12 +196,32 @@ def _create_tables(app: Flask) -> None:
     with app.app_context():
         db.create_all()
         _migrate_drop_sobre_mim()
+        _migrate_add_status_aprovacao()
 
 
 def _migrate_drop_sobre_mim() -> None:
     from sqlalchemy import text
     try:
         db.session.execute(text("ALTER TABLE usuarios DROP COLUMN IF EXISTS sobre_mim"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+
+
+def _migrate_add_status_aprovacao() -> None:
+    from sqlalchemy import text
+    try:
+        db.session.execute(text(
+            "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS status_aprovacao VARCHAR(20)"
+        ))
+        db.session.execute(text(
+            "UPDATE usuarios SET status_aprovacao = 'aprovado' "
+            "WHERE tipo = 'medico' AND ativo = TRUE AND status_aprovacao IS NULL"
+        ))
+        db.session.execute(text(
+            "UPDATE usuarios SET status_aprovacao = 'novo' "
+            "WHERE tipo = 'medico' AND ativo = FALSE AND status_aprovacao IS NULL"
+        ))
         db.session.commit()
     except Exception:
         db.session.rollback()

@@ -19,6 +19,7 @@ class Consulta:
     id: int | None = None
     data_cadastrada: datetime | None = None
     cancelada: bool = False
+    descricao_cancelamento: str | None = None
     medico: "Usuario | None" = field(default=None, compare=False)
     paciente: "Usuario | None" = field(default=None, compare=False)
     especialidade: "Especialidade | None" = field(default=None, compare=False)

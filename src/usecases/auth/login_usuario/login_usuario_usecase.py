@@ -1,6 +1,7 @@
 from src.domain.contracts.password_service_contract import PasswordServiceContract
 from src.domain.contracts.token_service_contract import TokenServiceContract
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
+from src.domain.models.usuario import TipoUsuario
 from src.usecases.auth.login_usuario.login_usuario_input import LoginUsuarioInput
 
 
@@ -26,7 +27,8 @@ class LoginUsuarioUseCase:
         if not usuario or not self.password_service.verify(input_data.senha, usuario.senha):
             raise InvalidCredentialsError("E-mail ou senha invalidos.")
 
-        if not usuario.ativo:
+        # Médicos podem logar independente do status de aprovação
+        if not usuario.ativo and usuario.tipo != TipoUsuario.MEDICO:
             raise InvalidCredentialsError("Conta inativa. Entre em contato com o administrador.")
 
         nome_completo = f"{usuario.nome} {usuario.sobrenome}"
