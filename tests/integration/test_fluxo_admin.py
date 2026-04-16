@@ -110,18 +110,17 @@ class TestAlterarStatusUsuario:
         resp = requests.patch(
             f"{BASE_URL}/usuarios/{medico_inativo_id}/alterarStatus",
             headers=admin_headers,
-            json={"ativo": True},
+            json={"status_aprovacao": "aprovado"},
         )
         assert resp.status_code == 200
         body = resp.json()
         assert body.get("ativo") is True
 
     def test_admin_desativa_medico(self, admin_headers, medico_inativo_id):
-        # Garante que foi ativado antes de desativar
         resp = requests.patch(
             f"{BASE_URL}/usuarios/{medico_inativo_id}/alterarStatus",
             headers=admin_headers,
-            json={"ativo": False},
+            json={"status_aprovacao": "recusado"},
         )
         assert resp.status_code == 200
         body = resp.json()
@@ -131,6 +130,6 @@ class TestAlterarStatusUsuario:
         resp = requests.patch(
             f"{BASE_URL}/usuarios/{medico_inativo_id}/alterarStatus",
             headers=paciente_cadastrado["headers"],
-            json={"ativo": True},
+            json={"status_aprovacao": "aprovado"},
         )
         assert resp.status_code == 403

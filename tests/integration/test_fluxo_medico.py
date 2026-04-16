@@ -64,7 +64,7 @@ class TestFluxoMedicoCompleto:
         r2 = requests.patch(
             f"{BASE_URL}/usuarios/{medico_id}/alterarStatus",
             headers=admin_headers,
-            json={"ativo": True},
+            json={"status_aprovacao": "aprovado"},
         )
         assert r2.status_code == 200
 
