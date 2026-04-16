@@ -53,3 +53,13 @@ class Usuario:
     especialidades: "list[Especialidade] | None" = field(default=None, compare=False)
     horarios_disponiveis: "list[HorarioDisponivel] | None" = field(default=None, compare=False)
     documentos: "list[Documento] | None" = field(default=None, compare=False)
+    cep: str | None = None
+    logradouro: str | None = None
+    numero: str | None = None
+    complemento: str | None = None
+    bairro: str | None = None
+    cidade: str | None = None
+    estado: str | None = None
+    tipo_sanguineo: str | None = None
+    alergias: str | None = None
+    plano_saude: str | None = None

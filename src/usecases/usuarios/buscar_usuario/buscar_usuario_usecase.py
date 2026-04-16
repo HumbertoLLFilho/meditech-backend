@@ -28,6 +28,20 @@ class BuscarUsuarioUseCase:
                 usuario.data_cadastro.strftime("%Y-%m-%dT%H:%M:%S")
                 if usuario.data_cadastro else None
             ),
+            "endereco": {
+                "cep": usuario.cep,
+                "logradouro": usuario.logradouro,
+                "numero": usuario.numero,
+                "complemento": usuario.complemento,
+                "bairro": usuario.bairro,
+                "cidade": usuario.cidade,
+                "estado": usuario.estado,
+            } if usuario.cep else None,
+            "dados_clinicos": {
+                "tipo_sanguineo": usuario.tipo_sanguineo,
+                "alergias": usuario.alergias,
+                "plano_saude": usuario.plano_saude,
+            } if usuario.tipo_sanguineo else None,
             "consultas_como_paciente": [
                 {
                     "id": c.id,

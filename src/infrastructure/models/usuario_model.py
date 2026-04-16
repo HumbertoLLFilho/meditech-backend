@@ -19,6 +19,16 @@ class UsuarioModel(db.Model):
     ativo = db.Column(db.Boolean, default=False)
     status_aprovacao = db.Column(db.String(20), nullable=True)
     data_cadastro = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    cep = db.Column(db.String(8), nullable=True)
+    logradouro = db.Column(db.String(255), nullable=True)
+    numero = db.Column(db.String(20), nullable=True)
+    complemento = db.Column(db.String(100), nullable=True)
+    bairro = db.Column(db.String(100), nullable=True)
+    cidade = db.Column(db.String(100), nullable=True)
+    estado = db.Column(db.String(2), nullable=True)
+    tipo_sanguineo = db.Column(db.String(5), nullable=True)
+    alergias = db.Column(db.Text, nullable=True)
+    plano_saude = db.Column(db.String(100), nullable=True)
     documentos = db.relationship(
         "DocumentoModel",
         backref="usuario",

@@ -97,7 +97,14 @@ USUARIO_CADASTRAR_DOC = {
                         "senha",
                         "cpf",
                         "telefone",
-                        "tipo"
+                        "tipo",
+                        "cep",
+                        "logradouro",
+                        "numero",
+                        "bairro",
+                        "cidade",
+                        "estado",
+                        "tipo_sanguineo"
                     ],
                     "properties": {
                         "nome": {"type": "string", "example": "Joao"},
@@ -119,7 +126,21 @@ USUARIO_CADASTRAR_DOC = {
                         },
                         "senha": {"type": "string", "example": "senha123"},
                         "cpf": {"type": "string", "example": "12345678901"},
-                        "telefone": {"type": "string", "example": "11999999999"}
+                        "telefone": {"type": "string", "example": "11999999999"},
+                        "cep": {"type": "string", "example": "01310100", "description": "CEP com 8 dígitos numéricos"},
+                        "logradouro": {"type": "string", "example": "Avenida Paulista"},
+                        "numero": {"type": "string", "example": "1000"},
+                        "complemento": {"type": "string", "example": "Apto 52", "description": "Opcional"},
+                        "bairro": {"type": "string", "example": "Bela Vista"},
+                        "cidade": {"type": "string", "example": "São Paulo"},
+                        "estado": {"type": "string", "example": "SP", "description": "UF com 2 letras maiúsculas"},
+                        "tipo_sanguineo": {
+                            "type": "string",
+                            "enum": ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+                            "example": "O+",
+                        },
+                        "alergias": {"type": "string", "example": "Penicilina, dipirona", "description": "Opcional"},
+                        "plano_saude": {"type": "string", "example": "Unimed", "description": "Opcional"},
                     },
                 }
             }
@@ -258,7 +279,13 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
                         "email",
                         "senha",
                         "cpf",
-                        "telefone"
+                        "telefone",
+                        "cep",
+                        "logradouro",
+                        "numero",
+                        "bairro",
+                        "cidade",
+                        "estado"
                     ],
                     "properties": {
                         "nome": {"type": "string", "example": "Dr. Carlos"},
@@ -281,6 +308,13 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
                         "senha": {"type": "string", "example": "senhaSegura456"},
                         "cpf": {"type": "string", "example": "11223344556"},
                         "telefone": {"type": "string", "example": "11977776666"},
+                        "cep": {"type": "string", "example": "01310100", "description": "CEP com 8 dígitos numéricos"},
+                        "logradouro": {"type": "string", "example": "Rua das Flores"},
+                        "numero": {"type": "string", "example": "200"},
+                        "complemento": {"type": "string", "example": "Sala 5", "description": "Opcional"},
+                        "bairro": {"type": "string", "example": "Centro"},
+                        "cidade": {"type": "string", "example": "Campinas"},
+                        "estado": {"type": "string", "example": "SP", "description": "UF com 2 letras maiúsculas"},
                         "especialidade_ids": {
                             "type": "array",
                             "items": {"type": "integer"},

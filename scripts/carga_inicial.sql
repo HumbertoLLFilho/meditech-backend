@@ -3,8 +3,13 @@
 -- =============================================================
 -- • 10 especialidades
 -- • 1 admin + 50 médicos ativos + 10 médicos inativos
+-- • 10 pacientes (com endereço e dados clínicos de exemplo)
 -- • Associações médico ↔ especialidade (todos os 60 médicos)
 -- • Horários disponíveis (apenas os 50 ativos, 8 padrões rotacionados)
+--
+-- Novos campos em usuarios:
+--   endereço : cep, logradouro, numero, complemento, bairro, cidade, estado
+--   saúde    : tipo_sanguineo, alergias, plano_saude
 --
 -- Senha padrão: Meditech@2026
 -- Requer pgcrypto (disponível nas imagens oficiais do PostgreSQL).
@@ -291,7 +296,39 @@ BEGIN
                       'aline.sousa@meditech.com','fabiana.azevedo@meditech.com','nathan.henriques@meditech.com')
     ON CONFLICT ON CONSTRAINT uq_medico_esp_dia_periodo DO NOTHING;
 
-    RAISE NOTICE 'Carga inicial concluída: 10 especialidades | 1 admin | 50 médicos ativos | 10 inativos.';
+    -- ----------------------------------------------------------
+    -- 10 Pacientes (com endereço e dados clínicos de exemplo)
+    -- ----------------------------------------------------------
+    INSERT INTO usuarios (
+        nome, sobrenome, data_nascimento, genero, email, senha, cpf, telefone,
+        tipo, ativo,
+        cep, logradouro, numero, complemento, bairro, cidade, estado,
+        tipo_sanguineo, alergias, plano_saude,
+        data_cadastro
+    ) VALUES
+        ('Alice',    'Mendes',    '1995-04-12', 'feminino',  'alice.mendes@email.com',    v_senha, '20000000001', '11944440001', 'paciente', true,
+         '01310100', 'Avenida Paulista',      '1000', 'Apto 42',   'Bela Vista',   'São Paulo',     'SP', 'O+',  NULL,                   'Unimed',          NOW()),
+        ('Bruno',    'Carvalho',  '1988-09-03', 'masculino', 'bruno.carvalho@email.com',  v_senha, '20000000002', '11944440002', 'paciente', true,
+         '20040020', 'Avenida Rio Branco',    '156', NULL,         'Centro',        'Rio de Janeiro','RJ', 'A-',  'Dipirona',             'Amil',            NOW()),
+        ('Clarice',  'Goncalves', '1992-07-20', 'feminino',  'clarice.goncalves@email.com',v_senha,'20000000003', '11944440003', 'paciente', true,
+         '30130010', 'Rua dos Caetés',        '320', 'Sala 5',     'Centro',        'Belo Horizonte','MG', 'B+',  NULL,                   NULL,              NOW()),
+        ('Daniel',   'Figueiredo','1980-11-28', 'masculino', 'daniel.figueiredo@email.com',v_senha,'20000000004', '11944440004', 'paciente', true,
+         '40020010', 'Avenida Sete de Setembro','450',NULL,        'Mercês',        'Salvador',      'BA', 'AB+', 'Penicilina, Ibuprofeno','Bradesco Saúde',  NOW()),
+        ('Elena',    'Machado',   '2000-02-14', 'feminino',  'elena.machado@email.com',   v_senha, '20000000005', '11944440005', 'paciente', true,
+         '80010020', 'Rua XV de Novembro',    '800', 'Cobertura',  'Centro',        'Curitiba',      'PR', 'O-',  NULL,                   'SulAmérica',      NOW()),
+        ('Fabio',    'Nascimento', '1975-06-08','masculino', 'fabio.nascimento@email.com', v_senha, '20000000006', '11944440006', 'paciente', true,
+         '51021530', 'Avenida Boa Viagem',    '2200',NULL,         'Boa Viagem',    'Recife',        'PE', 'A+',  'Látex',                'Porto Seguro',    NOW()),
+        ('Giovanna', 'Batista',   '1998-12-30', 'feminino',  'giovanna.batista@email.com', v_senha,'20000000007', '11944440007', 'paciente', true,
+         '60160080', 'Rua Guilherme Rocha',   '500', 'Apto 301',  'Centro',        'Fortaleza',     'CE', 'B-',  NULL,                   NULL,              NOW()),
+        ('Henrique', 'Moura',     '1983-03-17', 'masculino', 'henrique.moura@email.com',  v_senha, '20000000008', '11944440008', 'paciente', true,
+         NULL,        NULL,                    NULL,  NULL,         NULL,            NULL,            NULL, 'AB-', 'Sulfa',                'Notredame Intermédica', NOW()),
+        ('Isabela',  'Vieira',    '1990-08-22', 'feminino',  'isabela.vieira@email.com',  v_senha, '20000000009', '11944440009', 'paciente', true,
+         '69010060', 'Avenida Eduardo Ribeiro','620', NULL,        'Centro',        'Manaus',        'AM', 'O+',  NULL,                   'Hapvida',         NOW()),
+        ('Jorge',    'Medeiros',  '1969-05-01', 'masculino', 'jorge.medeiros@email.com',  v_senha, '20000000010', '11944440010', 'paciente', true,
+         NULL,        NULL,                    NULL,  NULL,         NULL,            NULL,            NULL, NULL,  NULL,                   NULL,              NOW())
+    ON CONFLICT (email) DO NOTHING;
+
+    RAISE NOTICE 'Carga inicial concluída: 10 especialidades | 1 admin | 50 médicos ativos | 10 inativos | 10 pacientes.';
     RAISE NOTICE 'Senha padrão: Meditech@2026';
 
 END $$;

@@ -32,6 +32,16 @@ class UsuarioRepository(UsuarioRepositoryContract):
             ativo=model.ativo,
             data_cadastro=model.data_cadastro,
             status_aprovacao=StatusAprovacao(model.status_aprovacao) if model.status_aprovacao else None,
+            cep=model.cep,
+            logradouro=model.logradouro,
+            numero=model.numero,
+            complemento=model.complemento,
+            bairro=model.bairro,
+            cidade=model.cidade,
+            estado=model.estado,
+            tipo_sanguineo=model.tipo_sanguineo,
+            alergias=model.alergias,
+            plano_saude=model.plano_saude,
         )
 
     @staticmethod
@@ -58,6 +68,16 @@ class UsuarioRepository(UsuarioRepositoryContract):
             tipo=usuario.tipo,
             ativo=usuario.ativo,
             status_aprovacao=usuario.status_aprovacao.value if usuario.status_aprovacao else None,
+            cep=usuario.cep,
+            logradouro=usuario.logradouro,
+            numero=usuario.numero,
+            complemento=usuario.complemento,
+            bairro=usuario.bairro,
+            cidade=usuario.cidade,
+            estado=usuario.estado,
+            tipo_sanguineo=usuario.tipo_sanguineo,
+            alergias=usuario.alergias,
+            plano_saude=usuario.plano_saude,
         )
         
         db.session.add(model)

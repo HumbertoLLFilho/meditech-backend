@@ -33,6 +33,16 @@ class CadastrarUsuarioUseCase:
             valores = [g for g in Genero]
             raise ValueError(f"Genero invalido. Valores aceitos: {valores}")
 
+        CAMPOS_ENDERECO = ["cep", "logradouro", "numero", "bairro", "cidade", "estado"]
+        if tipo in (TipoUsuario.PACIENTE, TipoUsuario.MEDICO):
+            for campo in CAMPOS_ENDERECO:
+                if not getattr(input_data, campo):
+                    raise ValueError(f"Campo obrigatorio ausente para {tipo.value}: {campo}")
+
+        if tipo == TipoUsuario.PACIENTE:
+            if not input_data.tipo_sanguineo:
+                raise ValueError("Campo obrigatorio ausente para paciente: tipo_sanguineo")
+
         # busca pra ver se o email ou cpf ja estao cadastrados
         if self.repository.buscar_por_email(input_data.email):
             raise ValueError("E-mail ja cadastrado.")
@@ -54,6 +64,16 @@ class CadastrarUsuarioUseCase:
             tipo=tipo,
             ativo=ativo,
             status_aprovacao=StatusAprovacao.NOVO if tipo == TipoUsuario.MEDICO else None,
+            cep=input_data.cep,
+            logradouro=input_data.logradouro,
+            numero=input_data.numero,
+            complemento=input_data.complemento,
+            bairro=input_data.bairro,
+            cidade=input_data.cidade,
+            estado=input_data.estado,
+            tipo_sanguineo=input_data.tipo_sanguineo if tipo == TipoUsuario.PACIENTE else None,
+            alergias=input_data.alergias if tipo == TipoUsuario.PACIENTE else None,
+            plano_saude=input_data.plano_saude if tipo == TipoUsuario.PACIENTE else None,
         )
 
         usuario_salvo = self.repository.salvar(usuario)
