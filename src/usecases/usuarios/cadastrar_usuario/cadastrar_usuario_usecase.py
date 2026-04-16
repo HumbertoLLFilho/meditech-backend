@@ -90,5 +90,8 @@ class CadastrarUsuarioUseCase:
                     ))
         
         return {
-            "mensagem": f"{tipo.value} cadastrado com sucesso!"
+            "mensagem": f"{tipo.value} cadastrado com sucesso!",
+            "id": usuario_salvo.id,
+            "tipo": usuario_salvo.tipo.value,
+            "ativo": usuario_salvo.ativo,
         }

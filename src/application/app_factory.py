@@ -184,7 +184,7 @@ def _jwt_missing_token(reason: str):
 
 @jwt.invalid_token_loader
 def _jwt_invalid_token(reason: str):
-    return {"erro": "Token invalido.", "detalhe": reason}, 401
+    return {"erro": "Token invalido.", "detalhe": reason}, 422
 
 
 @jwt.expired_token_loader

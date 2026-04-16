@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt, jwt_required
 from flasgger import swag_from
 
 from src.application.docs.especialidades_docs import (
@@ -13,6 +14,7 @@ from src.application.dependencies.container import (
     get_listar_especialidades,
     get_listar_especialidades_medico,
 )
+from src.domain.models.usuario import TipoUsuario
 from src.usecases.especialidades.cadastrar_especialidade.cadastrar_especialidade_input import CadastrarEspecialidadeInput
 from src.usecases.especialidades.associar_especialidade_medico.associar_especialidade_medico_input import AssociarEspecialidadeMedicoInput
 
@@ -29,8 +31,13 @@ def listar_especialidades():
 
 
 @especialidade_bp.route("", methods=["POST"])
+@jwt_required()
 @swag_from(ESPECIALIDADE_CADASTRAR_DOC)
 def cadastrar_especialidade():
+    claims = get_jwt()
+    if claims.get("tipo") != TipoUsuario.ADMIN.value:
+        return jsonify({"erro": "Acesso negado. Apenas admins podem cadastrar especialidades."}), 403
+
     data = request.get_json(silent=True) or {}
 
     try:
@@ -62,7 +69,7 @@ def associar_especialidade_medico(medico_id: int):
         associar_input = AssociarEspecialidadeMedicoInput.from_dict(data, medico_id)
         use_case = get_associar_especialidade_medico()
         resultado = use_case.executar(associar_input)
-        return jsonify(resultado), 200
+        return jsonify(resultado), 201
 
     except ValueError as e:
         return jsonify({"erro": str(e)}), 422
