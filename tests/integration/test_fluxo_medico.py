@@ -45,6 +45,48 @@ class TestCadastroMedico:
         resp = requests.post(f"{BASE_URL}/usuarios/medico", json={"nome": "Incompleto"})
         assert resp.status_code == 422
 
+    def test_cadastro_medico_com_especialidade_ids_associa_especialidades(self, admin_headers, especialidade_clinica_geral):
+        """Especialidades passadas em especialidade_ids devem ser associadas ao médico na criação."""
+        payload = _cadastrar_medico_unico()
+        payload["especialidade_ids"] = [especialidade_clinica_geral["id"]]
+
+        resp = requests.post(f"{BASE_URL}/usuarios/medico", json=payload)
+        assert resp.status_code == 201, f"Cadastro falhou: {resp.text}"
+        medico_id = resp.json()["id"]
+
+        resp_esp = requests.get(
+            f"{BASE_URL}/especialidades/medico/{medico_id}",
+            headers=admin_headers,
+        )
+        assert resp_esp.status_code == 200, f"Listagem de especialidades falhou: {resp_esp.text}"
+        especialidades = resp_esp.json()
+        ids = [e["id"] for e in especialidades]
+        assert especialidade_clinica_geral["id"] in ids, (
+            f"Especialidade {especialidade_clinica_geral['id']} não encontrada. IDs retornados: {ids}"
+        )
+
+    def test_cadastro_medico_com_especialidade_inexistente_retorna_422(self):
+        payload = _cadastrar_medico_unico()
+        payload["especialidade_ids"] = [999999]
+
+        resp = requests.post(f"{BASE_URL}/usuarios/medico", json=payload)
+        assert resp.status_code == 422, f"Esperado 422, recebeu {resp.status_code}: {resp.text}"
+
+    def test_cadastro_medico_sem_especialidade_ids_nao_associa_nada(self, admin_headers):
+        """Sem especialidade_ids o médico nasce sem especialidades associadas."""
+        payload = _cadastrar_medico_unico()
+
+        resp = requests.post(f"{BASE_URL}/usuarios/medico", json=payload)
+        assert resp.status_code == 201
+        medico_id = resp.json()["id"]
+
+        resp_esp = requests.get(
+            f"{BASE_URL}/especialidades/medico/{medico_id}",
+            headers=admin_headers,
+        )
+        assert resp_esp.status_code == 200
+        assert resp_esp.json() == [], f"Esperado lista vazia, recebeu: {resp_esp.json()}"
+
 
 class TestFluxoMedicoCompleto:
     """

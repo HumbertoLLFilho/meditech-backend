@@ -170,6 +170,8 @@ def _register_medico_pendente_restriction(app: Flask) -> None:
             rota_permitida = f"/usuarios/{usuario_id}"
             if request.method == "GET" and request.path == rota_permitida:
                 return  # Permite acesso ao proprio perfil
+            if request.method == "GET" and request.path == f"/especialidades/medico/{usuario_id}":
+                return  # Permite acesso às próprias especialidades
             if request.method == "GET" and re.match(r"^/documentos/\d+/download$", request.path):
                 return  # Use case verifica propriedade do documento
             return jsonify({"erro": "Acesso restrito. Seu cadastro ainda esta em analise."}), 403
