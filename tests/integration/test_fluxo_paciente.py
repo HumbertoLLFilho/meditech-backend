@@ -79,9 +79,12 @@ class TestDisponibilidade:
         )
         assert resp.status_code == 200
         body = resp.json()
-        # Resposta pode ser lista direta ou dict com chave "slots"/"disponibilidades"
-        slots = body if isinstance(body, list) else body.get("slots", body.get("disponibilidades", []))
-        assert len(slots) > 0, "Esperava slots disponíveis na próxima segunda manhã para Clínica Geral"
+        assert isinstance(body, list)
+        assert len(body) > 0, "Esperava médicos disponíveis na próxima segunda manhã para Clínica Geral"
+        primeiro = body[0]
+        assert "medico_id" in primeiro
+        assert "horarios" in primeiro
+        assert len(primeiro["horarios"]) > 0
 
     def test_disponibilidade_sem_parametros_retorna_422(self, paciente_cadastrado):
         resp = requests.get(
@@ -115,10 +118,13 @@ class TestAgendamentoDeConsulta:
             },
         )
         assert resp.status_code == 200
-        body = resp.json()
-        slots = body if isinstance(body, list) else body.get("slots", body.get("disponibilidades", []))
-        assert slots, "Nenhum slot disponível para o teste de agendamento."
-        return slots[0]  # primeiro slot disponível
+        disponibilidades = resp.json()
+        assert disponibilidades, "Nenhum slot disponível para o teste de agendamento."
+        primeiro_medico = disponibilidades[0]
+        return {
+            "medico_id": primeiro_medico["medico_id"],
+            "hora": primeiro_medico["horarios"][0],
+        }
 
     @pytest.fixture(scope="class")
     def consulta_agendada(

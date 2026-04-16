@@ -126,6 +126,7 @@ def _register_models() -> None:
 def _register_blueprints(app: Flask) -> None:
     from src.application.controllers.auth_controller import auth_bp
     from src.application.controllers.consulta_controller import consulta_bp
+    from src.application.controllers.documentos_controller import documento_bp
     from src.application.controllers.especialidade_controller import especialidade_bp
     from src.application.controllers.horario_disponivel_controller import horario_disponivel_bp
     from src.application.controllers.usuario_controller import usuario_bp
@@ -135,6 +136,7 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(consulta_bp)
     app.register_blueprint(especialidade_bp)
     app.register_blueprint(horario_disponivel_bp)
+    app.register_blueprint(documento_bp)
 
     _register_medico_pendente_restriction(app)
 
@@ -163,10 +165,13 @@ def _register_medico_pendente_restriction(app: Flask) -> None:
         status = claims.get("status_aprovacao")
 
         if tipo == TipoUsuario.MEDICO.value and status != StatusAprovacao.APROVADO.value:
+            import re
             usuario_id = get_jwt_identity()
             rota_permitida = f"/usuarios/{usuario_id}"
             if request.method == "GET" and request.path == rota_permitida:
                 return  # Permite acesso ao proprio perfil
+            if request.method == "GET" and re.match(r"^/documentos/\d+/download$", request.path):
+                return  # Use case verifica propriedade do documento
             return jsonify({"erro": "Acesso restrito. Seu cadastro ainda esta em analise."}), 403
 
 

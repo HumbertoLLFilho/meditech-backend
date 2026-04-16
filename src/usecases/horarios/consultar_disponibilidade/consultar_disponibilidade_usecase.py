@@ -33,14 +33,14 @@ class ConsultarDisponibilidadeUseCase:
                 if not any(sobrepostos(slot, ocupado) for ocupado in horas_ocupadas)
             ]
 
-            for slot in slots_livres:
+            if slots_livres:
                 resultado.append({
                     "medico_id": horario.medico_id,
                     "medico_nome": horario.medico.nome if horario.medico else None,
                     "medico_sobrenome": horario.medico.sobrenome if horario.medico else None,
                     "especialidade_id": horario.especialidade_id,
                     "especialidade_nome": horario.especialidade.nome if horario.especialidade else None,
-                    "hora": slot,
+                    "horarios": slots_livres,
                 })
 
         return resultado

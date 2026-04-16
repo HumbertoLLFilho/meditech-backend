@@ -25,6 +25,7 @@ class ListarUsuariosUseCase:
                 "genero": u.genero,
                 "tipo": u.tipo,
                 "ativo": u.ativo,
+                "status_aprovacao": u.status_aprovacao.value if u.status_aprovacao else None,
                 "data_cadastro": u.data_cadastro.strftime("%Y-%m-%dT%H:%M:%S") if u.data_cadastro else None,
             }
             for u in usuarios

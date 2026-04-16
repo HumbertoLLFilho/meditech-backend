@@ -1,5 +1,5 @@
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
-from src.domain.models.usuario import StatusAprovacao, TipoUsuario
+from src.domain.models.usuario import StatusAprovacao
 from src.usecases.usuarios.alterar_status_usuario.alterar_status_usuario_input import AlterarStatusUsuarioInput
 
 
@@ -12,13 +12,13 @@ class AlterarStatusUsuarioUseCase:
         if not usuario:
             raise ValueError("Usuario nao encontrado")
 
-        usuario.ativo = input_data.ativo
-        if usuario.tipo == TipoUsuario.MEDICO:
-            usuario.status_aprovacao = StatusAprovacao.APROVADO if input_data.ativo else StatusAprovacao.NOVO
+        usuario.status_aprovacao = input_data.status_aprovacao
+        usuario.ativo = input_data.status_aprovacao == StatusAprovacao.APROVADO
         self.usuario_repository.atualizar(usuario)
 
         return {
             "mensagem": "Status do usuario alterado com sucesso",
             "usuario_id": usuario.id,
+            "status_aprovacao": usuario.status_aprovacao.value,
             "ativo": usuario.ativo,
         }

@@ -46,7 +46,35 @@ USUARIO_LISTAR_DOC = {
         },
     ],
     "responses": {
-        200: {"description": "Lista de usuarios"},
+        200: {
+            "description": "Lista de usuarios",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "integer"},
+                                "nome": {"type": "string"},
+                                "sobrenome": {"type": "string"},
+                                "email": {"type": "string"},
+                                "genero": {"type": "string"},
+                                "tipo": {"type": "string"},
+                                "ativo": {"type": "boolean"},
+                                "status_aprovacao": {
+                                    "type": "string",
+                                    "enum": ["novo", "em_andamento", "em_analise", "aprovado", "recusado"],
+                                    "nullable": True,
+                                    "description": "Status de aprovacao (apenas para medicos; null para outros tipos)",
+                                },
+                                "data_cadastro": {"type": "string", "format": "date-time"},
+                            },
+                        },
+                    }
+                }
+            },
+        },
         401: {"description": "Token ausente, invalido ou expirado"},
         422: {"description": "Valor invalido nos filtros"},
     },
@@ -98,7 +126,27 @@ USUARIO_CADASTRAR_DOC = {
         },
     },
     "responses": {
-        201: {"description": "Usuario cadastrado com sucesso"},
+        201: {
+            "description": "Usuario cadastrado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "mensagem": {"type": "string"},
+                            "id": {"type": "integer"},
+                            "tipo": {"type": "string"},
+                            "ativo": {"type": "boolean"},
+                            "status_aprovacao": {
+                                "type": "string",
+                                "nullable": True,
+                                "description": "Sempre null para pacientes",
+                            },
+                        },
+                    }
+                }
+            },
+        },
         422: {"description": "Erro de validacao"},
         500: {"description": "Erro interno do servidor"},
     },
@@ -150,11 +198,27 @@ USUARIO_CADASTRAR_ADMIN_DOC = {
         },
     },
     "responses": {
-        201: {"description": "Admin cadastrado com sucesso"},
+        201: {
+            "description": "Admin cadastrado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "mensagem": {"type": "string"},
+                            "id": {"type": "integer"},
+                            "tipo": {"type": "string"},
+                            "ativo": {"type": "boolean"},
+                            "status_aprovacao": {"type": "string", "nullable": True},
+                        },
+                    }
+                }
+            },
+        },
         403: {"description": "Acesso negado — requer token de admin"},
         422: {"description": "Erro de validacao"},
         500: {"description": "Erro interno do servidor"},
-        },
+    },
 }
 
 USUARIO_BUSCAR_DOC = {
@@ -261,7 +325,27 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
         },
      },
     "responses": {
-        201: {"description": "Medico cadastrado com sucesso"},
+        201: {
+            "description": "Medico cadastrado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "mensagem": {"type": "string"},
+                            "id": {"type": "integer"},
+                            "tipo": {"type": "string"},
+                            "ativo": {"type": "boolean"},
+                            "status_aprovacao": {
+                                "type": "string",
+                                "enum": ["novo", "em_andamento", "em_analise", "aprovado", "recusado"],
+                                "description": "Status de aprovacao do medico (inicia como 'novo')",
+                            },
+                        },
+                    }
+                }
+            },
+        },
         422: {"description": "Erro de validacao, base64 invalido ou especialidade nao encontrada"},
         500: {"description": "Erro interno do servidor"},
     },

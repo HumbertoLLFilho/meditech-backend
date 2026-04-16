@@ -94,6 +94,12 @@ class BuscarUsuarioUseCase:
                     "tipo": d.tipo.value if hasattr(d.tipo, "value") else d.tipo,
                     "nome_arquivo": d.nome_arquivo,
                     "mime_type": d.mime_type,
+                    **(
+                        {"texto": d.conteudo.decode("utf-8", errors="replace")}
+                        if (hasattr(d.tipo, "value") and d.tipo.value == "sobre_mim")
+                        or d.tipo == "sobre_mim"
+                        else {}
+                    ),
                 }
                 for d in (usuario.documentos or [])
             ],

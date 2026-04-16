@@ -94,4 +94,5 @@ class CadastrarUsuarioUseCase:
             "id": usuario_salvo.id,
             "tipo": usuario_salvo.tipo.value,
             "ativo": usuario_salvo.ativo,
+            "status_aprovacao": usuario_salvo.status_aprovacao.value if usuario_salvo.status_aprovacao else None,
         }

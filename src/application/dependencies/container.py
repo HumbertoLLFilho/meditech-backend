@@ -21,6 +21,7 @@ from src.usecases.especialidades.listar_especialidades.listar_especialidades_use
 from src.usecases.especialidades.listar_especialidades_medico.listar_especialidades_medico_usecase import ListarEspecialidadesMedicoUseCase
 from src.usecases.usuarios.listar_usuarios.listar_usuarios_usecase import ListarUsuariosUseCase
 from src.usecases.usuarios.buscar_usuario.buscar_usuario_usecase import BuscarUsuarioUseCase
+from src.usecases.usuarios.baixar_documento.baixar_documento_usecase import BaixarDocumentoUseCase
 from src.usecases.auth.login_usuario.login_usuario_usecase import LoginUsuarioUseCase
 
 
@@ -198,4 +199,11 @@ def get_alterar_status_usuario_use_case() -> AlterarStatusUsuarioUseCase:
     return _scoped(
         "alterar_status_usuario_use_case",
         lambda: AlterarStatusUsuarioUseCase(_get_usuario_repository()),
+    )
+
+
+def get_baixar_documento() -> BaixarDocumentoUseCase:
+    return _scoped(
+        "baixar_documento_use_case",
+        lambda: BaixarDocumentoUseCase(_get_documento_repository()),
     )
