@@ -147,6 +147,9 @@ def _register_medico_pendente_restriction(app: Flask) -> None:
 
     @app.before_request
     def _restricao_medico_pendente():
+        if request.method == "OPTIONS":
+            return  # CORS preflight — sem token, sem verificacao
+
         try:
             verify_jwt_in_request(optional=True)
         except Exception:
