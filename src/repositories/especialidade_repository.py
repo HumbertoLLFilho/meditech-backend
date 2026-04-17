@@ -70,3 +70,18 @@ class EspecialidadeRepository(EspecialidadeRepositoryContract):
         except Exception:
             db.session.rollback()
             raise
+
+    def desassociar_medico(self, medico_id: int, especialidade_id: int) -> None:
+        medico = UsuarioModel.query.get(medico_id)
+        especialidade = EspecialidadeModel.query.get(especialidade_id)
+
+        if not medico or especialidade not in medico.especialidades:
+            raise ValueError("Associacao nao encontrada.")
+
+        medico.especialidades.remove(especialidade)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
