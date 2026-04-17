@@ -150,3 +150,23 @@ ESPECIALIDADE_EDITAR_DOC = {
         500: {"description": "Erro interno"},
     },
 }
+
+ESPECIALIDADE_EXCLUIR_DOC = {
+    "tags": ["Especialidades"],
+    "security": [{"Bearer": []}],
+    "parameters": [
+        {
+            "name": "especialidade_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID da especialidade a excluir",
+        }
+    ],
+    "responses": {
+        200: {"description": "Especialidade excluida com sucesso (horarios e associacoes removidos; consultas mantidas)"},
+        403: {"description": "Acesso negado. Apenas admins."},
+        422: {"description": "Especialidade nao encontrada"},
+        500: {"description": "Erro interno"},
+    },
+}

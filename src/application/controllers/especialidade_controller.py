@@ -7,6 +7,7 @@ from src.application.docs.especialidades_docs import (
     ESPECIALIDADE_CADASTRAR_DOC,
     ESPECIALIDADE_DESASSOCIAR_MEDICO_DOC,
     ESPECIALIDADE_EDITAR_DOC,
+    ESPECIALIDADE_EXCLUIR_DOC,
     ESPECIALIDADE_LISTAR_DOC,
     ESPECIALIDADE_LISTAR_MEDICO_DOC,
 )
@@ -15,6 +16,7 @@ from src.application.dependencies.container import (
     get_cadastrar_especialidade,
     get_desassociar_especialidade_medico,
     get_editar_especialidade,
+    get_excluir_especialidade,
     get_listar_especialidades,
     get_listar_especialidades_medico,
 )
@@ -23,6 +25,7 @@ from src.usecases.especialidades.cadastrar_especialidade.cadastrar_especialidade
 from src.usecases.especialidades.associar_especialidade_medico.associar_especialidade_medico_input import AssociarEspecialidadeMedicoInput
 from src.usecases.especialidades.desassociar_especialidade_medico.desassociar_especialidade_medico_input import DesassociarEspecialidadeMedicoInput
 from src.usecases.especialidades.editar_especialidade.editar_especialidade_input import EditarEspecialidadeInput
+from src.usecases.especialidades.excluir_especialidade.excluir_especialidade_input import ExcluirEspecialidadeInput
 
 
 especialidade_bp = Blueprint("especialidade", __name__, url_prefix="/especialidades")
@@ -126,6 +129,26 @@ def editar_especialidade(especialidade_id: int):
         editar_input = EditarEspecialidadeInput.from_dict(data, especialidade_id)
         use_case = get_editar_especialidade()
         resultado = use_case.executar(editar_input)
+        return jsonify(resultado), 200
+
+    except ValueError as e:
+        return jsonify({"erro": str(e)}), 422
+    except Exception:
+        return jsonify({"erro": "Erro interno no servidor."}), 500
+
+
+@especialidade_bp.route("/<int:especialidade_id>", methods=["DELETE"])
+@jwt_required()
+@swag_from(ESPECIALIDADE_EXCLUIR_DOC)
+def excluir_especialidade(especialidade_id: int):
+    claims = get_jwt()
+    if claims.get("tipo") != TipoUsuario.ADMIN.value:
+        return jsonify({"erro": "Acesso negado. Apenas admins podem excluir especialidades."}), 403
+
+    try:
+        excluir_input = ExcluirEspecialidadeInput.from_path(especialidade_id)
+        use_case = get_excluir_especialidade()
+        resultado = use_case.executar(excluir_input)
         return jsonify(resultado), 200
 
     except ValueError as e:

@@ -36,3 +36,7 @@ class EspecialidadeRepositoryContract(ABC):
     @abstractmethod
     def atualizar(self, especialidade: Especialidade) -> Especialidade:
         ...
+
+    @abstractmethod
+    def deletar(self, especialidade_id: int) -> None:
+        ...

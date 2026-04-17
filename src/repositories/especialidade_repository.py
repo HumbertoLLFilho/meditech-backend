@@ -2,6 +2,7 @@ from src.domain.contracts.especialidade_repository_contract import Especialidade
 from src.domain.models.especialidade import Especialidade
 from src.infrastructure.config.database import db
 from src.infrastructure.models.especialidade_model import EspecialidadeModel
+from src.infrastructure.models.horario_disponivel_model import HorarioDisponivelModel
 from src.infrastructure.models.usuario_model import UsuarioModel
 
 
@@ -106,3 +107,20 @@ class EspecialidadeRepository(EspecialidadeRepositoryContract):
             raise
 
         return self._to_domain(model)
+
+    def deletar(self, especialidade_id: int) -> None:
+        model = EspecialidadeModel.query.get(especialidade_id)
+        if not model:
+            raise ValueError("Especialidade nao encontrada.")
+
+        HorarioDisponivelModel.query.filter_by(especialidade_id=especialidade_id).delete()
+
+        model.medicos.clear()
+
+        db.session.delete(model)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise

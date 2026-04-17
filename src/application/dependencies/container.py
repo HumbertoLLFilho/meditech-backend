@@ -29,6 +29,7 @@ from src.usecases.usuarios.excluir_conta.excluir_conta_usecase import ExcluirCon
 from src.usecases.usuarios.upload_documento.upload_documento_usecase import UploadDocumentoUseCase
 from src.usecases.especialidades.desassociar_especialidade_medico.desassociar_especialidade_medico_usecase import DesassociarEspecialidadeMedicoUseCase
 from src.usecases.especialidades.editar_especialidade.editar_especialidade_usecase import EditarEspecialidadeUseCase
+from src.usecases.especialidades.excluir_especialidade.excluir_especialidade_usecase import ExcluirEspecialidadeUseCase
 
 
 def _get_request_cache() -> dict:
@@ -267,4 +268,11 @@ def get_editar_especialidade() -> EditarEspecialidadeUseCase:
     return _scoped(
         "editar_especialidade_use_case",
         lambda: EditarEspecialidadeUseCase(_get_especialidade_repository()),
+    )
+
+
+def get_excluir_especialidade() -> ExcluirEspecialidadeUseCase:
+    return _scoped(
+        "excluir_especialidade_use_case",
+        lambda: ExcluirEspecialidadeUseCase(_get_especialidade_repository()),
     )
