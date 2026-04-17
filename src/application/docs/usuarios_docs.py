@@ -450,3 +450,100 @@ USUARIO_ALTERAR_STATUS_DOC = {
     },
 }
 
+USUARIO_EDITAR_DOC = {
+    "tags": ["Usuarios"],
+    "summary": "Editar perfil de usuario",
+    "description": (
+        "Atualiza os dados do perfil de um usuario. "
+        "O proprio usuario pode editar seu perfil. Admins podem editar qualquer usuario. "
+        "Medicos podem incluir 'especialidade_ids' para substituir todas as suas especialidades. "
+        "Apenas os campos enviados sao atualizados (PATCH parcial)."
+    ),
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "usuario_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario a ser editado",
+        }
+    ],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "nome": {"type": "string"},
+                        "sobrenome": {"type": "string"},
+                        "data_nascimento": {"type": "string", "format": "date", "example": "1990-01-15"},
+                        "genero": {
+                            "type": "string",
+                            "enum": ["masculino", "feminino", "outro", "prefiro_nao_informar"],
+                        },
+                        "telefone": {"type": "string"},
+                        "cep": {"type": "string", "example": "01310100"},
+                        "logradouro": {"type": "string"},
+                        "numero": {"type": "string"},
+                        "complemento": {"type": "string"},
+                        "bairro": {"type": "string"},
+                        "cidade": {"type": "string"},
+                        "estado": {"type": "string", "example": "SP"},
+                        "tipo_sanguineo": {
+                            "type": "string",
+                            "enum": ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+                        },
+                        "alergias": {"type": "string"},
+                        "plano_saude": {"type": "string"},
+                        "especialidade_ids": {
+                            "type": "array",
+                            "items": {"type": "integer"},
+                            "description": "Lista de IDs de especialidades (substitui todas as atuais). Apenas para medicos ou admins.",
+                        },
+                    },
+                }
+            }
+        },
+    },
+    "responses": {
+        200: {
+            "description": "Usuario atualizado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "integer"},
+                            "nome": {"type": "string"},
+                            "sobrenome": {"type": "string"},
+                            "email": {"type": "string"},
+                            "cpf": {"type": "string"},
+                            "telefone": {"type": "string"},
+                            "genero": {"type": "string"},
+                            "tipo": {"type": "string"},
+                            "ativo": {"type": "boolean"},
+                            "data_nascimento": {"type": "string"},
+                            "cep": {"type": "string"},
+                            "logradouro": {"type": "string"},
+                            "numero": {"type": "string"},
+                            "complemento": {"type": "string"},
+                            "bairro": {"type": "string"},
+                            "cidade": {"type": "string"},
+                            "estado": {"type": "string"},
+                            "tipo_sanguineo": {"type": "string"},
+                            "alergias": {"type": "string"},
+                            "plano_saude": {"type": "string"},
+                            "mensagem": {"type": "string"},
+                        },
+                    }
+                }
+            },
+        },
+        401: {"description": "Token ausente, invalido ou expirado"},
+        422: {"description": "Erro de validacao ou usuario nao encontrado"},
+        500: {"description": "Erro interno do servidor"},
+    },
+}
+

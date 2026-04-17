@@ -245,3 +245,32 @@ class UsuarioRepository(UsuarioRepositoryContract):
         except Exception:
             db.session.rollback()
             raise
+
+    def atualizar_perfil(self, usuario: Usuario) -> Usuario:
+        model = UsuarioModel.query.get(usuario.id)
+        if not model:
+            raise ValueError("Usuario nao encontrado.")
+
+        model.nome = usuario.nome
+        model.sobrenome = usuario.sobrenome
+        model.data_nascimento = usuario.data_nascimento
+        model.genero = usuario.genero.value if hasattr(usuario.genero, "value") else usuario.genero
+        model.telefone = usuario.telefone
+        model.cep = usuario.cep
+        model.logradouro = usuario.logradouro
+        model.numero = usuario.numero
+        model.complemento = usuario.complemento
+        model.bairro = usuario.bairro
+        model.cidade = usuario.cidade
+        model.estado = usuario.estado
+        model.tipo_sanguineo = usuario.tipo_sanguineo
+        model.alergias = usuario.alergias
+        model.plano_saude = usuario.plano_saude
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+        return self._to_domain(model)

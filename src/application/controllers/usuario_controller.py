@@ -2,11 +2,12 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flasgger import swag_from
 
-from src.application.docs.usuarios_docs import USUARIO_ALTERAR_STATUS_DOC, USUARIO_BUSCAR_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_LISTAR_DOC
-from src.application.dependencies.container import get_alterar_status_usuario_use_case, get_buscar_usuario, get_cadastrar_usuario_use_case, get_listar_usuarios
+from src.application.docs.usuarios_docs import USUARIO_ALTERAR_STATUS_DOC, USUARIO_BUSCAR_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_EDITAR_DOC, USUARIO_LISTAR_DOC
+from src.application.dependencies.container import get_alterar_status_usuario_use_case, get_buscar_usuario, get_cadastrar_usuario_use_case, get_editar_usuario, get_listar_usuarios
 from src.usecases.usuarios.alterar_status_usuario.alterar_status_usuario_input import AlterarStatusUsuarioInput
 from src.usecases.usuarios.buscar_usuario.buscar_usuario_input import BuscarUsuarioInput
 from src.usecases.usuarios.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
+from src.usecases.usuarios.editar_usuario.editar_usuario_input import EditarUsuarioInput
 from src.usecases.usuarios.listar_usuarios.listar_usuarios_input import ListarUsuariosInput
 from src.domain.models.usuario import TipoUsuario
 
@@ -121,6 +122,27 @@ def alterar_status_usuario(usuario_id: int = None):
         return jsonify({"erro": str(e)}), 422
     except Exception as e:
         return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500
+
+@usuario_bp.route("/<int:usuario_id>", methods=["PATCH"])
+@jwt_required()
+@swag_from(USUARIO_EDITAR_DOC)
+def editar_usuario(usuario_id: int):
+    claims = get_jwt()
+    id_logado = int(get_jwt_identity())
+    tipo_logado = claims.get("tipo")
+
+    data = request.get_json(silent=True) or {}
+    try:
+        editar_input = EditarUsuarioInput.from_dict(data, usuario_id)
+        use_case = get_editar_usuario()
+        resultado = use_case.executar(editar_input, id_logado, tipo_logado)
+        return jsonify(resultado), 200
+
+    except ValueError as e:
+        return jsonify({"erro": str(e)}), 422
+    except Exception as e:
+        return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500
+
 
 @usuario_bp.route("/<int:usuario_id>", methods=["GET"])
 @jwt_required()

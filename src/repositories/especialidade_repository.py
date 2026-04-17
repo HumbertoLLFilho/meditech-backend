@@ -53,3 +53,20 @@ class EspecialidadeRepository(EspecialidadeRepositoryContract):
         except Exception:
             db.session.rollback()
             raise
+
+    def definir_especialidades_medico(self, medico_id: int, especialidade_ids: list[int]) -> None:
+        medico = UsuarioModel.query.get(medico_id)
+        if not medico:
+            raise ValueError("Medico nao encontrado.")
+
+        medico.especialidades.clear()
+        for esp_id in especialidade_ids:
+            especialidade = EspecialidadeModel.query.get(esp_id)
+            if especialidade:
+                medico.especialidades.append(especialidade)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
