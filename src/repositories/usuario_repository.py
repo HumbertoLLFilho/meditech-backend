@@ -42,6 +42,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
             tipo_sanguineo=model.tipo_sanguineo,
             alergias=model.alergias,
             plano_saude=model.plano_saude,
+            excluido_em=model.excluido_em,
         )
 
     @staticmethod
@@ -92,7 +93,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
         return self._to_domain(model)
 
     def buscar_por_email(self, email: str) -> Usuario | None:
-        model = UsuarioModel.query.filter_by(email=email).first()
+        model = UsuarioModel.query.filter_by(email=email).filter(UsuarioModel.excluido_em.is_(None)).first()
         if not model:
             return None
         return self._to_domain(model)
@@ -118,6 +119,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
         ordem: str = "desc",
     ) -> list[Usuario]:
         query = UsuarioModel.query
+        query = query.filter(UsuarioModel.excluido_em.is_(None))
 
         if ativo is not None:
             query = query.filter(UsuarioModel.ativo == ativo)

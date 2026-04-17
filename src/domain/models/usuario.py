@@ -63,3 +63,4 @@ class Usuario:
     tipo_sanguineo: str | None = None
     alergias: str | None = None
     plano_saude: str | None = None
+    excluido_em: datetime | None = None

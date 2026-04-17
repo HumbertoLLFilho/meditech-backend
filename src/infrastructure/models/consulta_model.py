@@ -11,7 +11,7 @@ class ConsultaModel(db.Model):
     medico_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=False)
     data_agendada = db.Column(db.Date, nullable=False)
     hora = db.Column(db.String(30), nullable=False)
-    especialidade_id = db.Column(db.Integer, db.ForeignKey("especialidades.id"), nullable=False)
+    especialidade_id = db.Column(db.Integer, db.ForeignKey("especialidades.id", ondelete="SET NULL"), nullable=True)
     data_cadastrada = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     cancelada = db.Column(db.Boolean, default=False, nullable=False)
     descricao_cancelamento = db.Column(db.Text, nullable=True)

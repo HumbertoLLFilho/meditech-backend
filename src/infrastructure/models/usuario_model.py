@@ -29,6 +29,7 @@ class UsuarioModel(db.Model):
     tipo_sanguineo = db.Column(db.String(5), nullable=True)
     alergias = db.Column(db.Text, nullable=True)
     plano_saude = db.Column(db.String(100), nullable=True)
+    excluido_em = db.Column(db.DateTime, nullable=True, default=None)
     documentos = db.relationship(
         "DocumentoModel",
         backref="usuario",
