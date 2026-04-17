@@ -6,6 +6,7 @@ from src.application.docs.especialidades_docs import (
     ESPECIALIDADE_ASSOCIAR_MEDICO_DOC,
     ESPECIALIDADE_CADASTRAR_DOC,
     ESPECIALIDADE_DESASSOCIAR_MEDICO_DOC,
+    ESPECIALIDADE_EDITAR_DOC,
     ESPECIALIDADE_LISTAR_DOC,
     ESPECIALIDADE_LISTAR_MEDICO_DOC,
 )
@@ -13,6 +14,7 @@ from src.application.dependencies.container import (
     get_associar_especialidade_medico,
     get_cadastrar_especialidade,
     get_desassociar_especialidade_medico,
+    get_editar_especialidade,
     get_listar_especialidades,
     get_listar_especialidades_medico,
 )
@@ -20,6 +22,7 @@ from src.domain.models.usuario import TipoUsuario
 from src.usecases.especialidades.cadastrar_especialidade.cadastrar_especialidade_input import CadastrarEspecialidadeInput
 from src.usecases.especialidades.associar_especialidade_medico.associar_especialidade_medico_input import AssociarEspecialidadeMedicoInput
 from src.usecases.especialidades.desassociar_especialidade_medico.desassociar_especialidade_medico_input import DesassociarEspecialidadeMedicoInput
+from src.usecases.especialidades.editar_especialidade.editar_especialidade_input import EditarEspecialidadeInput
 
 
 especialidade_bp = Blueprint("especialidade", __name__, url_prefix="/especialidades")
@@ -101,6 +104,28 @@ def desassociar_especialidade_medico(medico_id: int):
         desassociar_input = DesassociarEspecialidadeMedicoInput.from_dict(data, medico_id)
         use_case = get_desassociar_especialidade_medico()
         resultado = use_case.executar(desassociar_input)
+        return jsonify(resultado), 200
+
+    except ValueError as e:
+        return jsonify({"erro": str(e)}), 422
+    except Exception:
+        return jsonify({"erro": "Erro interno no servidor."}), 500
+
+
+@especialidade_bp.route("/<int:especialidade_id>", methods=["PUT"])
+@jwt_required()
+@swag_from(ESPECIALIDADE_EDITAR_DOC)
+def editar_especialidade(especialidade_id: int):
+    claims = get_jwt()
+    if claims.get("tipo") != TipoUsuario.ADMIN.value:
+        return jsonify({"erro": "Acesso negado. Apenas admins podem editar especialidades."}), 403
+
+    data = request.get_json(silent=True) or {}
+
+    try:
+        editar_input = EditarEspecialidadeInput.from_dict(data, especialidade_id)
+        use_case = get_editar_especialidade()
+        resultado = use_case.executar(editar_input)
         return jsonify(resultado), 200
 
     except ValueError as e:

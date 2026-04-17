@@ -32,3 +32,7 @@ class EspecialidadeRepositoryContract(ABC):
     @abstractmethod
     def desassociar_medico(self, medico_id: int, especialidade_id: int) -> None:
         ...
+
+    @abstractmethod
+    def atualizar(self, especialidade: Especialidade) -> Especialidade:
+        ...

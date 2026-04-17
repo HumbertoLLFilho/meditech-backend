@@ -85,3 +85,24 @@ class EspecialidadeRepository(EspecialidadeRepositoryContract):
         except Exception:
             db.session.rollback()
             raise
+
+    def atualizar(self, especialidade: Especialidade) -> Especialidade:
+        existente = EspecialidadeModel.query.filter(
+            EspecialidadeModel.nome == especialidade.nome,
+            EspecialidadeModel.id != especialidade.id,
+        ).first()
+        if existente:
+            raise ValueError(f"Especialidade '{especialidade.nome}' ja cadastrada.")
+
+        model = EspecialidadeModel.query.get(especialidade.id)
+        if not model:
+            raise ValueError("Especialidade nao encontrada.")
+
+        model.nome = especialidade.nome
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+        return self._to_domain(model)

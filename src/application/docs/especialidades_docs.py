@@ -116,3 +116,37 @@ ESPECIALIDADE_DESASSOCIAR_MEDICO_DOC = {
         500: {"description": "Erro interno"},
     },
 }
+
+ESPECIALIDADE_EDITAR_DOC = {
+    "tags": ["Especialidades"],
+    "security": [{"Bearer": []}],
+    "parameters": [
+        {
+            "name": "especialidade_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID da especialidade",
+        }
+    ],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["nome"],
+                    "properties": {
+                        "nome": {"type": "string", "example": "Cardiologia Avancada"},
+                    },
+                }
+            }
+        },
+    },
+    "responses": {
+        200: {"description": "Especialidade atualizada com sucesso"},
+        403: {"description": "Acesso negado. Apenas admins."},
+        422: {"description": "Especialidade nao encontrada ou nome ja em uso"},
+        500: {"description": "Erro interno"},
+    },
+}
