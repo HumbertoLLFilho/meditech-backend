@@ -55,3 +55,14 @@ class DocumentoRepository(DocumentoRepositoryContract):
         if not models:
             return None
         return self._to_domain(models)
+
+    def deletar(self, documento_id: int) -> None:
+        model = DocumentoModel.query.get(documento_id)
+        if not model:
+            return
+        db.session.delete(model)
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise

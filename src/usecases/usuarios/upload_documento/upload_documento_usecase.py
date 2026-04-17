@@ -26,6 +26,12 @@ class UploadDocumentoUseCase:
         if not usuario:
             raise ValueError("Usuario nao encontrado.")
 
+        existente = self.documento_repository.buscar_por_usuario_e_tipo(
+            input_data.usuario_id, input_data.tipo.value
+        )
+        if existente:
+            self.documento_repository.deletar(existente.id)
+
         documento = Documento(
             usuario_id=input_data.usuario_id,
             tipo=input_data.tipo,

@@ -58,6 +58,13 @@ def paciente_teste():
         "senha": "Teste@1234",
         "cpf": f"111{sufixo[:8]}",
         "telefone": "11988887777",
+        "cep": "01001000",
+        "logradouro": "Rua Gap",
+        "numero": "10",
+        "bairro": "Centro",
+        "cidade": "Sao Paulo",
+        "estado": "SP",
+        "tipo_sanguineo": "AB+",
     }
     resp = requests.post(f"{BASE_URL}/usuarios", json=payload)
     assert resp.status_code == 201
@@ -127,6 +134,13 @@ class TestExcluirConta:
             "senha": "Excluir@123",
             "cpf": f"222{sufixo[:8]}",
             "telefone": "11977776666",
+            "cep": "01001000",
+            "logradouro": "Rua Excluir",
+            "numero": "20",
+            "bairro": "Centro",
+            "cidade": "Sao Paulo",
+            "estado": "SP",
+            "tipo_sanguineo": "O-",
         }
         resp = requests.post(f"{BASE_URL}/usuarios", json=payload)
         assert resp.status_code == 201

@@ -35,6 +35,13 @@ class TestCadastroELoginPaciente:
             "senha": "Outro@1234",
             "cpf": "00000000099",
             "telefone": "11900000099",
+            "cep": "01001000",
+            "logradouro": "Rua Outro",
+            "numero": "1",
+            "bairro": "Centro",
+            "cidade": "Sao Paulo",
+            "estado": "SP",
+            "tipo_sanguineo": "A+",
         }
         resp = requests.post(f"{BASE_URL}/usuarios", json=payload)
         assert resp.status_code == 422
@@ -180,6 +187,13 @@ class TestAgendamentoDeConsulta:
             "senha": "Conflito@1234",
             "cpf": f"111{sufixo[:8]}",
             "telefone": "11988887777",
+            "cep": "01001000",
+            "logradouro": "Rua Conflito",
+            "numero": "2",
+            "bairro": "Centro",
+            "cidade": "Sao Paulo",
+            "estado": "SP",
+            "tipo_sanguineo": "B+",
         }
         r = requests.post(f"{BASE_URL}/usuarios", json=payload_paciente2)
         assert r.status_code == 201

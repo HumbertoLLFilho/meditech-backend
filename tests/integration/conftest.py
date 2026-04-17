@@ -95,6 +95,13 @@ def paciente_cadastrado():
         "senha": "Teste@1234",
         "cpf": f"999{sufixo[:8]}",
         "telefone": "11999990000",
+        "cep": "01001000",
+        "logradouro": "Rua Teste",
+        "numero": "100",
+        "bairro": "Centro",
+        "cidade": "Sao Paulo",
+        "estado": "SP",
+        "tipo_sanguineo": "O+",
     }
     resp = requests.post(f"{BASE_URL}/usuarios", json=payload)
     assert resp.status_code == 201, f"Cadastro de paciente falhou: {resp.text}"

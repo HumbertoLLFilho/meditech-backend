@@ -28,6 +28,12 @@ def _cadastrar_medico_unico():
         "senha": "DrTeste@1234",
         "cpf": f"888{sufixo[:8]}",
         "telefone": "11988880000",
+        "cep": "01001000",
+        "logradouro": "Rua Dr Teste",
+        "numero": "200",
+        "bairro": "Centro",
+        "cidade": "Sao Paulo",
+        "estado": "SP",
     }
     return payload
 
