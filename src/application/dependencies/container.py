@@ -26,6 +26,7 @@ from src.usecases.usuarios.editar_usuario.editar_usuario_usecase import EditarUs
 from src.usecases.auth.login_usuario.login_usuario_usecase import LoginUsuarioUseCase
 from src.usecases.usuarios.alterar_senha.alterar_senha_usecase import AlterarSenhaUseCase
 from src.usecases.usuarios.excluir_conta.excluir_conta_usecase import ExcluirContaUseCase
+from src.usecases.usuarios.upload_documento.upload_documento_usecase import UploadDocumentoUseCase
 
 
 def _get_request_cache() -> dict:
@@ -236,4 +237,14 @@ def get_excluir_conta_use_case() -> ExcluirContaUseCase:
     return _scoped(
         "excluir_conta_use_case",
         lambda: ExcluirContaUseCase(_get_usuario_repository()),
+    )
+
+
+def get_upload_documento() -> UploadDocumentoUseCase:
+    return _scoped(
+        "upload_documento_use_case",
+        lambda: UploadDocumentoUseCase(
+            _get_documento_repository(),
+            _get_usuario_repository(),
+        ),
     )

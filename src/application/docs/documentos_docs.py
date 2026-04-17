@@ -1,3 +1,42 @@
+DOCUMENTO_UPLOAD_DOC = {
+    "tags": ["Documentos"],
+    "security": [{"BearerAuth": []}],
+    "consumes": ["multipart/form-data"],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "multipart/form-data": {
+                "schema": {
+                    "type": "object",
+                    "required": ["tipo", "arquivo"],
+                    "properties": {
+                        "tipo": {
+                            "type": "string",
+                            "enum": ["crm", "curriculo", "sobre_mim"],
+                            "description": "Tipo do documento",
+                        },
+                        "arquivo": {
+                            "type": "string",
+                            "format": "binary",
+                            "description": "Arquivo a ser enviado",
+                        },
+                        "usuario_id": {
+                            "type": "integer",
+                            "description": "ID do usuario destinatario (apenas admin pode especificar; padrao: usuario logado)",
+                        },
+                    },
+                }
+            }
+        },
+    },
+    "responses": {
+        201: {"description": "Documento enviado com sucesso"},
+        403: {"description": "Acesso negado"},
+        422: {"description": "Erro de validacao"},
+        500: {"description": "Erro interno"},
+    },
+}
+
 DOCUMENTO_DOWNLOAD_DOC = {
     "tags": ["Documentos"],
     "security": [{"BearerAuth": []}],
