@@ -585,3 +585,23 @@ USUARIO_EDITAR_DOC = {
     },
 }
 
+USUARIO_EXCLUIR_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "usuario_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario a excluir",
+        }
+    ],
+    "responses": {
+        200: {"description": "Conta excluida com sucesso (soft delete)"},
+        403: {"description": "Acesso negado"},
+        422: {"description": "Usuario nao encontrado ou admin tentando excluir a propria conta"},
+        500: {"description": "Erro interno"},
+    },
+}
+

@@ -46,3 +46,7 @@ class UsuarioRepositoryContract(ABC):
     @abstractmethod
     def atualizar_senha(self, usuario_id: int, nova_senha_hash: str) -> None:
         ...
+
+    @abstractmethod
+    def excluir(self, usuario_id: int) -> None:
+        ...

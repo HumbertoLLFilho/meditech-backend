@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import aliased
 
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
@@ -282,6 +284,17 @@ class UsuarioRepository(UsuarioRepositoryContract):
         if not model:
             raise ValueError("Usuario nao encontrado.")
         model.senha = nova_senha_hash
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+    def excluir(self, usuario_id: int) -> None:
+        model = UsuarioModel.query.get(usuario_id)
+        if not model:
+            raise ValueError("Usuario nao encontrado.")
+        model.excluido_em = datetime.utcnow()
         try:
             db.session.commit()
         except Exception:
