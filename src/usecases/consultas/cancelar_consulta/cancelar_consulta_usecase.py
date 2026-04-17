@@ -16,13 +16,16 @@ class CancelarConsultaUseCase:
         if consulta.cancelada:
             raise ValueError("Consulta ja esta cancelada.")
 
-        # Apenas o paciente dono da consulta ou admin pode cancelar
         eh_admin = tipo_usuario == TipoUsuario.ADMIN.value
         eh_paciente_dono = (
             tipo_usuario == TipoUsuario.PACIENTE.value
             and consulta.paciente_id == input_data.usuario_id
         )
-        if not eh_admin and not eh_paciente_dono:
+        eh_medico_dono = (
+            tipo_usuario == TipoUsuario.MEDICO.value
+            and consulta.medico_id == input_data.usuario_id
+        )
+        if not eh_admin and not eh_paciente_dono and not eh_medico_dono:
             raise PermissionError("Voce nao tem permissao para cancelar esta consulta.")
 
         cancelada = self.consulta_repository.cancelar(input_data.consulta_id, descricao=input_data.descricao)

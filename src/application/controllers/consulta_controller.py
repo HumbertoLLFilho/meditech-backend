@@ -63,8 +63,9 @@ def cancelar_consulta(consulta_id: int):
 @swag_from(CONSULTA_LISTAR_DOC)
 def listar_consultas():
     usuario_id = int(get_jwt_identity())
+    tipo_usuario = get_jwt().get("tipo")
 
-    listar_input = ListarConsultasInput(usuario_id=usuario_id)
+    listar_input = ListarConsultasInput(usuario_id=usuario_id, tipo_usuario=tipo_usuario)
     use_case = get_listar_consultas()
     resultado = use_case.listar(listar_input)
 

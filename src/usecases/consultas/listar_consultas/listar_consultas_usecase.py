@@ -8,7 +8,7 @@ class ListarConsultaUseCase:
         self.repository = repository
 
     def listar(self, input_data: ListarConsultasInput) -> list[dict]:
-        consultas = self.repository.listar_por_usuario_com_detalhes(input_data.usuario_id)
+        consultas = self.repository.listar_por_usuario_com_detalhes(input_data.usuario_id, input_data.tipo_usuario)
 
         return [
             {

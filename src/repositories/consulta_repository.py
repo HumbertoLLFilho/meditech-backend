@@ -87,18 +87,26 @@ class ConsultaRepository(ConsultaRepositoryContract):
             raise
         return self._to_domain(model)
 
-    def listar_por_usuario_com_detalhes(self, usuario_id: int) -> list[Consulta]:
+    def listar_por_usuario_com_detalhes(self, usuario_id: int, tipo_usuario: str) -> list[Consulta]:
+        from src.domain.models.usuario import TipoUsuario
         MedicoAlias = aliased(UsuarioModel)
         PacienteAlias = aliased(UsuarioModel)
 
-        rows = (
+        query = (
             db.session.query(ConsultaModel, MedicoAlias, PacienteAlias, EspecialidadeModel)
             .join(MedicoAlias, ConsultaModel.medico_id == MedicoAlias.id)
             .join(PacienteAlias, ConsultaModel.paciente_id == PacienteAlias.id)
             .join(EspecialidadeModel, ConsultaModel.especialidade_id == EspecialidadeModel.id)
-            .filter(ConsultaModel.paciente_id == usuario_id)
-            .all()
         )
+
+        if tipo_usuario == TipoUsuario.ADMIN.value:
+            pass  # admin vê todas as consultas sem filtro
+        elif tipo_usuario == TipoUsuario.MEDICO.value:
+            query = query.filter(ConsultaModel.medico_id == usuario_id)
+        else:
+            query = query.filter(ConsultaModel.paciente_id == usuario_id)
+
+        rows = query.all()
 
         return [
             self._to_domain(
