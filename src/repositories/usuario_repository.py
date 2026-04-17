@@ -276,3 +276,14 @@ class UsuarioRepository(UsuarioRepositoryContract):
             raise
 
         return self._to_domain(model)
+
+    def atualizar_senha(self, usuario_id: int, nova_senha_hash: str) -> None:
+        model = UsuarioModel.query.get(usuario_id)
+        if not model:
+            raise ValueError("Usuario nao encontrado.")
+        model.senha = nova_senha_hash
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise

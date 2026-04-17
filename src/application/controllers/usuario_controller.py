@@ -2,8 +2,9 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flasgger import swag_from
 
-from src.application.docs.usuarios_docs import USUARIO_ALTERAR_STATUS_DOC, USUARIO_BUSCAR_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_EDITAR_DOC, USUARIO_LISTAR_DOC
-from src.application.dependencies.container import get_alterar_status_usuario_use_case, get_buscar_usuario, get_cadastrar_usuario_use_case, get_editar_usuario, get_listar_usuarios
+from src.application.docs.usuarios_docs import USUARIO_ALTERAR_SENHA_DOC, USUARIO_ALTERAR_STATUS_DOC, USUARIO_BUSCAR_DOC, USUARIO_CADASTRAR_ADMIN_DOC, USUARIO_CADASTRAR_DOC, USUARIO_CADASTRAR_MEDICO_DOC, USUARIO_EDITAR_DOC, USUARIO_LISTAR_DOC
+from src.application.dependencies.container import get_alterar_senha_use_case, get_alterar_status_usuario_use_case, get_buscar_usuario, get_cadastrar_usuario_use_case, get_editar_usuario, get_listar_usuarios
+from src.usecases.usuarios.alterar_senha.alterar_senha_input import AlterarSenhaInput
 from src.usecases.usuarios.alterar_status_usuario.alterar_status_usuario_input import AlterarStatusUsuarioInput
 from src.usecases.usuarios.buscar_usuario.buscar_usuario_input import BuscarUsuarioInput
 from src.usecases.usuarios.cadastrar_usuario.cadastrar_usuario_input import CadastrarUsuarioInput
@@ -175,3 +176,27 @@ def buscar_usuario(usuario_id: int):
         return jsonify({"erro": str(e)}), 422
     except Exception as e:
         return jsonify({"erro": "Erro interno no servidor.", "detalhe": str(e)}), 500
+
+
+@usuario_bp.route("/<int:usuario_id>/senha", methods=["PATCH"])
+@jwt_required()
+@swag_from(USUARIO_ALTERAR_SENHA_DOC)
+def alterar_senha(usuario_id: int):
+    claims = get_jwt()
+    id_logado = int(get_jwt_identity())
+    tipo_logado = claims.get("tipo")
+
+    data = request.get_json(silent=True) or {}
+
+    try:
+        alterar_input = AlterarSenhaInput.from_dict(data, usuario_id)
+        use_case = get_alterar_senha_use_case()
+        resultado = use_case.executar(alterar_input, id_logado, tipo_logado)
+        return jsonify(resultado), 200
+
+    except PermissionError as e:
+        return jsonify({"erro": str(e)}), 403
+    except ValueError as e:
+        return jsonify({"erro": str(e)}), 422
+    except Exception:
+        return jsonify({"erro": "Erro interno no servidor."}), 500

@@ -24,6 +24,7 @@ from src.usecases.usuarios.buscar_usuario.buscar_usuario_usecase import BuscarUs
 from src.usecases.usuarios.baixar_documento.baixar_documento_usecase import BaixarDocumentoUseCase
 from src.usecases.usuarios.editar_usuario.editar_usuario_usecase import EditarUsuarioUseCase
 from src.usecases.auth.login_usuario.login_usuario_usecase import LoginUsuarioUseCase
+from src.usecases.usuarios.alterar_senha.alterar_senha_usecase import AlterarSenhaUseCase
 
 
 def _get_request_cache() -> dict:
@@ -216,5 +217,15 @@ def get_editar_usuario() -> EditarUsuarioUseCase:
         lambda: EditarUsuarioUseCase(
             _get_usuario_repository(),
             _get_especialidade_repository(),
+        ),
+    )
+
+
+def get_alterar_senha_use_case() -> AlterarSenhaUseCase:
+    return _scoped(
+        "alterar_senha_use_case",
+        lambda: AlterarSenhaUseCase(
+            _get_usuario_repository(),
+            _get_password_service(),
         ),
     )

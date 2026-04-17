@@ -450,6 +450,44 @@ USUARIO_ALTERAR_STATUS_DOC = {
     },
 }
 
+USUARIO_ALTERAR_SENHA_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "usuario_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario",
+        }
+    ],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["nova_senha"],
+                    "properties": {
+                        "senha_atual": {
+                            "type": "string",
+                            "description": "Obrigatorio para o proprio usuario; ignorado para admin",
+                        },
+                        "nova_senha": {"type": "string", "minLength": 6},
+                    },
+                }
+            }
+        },
+    },
+    "responses": {
+        200: {"description": "Senha alterada com sucesso"},
+        403: {"description": "Acesso negado"},
+        422: {"description": "Erro de validacao (senha atual incorreta, nova senha curta, usuario nao encontrado)"},
+        500: {"description": "Erro interno"},
+    },
+}
+
 USUARIO_EDITAR_DOC = {
     "tags": ["Usuarios"],
     "summary": "Editar perfil de usuario",
