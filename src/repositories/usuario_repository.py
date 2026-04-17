@@ -105,7 +105,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
         return self._to_domain(model)
 
     def buscar_por_cpf(self, cpf: str) -> Usuario | None:
-        model_cpf = UsuarioModel.query.filter_by(cpf=cpf).first()
+        model_cpf = UsuarioModel.query.filter_by(cpf=cpf).filter(UsuarioModel.excluido_em.is_(None)).first()
         if not model_cpf:
             return None
         return self._to_domain(model_cpf)
