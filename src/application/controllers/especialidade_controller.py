@@ -32,7 +32,6 @@ especialidade_bp = Blueprint("especialidade", __name__, url_prefix="/especialida
 
 
 @especialidade_bp.route("", methods=["GET"])
-@jwt_required()
 @swag_from(ESPECIALIDADE_LISTAR_DOC)
 def listar_especialidades():
     use_case = get_listar_especialidades()
