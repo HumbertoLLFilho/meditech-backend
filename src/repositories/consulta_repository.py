@@ -30,6 +30,7 @@ class ConsultaRepository(ConsultaRepositoryContract):
             hora=model.hora,
             data_cadastrada=model.data_cadastrada,
             cancelada=model.cancelada,
+            descricao_cancelamento=model.descricao_cancelamento,
             medico=medico,
             paciente=paciente,
             especialidade=especialidade,
@@ -67,18 +68,45 @@ class ConsultaRepository(ConsultaRepositoryContract):
         ).all()
         return [self._to_domain(m) for m in models]
 
-    def listar_por_usuario_com_detalhes(self, usuario_id: int) -> list[Consulta]:
+    def buscar_por_id(self, consulta_id: int) -> Consulta | None:
+        model = ConsultaModel.query.get(consulta_id)
+        if not model:
+            return None
+        return self._to_domain(model)
+
+    def cancelar(self, consulta_id: int, descricao: str | None = None) -> Consulta:
+        model = ConsultaModel.query.get(consulta_id)
+        if not model:
+            raise ValueError("Consulta nao encontrada.")
+        model.cancelada = True
+        model.descricao_cancelamento = descricao
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+        return self._to_domain(model)
+
+    def listar_por_usuario_com_detalhes(self, usuario_id: int, tipo_usuario: str) -> list[Consulta]:
+        from src.domain.models.usuario import TipoUsuario
         MedicoAlias = aliased(UsuarioModel)
         PacienteAlias = aliased(UsuarioModel)
 
-        rows = (
+        query = (
             db.session.query(ConsultaModel, MedicoAlias, PacienteAlias, EspecialidadeModel)
             .join(MedicoAlias, ConsultaModel.medico_id == MedicoAlias.id)
             .join(PacienteAlias, ConsultaModel.paciente_id == PacienteAlias.id)
             .join(EspecialidadeModel, ConsultaModel.especialidade_id == EspecialidadeModel.id)
-            .filter(ConsultaModel.paciente_id == usuario_id)
-            .all()
         )
+
+        if tipo_usuario == TipoUsuario.ADMIN.value:
+            pass  # admin vê todas as consultas sem filtro
+        elif tipo_usuario == TipoUsuario.MEDICO.value:
+            query = query.filter(ConsultaModel.medico_id == usuario_id)
+        else:
+            query = query.filter(ConsultaModel.paciente_id == usuario_id)
+
+        rows = query.all()
 
         return [
             self._to_domain(

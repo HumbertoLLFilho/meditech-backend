@@ -19,5 +19,13 @@ class ConsultaRepositoryContract(ABC):
         ...
 
     @abstractmethod
-    def listar_por_usuario_com_detalhes(self, usuario_id: int) -> list[Consulta]:
+    def listar_por_usuario_com_detalhes(self, usuario_id: int, tipo_usuario: str) -> list[Consulta]:
+        ...
+
+    @abstractmethod
+    def buscar_por_id(self, consulta_id: int) -> Consulta | None:
+        ...
+
+    @abstractmethod
+    def cancelar(self, consulta_id: int, descricao: str | None = None) -> Consulta:
         ...

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import aliased
 
 from src.domain.contracts.usuario_repository_contract import UsuarioRepositoryContract
@@ -5,7 +7,7 @@ from src.domain.models.consulta import Consulta
 from src.domain.models.documento import Documento, TipoDocumento
 from src.domain.models.especialidade import Especialidade
 from src.domain.models.horario_disponivel import HorarioDisponivel
-from src.domain.models.usuario import Genero, Usuario
+from src.domain.models.usuario import Genero, StatusAprovacao, TipoUsuario, Usuario
 from src.infrastructure.config.database import db
 from src.infrastructure.models.consulta_model import ConsultaModel
 from src.infrastructure.models.documento_model import DocumentoModel
@@ -28,9 +30,21 @@ class UsuarioRepository(UsuarioRepositoryContract):
             senha=model.senha,
             cpf=model.cpf,
             telefone=model.telefone,
-            tipo=model.tipo,
+            tipo=TipoUsuario(model.tipo),
             ativo=model.ativo,
             data_cadastro=model.data_cadastro,
+            status_aprovacao=StatusAprovacao(model.status_aprovacao) if model.status_aprovacao else None,
+            cep=model.cep,
+            logradouro=model.logradouro,
+            numero=model.numero,
+            complemento=model.complemento,
+            bairro=model.bairro,
+            cidade=model.cidade,
+            estado=model.estado,
+            tipo_sanguineo=model.tipo_sanguineo,
+            alergias=model.alergias,
+            plano_saude=model.plano_saude,
+            excluido_em=model.excluido_em,
         )
 
     @staticmethod
@@ -56,6 +70,17 @@ class UsuarioRepository(UsuarioRepositoryContract):
             telefone=usuario.telefone,
             tipo=usuario.tipo,
             ativo=usuario.ativo,
+            status_aprovacao=usuario.status_aprovacao.value if usuario.status_aprovacao else None,
+            cep=usuario.cep,
+            logradouro=usuario.logradouro,
+            numero=usuario.numero,
+            complemento=usuario.complemento,
+            bairro=usuario.bairro,
+            cidade=usuario.cidade,
+            estado=usuario.estado,
+            tipo_sanguineo=usuario.tipo_sanguineo,
+            alergias=usuario.alergias,
+            plano_saude=usuario.plano_saude,
         )
         
         db.session.add(model)
@@ -70,7 +95,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
         return self._to_domain(model)
 
     def buscar_por_email(self, email: str) -> Usuario | None:
-        model = UsuarioModel.query.filter_by(email=email).first()
+        model = UsuarioModel.query.filter_by(email=email).filter(UsuarioModel.excluido_em.is_(None)).first()
         if not model:
             return None
         return self._to_domain(model)
@@ -82,7 +107,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
         return self._to_domain(model)
 
     def buscar_por_cpf(self, cpf: str) -> Usuario | None:
-        model_cpf = UsuarioModel.query.filter_by(cpf=cpf).first()
+        model_cpf = UsuarioModel.query.filter_by(cpf=cpf).filter(UsuarioModel.excluido_em.is_(None)).first()
         if not model_cpf:
             return None
         return self._to_domain(model_cpf)
@@ -96,6 +121,7 @@ class UsuarioRepository(UsuarioRepositoryContract):
         ordem: str = "desc",
     ) -> list[Usuario]:
         query = UsuarioModel.query
+        query = query.filter(UsuarioModel.excluido_em.is_(None))
 
         if ativo is not None:
             query = query.filter(UsuarioModel.ativo == ativo)
@@ -216,7 +242,59 @@ class UsuarioRepository(UsuarioRepositoryContract):
             raise ValueError("Usuario nao encontrado")
 
         model.ativo = usuario.ativo
+        model.status_aprovacao = usuario.status_aprovacao.value if usuario.status_aprovacao else None
 
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+    def atualizar_perfil(self, usuario: Usuario) -> Usuario:
+        model = UsuarioModel.query.get(usuario.id)
+        if not model:
+            raise ValueError("Usuario nao encontrado.")
+
+        model.nome = usuario.nome
+        model.sobrenome = usuario.sobrenome
+        model.data_nascimento = usuario.data_nascimento
+        model.genero = usuario.genero.value if hasattr(usuario.genero, "value") else usuario.genero
+        model.telefone = usuario.telefone
+        model.cep = usuario.cep
+        model.logradouro = usuario.logradouro
+        model.numero = usuario.numero
+        model.complemento = usuario.complemento
+        model.bairro = usuario.bairro
+        model.cidade = usuario.cidade
+        model.estado = usuario.estado
+        model.tipo_sanguineo = usuario.tipo_sanguineo
+        model.alergias = usuario.alergias
+        model.plano_saude = usuario.plano_saude
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+        return self._to_domain(model)
+
+    def atualizar_senha(self, usuario_id: int, nova_senha_hash: str) -> None:
+        model = UsuarioModel.query.get(usuario_id)
+        if not model:
+            raise ValueError("Usuario nao encontrado.")
+        model.senha = nova_senha_hash
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+    def excluir(self, usuario_id: int) -> None:
+        model = UsuarioModel.query.get(usuario_id)
+        if not model:
+            raise ValueError("Usuario nao encontrado.")
+        model.excluido_em = datetime.utcnow()
         try:
             db.session.commit()
         except Exception:

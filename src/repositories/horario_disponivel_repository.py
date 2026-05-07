@@ -125,3 +125,18 @@ class HorarioDisponivelRepository(HorarioDisponivelRepositoryContract):
         except Exception:
             db.session.rollback()
             raise
+
+    def deletar_por_medico_e_especialidade(self, medico_id: int, especialidade_id: int) -> None:
+        rows = HorarioDisponivelModel.query.filter_by(
+            medico_id=medico_id,
+            especialidade_id=especialidade_id,
+        ).all()
+
+        for row in rows:
+            db.session.delete(row)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise

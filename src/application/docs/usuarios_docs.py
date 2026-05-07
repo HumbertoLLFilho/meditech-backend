@@ -46,7 +46,35 @@ USUARIO_LISTAR_DOC = {
         },
     ],
     "responses": {
-        200: {"description": "Lista de usuarios"},
+        200: {
+            "description": "Lista de usuarios",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "integer"},
+                                "nome": {"type": "string"},
+                                "sobrenome": {"type": "string"},
+                                "email": {"type": "string"},
+                                "genero": {"type": "string"},
+                                "tipo": {"type": "string"},
+                                "ativo": {"type": "boolean"},
+                                "status_aprovacao": {
+                                    "type": "string",
+                                    "enum": ["novo", "em_andamento", "em_analise", "aprovado", "recusado"],
+                                    "nullable": True,
+                                    "description": "Status de aprovacao (apenas para medicos; null para outros tipos)",
+                                },
+                                "data_cadastro": {"type": "string", "format": "date-time"},
+                            },
+                        },
+                    }
+                }
+            },
+        },
         401: {"description": "Token ausente, invalido ou expirado"},
         422: {"description": "Valor invalido nos filtros"},
     },
@@ -69,7 +97,14 @@ USUARIO_CADASTRAR_DOC = {
                         "senha",
                         "cpf",
                         "telefone",
-                        "tipo"
+                        "tipo",
+                        "cep",
+                        "logradouro",
+                        "numero",
+                        "bairro",
+                        "cidade",
+                        "estado",
+                        "tipo_sanguineo"
                     ],
                     "properties": {
                         "nome": {"type": "string", "example": "Joao"},
@@ -91,14 +126,48 @@ USUARIO_CADASTRAR_DOC = {
                         },
                         "senha": {"type": "string", "example": "senha123"},
                         "cpf": {"type": "string", "example": "12345678901"},
-                        "telefone": {"type": "string", "example": "11999999999"}
+                        "telefone": {"type": "string", "example": "11999999999"},
+                        "cep": {"type": "string", "example": "01310100", "description": "CEP com 8 dígitos numéricos"},
+                        "logradouro": {"type": "string", "example": "Avenida Paulista"},
+                        "numero": {"type": "string", "example": "1000"},
+                        "complemento": {"type": "string", "example": "Apto 52", "description": "Opcional"},
+                        "bairro": {"type": "string", "example": "Bela Vista"},
+                        "cidade": {"type": "string", "example": "São Paulo"},
+                        "estado": {"type": "string", "example": "SP", "description": "UF com 2 letras maiúsculas"},
+                        "tipo_sanguineo": {
+                            "type": "string",
+                            "enum": ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+                            "example": "O+",
+                        },
+                        "alergias": {"type": "string", "example": "Penicilina, dipirona", "description": "Opcional"},
+                        "plano_saude": {"type": "string", "example": "Unimed", "description": "Opcional"},
                     },
                 }
             }
         },
     },
     "responses": {
-        201: {"description": "Usuario cadastrado com sucesso"},
+        201: {
+            "description": "Usuario cadastrado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "mensagem": {"type": "string"},
+                            "id": {"type": "integer"},
+                            "tipo": {"type": "string"},
+                            "ativo": {"type": "boolean"},
+                            "status_aprovacao": {
+                                "type": "string",
+                                "nullable": True,
+                                "description": "Sempre null para pacientes",
+                            },
+                        },
+                    }
+                }
+            },
+        },
         422: {"description": "Erro de validacao"},
         500: {"description": "Erro interno do servidor"},
     },
@@ -150,11 +219,27 @@ USUARIO_CADASTRAR_ADMIN_DOC = {
         },
     },
     "responses": {
-        201: {"description": "Admin cadastrado com sucesso"},
+        201: {
+            "description": "Admin cadastrado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "mensagem": {"type": "string"},
+                            "id": {"type": "integer"},
+                            "tipo": {"type": "string"},
+                            "ativo": {"type": "boolean"},
+                            "status_aprovacao": {"type": "string", "nullable": True},
+                        },
+                    }
+                }
+            },
+        },
         403: {"description": "Acesso negado — requer token de admin"},
         422: {"description": "Erro de validacao"},
         500: {"description": "Erro interno do servidor"},
-        },
+    },
 }
 
 USUARIO_BUSCAR_DOC = {
@@ -194,7 +279,13 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
                         "email",
                         "senha",
                         "cpf",
-                        "telefone"
+                        "telefone",
+                        "cep",
+                        "logradouro",
+                        "numero",
+                        "bairro",
+                        "cidade",
+                        "estado"
                     ],
                     "properties": {
                         "nome": {"type": "string", "example": "Dr. Carlos"},
@@ -217,6 +308,13 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
                         "senha": {"type": "string", "example": "senhaSegura456"},
                         "cpf": {"type": "string", "example": "11223344556"},
                         "telefone": {"type": "string", "example": "11977776666"},
+                        "cep": {"type": "string", "example": "01310100", "description": "CEP com 8 dígitos numéricos"},
+                        "logradouro": {"type": "string", "example": "Rua das Flores"},
+                        "numero": {"type": "string", "example": "200"},
+                        "complemento": {"type": "string", "example": "Sala 5", "description": "Opcional"},
+                        "bairro": {"type": "string", "example": "Centro"},
+                        "cidade": {"type": "string", "example": "Campinas"},
+                        "estado": {"type": "string", "example": "SP", "description": "UF com 2 letras maiúsculas"},
                         "especialidade_ids": {
                             "type": "array",
                             "items": {"type": "integer"},
@@ -261,7 +359,27 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
         },
      },
     "responses": {
-        201: {"description": "Medico cadastrado com sucesso"},
+        201: {
+            "description": "Medico cadastrado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "mensagem": {"type": "string"},
+                            "id": {"type": "integer"},
+                            "tipo": {"type": "string"},
+                            "ativo": {"type": "boolean"},
+                            "status_aprovacao": {
+                                "type": "string",
+                                "enum": ["novo", "em_andamento", "em_analise", "aprovado", "recusado"],
+                                "description": "Status de aprovacao do medico (inicia como 'novo')",
+                            },
+                        },
+                    }
+                }
+            },
+        },
         422: {"description": "Erro de validacao, base64 invalido ou especialidade nao encontrada"},
         500: {"description": "Erro interno do servidor"},
     },
@@ -270,6 +388,13 @@ USUARIO_CADASTRAR_MEDICO_DOC = {
 USUARIO_ALTERAR_STATUS_DOC = {
     "tags": ["Usuarios"],
     "security": [{"BearerAuth": []}],
+    "summary": "Alterar status de aprovacao de um usuario (admin only)",
+    "description": (
+        "Permite que um admin altere o status de aprovacao de um medico. "
+        "Quando o status for 'aprovado', o campo ativo e automaticamente definido como true, "
+        "liberando acesso completo ao sistema. Para os demais status, ativo fica false e o "
+        "medico so consegue acessar o proprio perfil."
+    ),
     "parameters": [
         {
             "name": "usuario_id",
@@ -285,12 +410,13 @@ USUARIO_ALTERAR_STATUS_DOC = {
             "application/json": {
                 "schema": {
                     "type": "object",
-                    "required": ["ativo"],
+                    "required": ["status_aprovacao"],
                     "properties": {
-                        "ativo": {
-                            "type": "boolean",
-                            "example": True,
-                            "description": "Novo status do usuario (true para ativo, false para inativo)",
+                        "status_aprovacao": {
+                            "type": "string",
+                            "enum": ["novo", "em_andamento", "em_analise", "aprovado", "recusado"],
+                            "example": "em_analise",
+                            "description": "Novo status de aprovacao do medico",
                         },
                     },
                 }
@@ -298,11 +424,184 @@ USUARIO_ALTERAR_STATUS_DOC = {
         },
     },
     "responses": {
-        201: {"description": "Status do usuario alterado com sucesso"},
+        200: {
+            "description": "Status alterado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "mensagem": {"type": "string"},
+                            "usuario_id": {"type": "integer"},
+                            "status_aprovacao": {
+                                "type": "string",
+                                "enum": ["novo", "em_andamento", "em_analise", "aprovado", "recusado"],
+                            },
+                            "ativo": {"type": "boolean"},
+                        },
+                    }
+                }
+            },
+        },
         401: {"description": "Token ausente, invalido ou expirado"},
         403: {"description": "Acesso negado — apenas admins podem alterar status"},
+        422: {"description": "Erro de validacao, status invalido ou usuario nao encontrado"},
+        500: {"description": "Erro interno do servidor"},
+    },
+}
+
+USUARIO_ALTERAR_SENHA_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "usuario_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario",
+        }
+    ],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["nova_senha"],
+                    "properties": {
+                        "senha_atual": {
+                            "type": "string",
+                            "description": "Obrigatorio para o proprio usuario; ignorado para admin",
+                        },
+                        "nova_senha": {"type": "string", "minLength": 6},
+                    },
+                }
+            }
+        },
+    },
+    "responses": {
+        200: {"description": "Senha alterada com sucesso"},
+        403: {"description": "Acesso negado"},
+        422: {"description": "Erro de validacao (senha atual incorreta, nova senha curta, usuario nao encontrado)"},
+        500: {"description": "Erro interno"},
+    },
+}
+
+USUARIO_EDITAR_DOC = {
+    "tags": ["Usuarios"],
+    "summary": "Editar perfil de usuario",
+    "description": (
+        "Atualiza os dados do perfil de um usuario. "
+        "O proprio usuario pode editar seu perfil. Admins podem editar qualquer usuario. "
+        "Medicos podem incluir 'especialidade_ids' para substituir todas as suas especialidades. "
+        "Apenas os campos enviados sao atualizados (PATCH parcial)."
+    ),
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "usuario_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario a ser editado",
+        }
+    ],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "nome": {"type": "string"},
+                        "sobrenome": {"type": "string"},
+                        "data_nascimento": {"type": "string", "format": "date", "example": "1990-01-15"},
+                        "genero": {
+                            "type": "string",
+                            "enum": ["masculino", "feminino", "outro", "prefiro_nao_informar"],
+                        },
+                        "telefone": {"type": "string"},
+                        "cep": {"type": "string", "example": "01310100"},
+                        "logradouro": {"type": "string"},
+                        "numero": {"type": "string"},
+                        "complemento": {"type": "string"},
+                        "bairro": {"type": "string"},
+                        "cidade": {"type": "string"},
+                        "estado": {"type": "string", "example": "SP"},
+                        "tipo_sanguineo": {
+                            "type": "string",
+                            "enum": ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+                        },
+                        "alergias": {"type": "string"},
+                        "plano_saude": {"type": "string"},
+                        "especialidade_ids": {
+                            "type": "array",
+                            "items": {"type": "integer"},
+                            "description": "Lista de IDs de especialidades (substitui todas as atuais). Apenas para medicos ou admins.",
+                        },
+                    },
+                }
+            }
+        },
+    },
+    "responses": {
+        200: {
+            "description": "Usuario atualizado com sucesso",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "integer"},
+                            "nome": {"type": "string"},
+                            "sobrenome": {"type": "string"},
+                            "email": {"type": "string"},
+                            "cpf": {"type": "string"},
+                            "telefone": {"type": "string"},
+                            "genero": {"type": "string"},
+                            "tipo": {"type": "string"},
+                            "ativo": {"type": "boolean"},
+                            "data_nascimento": {"type": "string"},
+                            "cep": {"type": "string"},
+                            "logradouro": {"type": "string"},
+                            "numero": {"type": "string"},
+                            "complemento": {"type": "string"},
+                            "bairro": {"type": "string"},
+                            "cidade": {"type": "string"},
+                            "estado": {"type": "string"},
+                            "tipo_sanguineo": {"type": "string"},
+                            "alergias": {"type": "string"},
+                            "plano_saude": {"type": "string"},
+                            "mensagem": {"type": "string"},
+                        },
+                    }
+                }
+            },
+        },
+        401: {"description": "Token ausente, invalido ou expirado"},
         422: {"description": "Erro de validacao ou usuario nao encontrado"},
         500: {"description": "Erro interno do servidor"},
+    },
+}
+
+USUARIO_EXCLUIR_DOC = {
+    "tags": ["Usuarios"],
+    "security": [{"BearerAuth": []}],
+    "parameters": [
+        {
+            "name": "usuario_id",
+            "in": "path",
+            "required": True,
+            "schema": {"type": "integer"},
+            "description": "ID do usuario a excluir",
+        }
+    ],
+    "responses": {
+        200: {"description": "Conta excluida com sucesso (soft delete)"},
+        403: {"description": "Acesso negado"},
+        422: {"description": "Usuario nao encontrado ou admin tentando excluir a propria conta"},
+        500: {"description": "Erro interno"},
     },
 }
 

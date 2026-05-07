@@ -1,0 +1,205 @@
+<mxfile host="Electron" agent="meditech-generator">
+  <diagram name="MediTech - Diagrama de Classes" id="meditech-class-diagram">
+    <mxGraphModel dx="1230" dy="731" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1850" pageHeight="1600" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="enum_genero" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;fontSize=11;spacing=4;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;enumeration&amp;raquo;&lt;br/&gt;&lt;b&gt;Genero&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;MASCULINO&lt;br/&gt;FEMININO&lt;br/&gt;OUTRO&lt;br/&gt;PREFIRO_NAO_INFORMAR" vertex="1">
+          <mxGeometry height="130" width="180" x="40" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="enum_tipo_usuario" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;fontSize=11;spacing=4;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;enumeration&amp;raquo;&lt;br/&gt;&lt;b&gt;TipoUsuario&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;ADMIN&lt;br/&gt;MEDICO&lt;br/&gt;PACIENTE" vertex="1">
+          <mxGeometry height="130" width="180" x="40" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="enum_status_aprovacao" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;fontSize=11;spacing=4;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;enumeration&amp;raquo;&lt;br/&gt;&lt;b&gt;StatusAprovacao&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;NOVO&lt;br/&gt;EM_ANDAMENTO&lt;br/&gt;EM_ANALISE&lt;br/&gt;APROVADO&lt;br/&gt;RECUSADO" vertex="1">
+          <mxGeometry height="130" width="180" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="enum_tipo_documento" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;fontSize=11;spacing=4;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;enumeration&amp;raquo;&lt;br/&gt;&lt;b&gt;TipoDocumento&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;CRM&lt;br/&gt;CURRICULO&lt;br/&gt;SOBRE_MIM" vertex="1">
+          <mxGeometry height="120" width="180" x="520" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="LRjLh2ufsRfppfV0ryqM-3" edge="1" parent="1" source="dom_usuario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.624;exitY=0.002;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitPerimeter=0;" target="enum_tipo_usuario">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LRjLh2ufsRfppfV0ryqM-4" edge="1" parent="1" source="dom_usuario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="enum_genero">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="LRjLh2ufsRfppfV0ryqM-5" edge="1" parent="1" source="dom_usuario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.875;exitY=0.004;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitPerimeter=0;" target="enum_status_aprovacao">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dom_usuario" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;fontSize=11;spacing=4;" value="&lt;p style=&quot;margin:0;text-align:center;&quot;&gt;&lt;b&gt;Usuario&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;- id: int&lt;br&gt;&lt;div&gt;- nome: str&lt;br&gt;- sobrenome: str&lt;br&gt;- data_nascimento: date&lt;br&gt;- genero: Genero&lt;br&gt;- email: str&lt;br&gt;- senha: str (hash)&lt;br&gt;- telefone: str&lt;br&gt;- tipo: TipoUsuario&lt;br&gt;- ativo: bool&lt;br&gt;- cpf: str&lt;br&gt;- data_cadastro: datetime?&lt;br&gt;- status_aprovacao: StatusAprovacao?&lt;br&gt;- cep: str?&lt;br&gt;- logradouro: str?&lt;br&gt;- numero: str?&lt;br&gt;- complemento: str?&lt;br&gt;- bairro: str?&lt;br&gt;- cidade: str?&lt;br&gt;- estado: str?&lt;br&gt;- tipo_sanguineo: str?&lt;br&gt;- alergias: str?&lt;br&gt;- plano_saude: str?&lt;br&gt;- excluido_em: datetime?&lt;/div&gt;&lt;div&gt;&lt;br&gt;- buscar_consultas_como_paciente()&lt;br&gt;-&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;buscar_&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;consultas_como_medico()&lt;/span&gt;&lt;/div&gt;&lt;div&gt;-&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;buscar_&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;especialidades()&lt;/span&gt;&lt;/div&gt;&lt;div&gt;-&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;buscar_&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;horarios_disponiveis()&lt;/span&gt;&lt;/div&gt;&lt;div&gt;-&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;buscar_&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;documentos()&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="600" width="320" x="40" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="dom_consulta" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;fontSize=11;spacing=4;" value="&lt;p style=&quot;margin:0;text-align:center;&quot;&gt;&lt;b&gt;Consulta&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;- id: int&lt;div&gt;- data_hora: datetime&lt;br&gt;- data_cadastrada: datetime&lt;br&gt;- cancelada: bool&lt;br&gt;- descricao_cancelamento: str?&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="160" width="300" x="520" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="dom_especialidade" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;fontSize=11;spacing=4;" value="&lt;p style=&quot;margin:0;text-align:center;&quot;&gt;&lt;b&gt;Especialidade&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;- id: int&lt;br&gt;&lt;div&gt;- nome: str&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="300" x="520" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="dom_horario" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;fontSize=11;spacing=4;" value="&lt;p style=&quot;margin:0;text-align:center;&quot;&gt;&lt;b&gt;HorarioDisponivel&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;- id: int&lt;div&gt;- dia_semana: int  (0=seg .. 6=dom)&lt;br&gt;- periodo: str  (manha|tarde|noite)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="300" x="520" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="dom_documento" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;fontSize=11;spacing=4;" value="&lt;p style=&quot;margin:0;text-align:center;&quot;&gt;&lt;b&gt;Documento&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;- id: int&lt;br&gt;&lt;div&gt;- tipo: TipoDocumento&lt;br&gt;- nome_arquivo: str&lt;br&gt;- mime_type: str&lt;br&gt;- conteudo: bytes&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="160" width="260" x="520" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_usuario" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;fontSize=11;spacing=4;dashed=0;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;interface&amp;raquo;&lt;br/&gt;&lt;b&gt;UsuarioRepositoryContract&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;+ salvar(u: Usuario): Usuario&lt;br/&gt;+ buscar_por_email(email): Usuario?&lt;br/&gt;+ buscar_por_cpf(cpf): Usuario?&lt;br/&gt;+ buscar_por_id(id): Usuario?&lt;br/&gt;+ listar(ativo?, tipo?, nome?, cpf?, ordem): List[Usuario]&lt;br/&gt;+ buscar_por_id_com_detalhes(id): Usuario?&lt;br/&gt;+ atualizar(u: Usuario): None&lt;br/&gt;+ atualizar_perfil(u: Usuario): Usuario&lt;br/&gt;+ atualizar_senha(id, hash): None&lt;br/&gt;+ excluir(id): None" vertex="1">
+          <mxGeometry height="235" width="420" x="920" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_consulta" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;fontSize=11;spacing=4;dashed=0;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;interface&amp;raquo;&lt;br/&gt;&lt;b&gt;ConsultaRepositoryContract&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;+ salvar(c: Consulta): Consulta&lt;br/&gt;+ listar_por_usuario(id): List[Consulta]&lt;br/&gt;+ listar_por_medico_e_data(medico_id, data): List[Consulta]&lt;br/&gt;+ listar_por_usuario_com_detalhes(id, tipo): List[Consulta]&lt;br/&gt;+ buscar_por_id(id): Consulta?&lt;br/&gt;+ cancelar(id, descricao?): Consulta" vertex="1">
+          <mxGeometry height="165" width="420" x="920" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_especialidade" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;fontSize=11;spacing=4;dashed=0;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;interface&amp;raquo;&lt;br/&gt;&lt;b&gt;EspecialidadeRepositoryContract&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;+ salvar(e: Especialidade): Especialidade&lt;br/&gt;+ listar(): List[Especialidade]&lt;br/&gt;+ buscar_por_id(id): Especialidade?&lt;br/&gt;+ listar_por_medico(medico_id): List[Especialidade]&lt;br/&gt;+ associar_medico(medico_id, esp_id): None&lt;br/&gt;+ definir_especialidades_medico(medico_id, ids): None&lt;br/&gt;+ desassociar_medico(medico_id, esp_id): None&lt;br/&gt;+ atualizar(e: Especialidade): Especialidade&lt;br/&gt;+ deletar(id): None" vertex="1">
+          <mxGeometry height="220" width="420" x="920" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_horario" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;fontSize=11;spacing=4;dashed=0;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;interface&amp;raquo;&lt;br/&gt;&lt;b&gt;HorarioDisponivelRepositoryContract&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;+ salvar(h: HorarioDisponivel): HorarioDisponivel&lt;br/&gt;+ listar_por_medico(medico_id): List[HorarioDisponivel]&lt;br/&gt;+ buscar_por_periodo(medico_id, esp_id, dia, periodo): HorarioDisponivel?&lt;br/&gt;+ listar_medicos_por_especialidade_dia_periodo(esp_id, dia, periodo): List[HorarioDisponivel]&lt;br/&gt;+ listar_periodos_do_medico(medico_id, dia): List[str]&lt;br/&gt;+ buscar_por_id(id): HorarioDisponivel?&lt;br/&gt;+ excluir(id): None&lt;br/&gt;+ deletar_por_medico_e_especialidade(medico_id, esp_id): None" vertex="1">
+          <mxGeometry height="200" width="480" x="920" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_documento" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;fontSize=11;spacing=4;dashed=0;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;interface&amp;raquo;&lt;br/&gt;&lt;b&gt;DocumentoRepositoryContract&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;+ salvar(d: Documento): Documento&lt;br/&gt;+ buscar_por_id(id): Documento?&lt;br/&gt;+ listar_por_usuario_id(usuario_id): List[Documento]&lt;br/&gt;+ buscar_por_usuario_e_tipo(usuario_id, tipo): Documento?&lt;br/&gt;+ deletar(id): None" vertex="1">
+          <mxGeometry height="145" width="420" x="920" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_password" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;fontSize=11;spacing=4;dashed=0;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;interface&amp;raquo;&lt;br/&gt;&lt;b&gt;PasswordServiceContract&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;+ hash(senha: str): str&lt;br/&gt;+ verify(senha: str, senha_hash: str): bool" vertex="1">
+          <mxGeometry height="100" width="420" x="920" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_token" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;fontSize=11;spacing=4;dashed=0;" value="&lt;p style=&#39;margin:0;text-align:center;&#39;&gt;&amp;laquo;interface&amp;raquo;&lt;br/&gt;&lt;b&gt;TokenServiceContract&lt;/b&gt;&lt;/p&gt;&lt;hr size=&#39;1&#39;/&gt;+ generate_access_token(usuario: Usuario): str" vertex="1">
+          <mxGeometry height="80" width="420" x="920" y="1380" as="geometry" />
+        </mxCell>
+        <mxCell id="im_usuario" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;spacing=6;" value="UsuarioRepository" vertex="1">
+          <mxGeometry height="60" width="240" x="1480" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="im_consulta" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;spacing=6;" value="ConsultaRepository" vertex="1">
+          <mxGeometry height="60" width="240" x="1480" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="im_especialidade" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;spacing=6;" value="EspecialidadeRepository" vertex="1">
+          <mxGeometry height="60" width="240" x="1480" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="im_horario" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;spacing=6;" value="HorarioDisponivelRepository" vertex="1">
+          <mxGeometry height="60" width="240" x="1480" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="im_documento" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;spacing=6;" value="DocumentoRepository" vertex="1">
+          <mxGeometry height="60" width="240" x="1480" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="im_password" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;spacing=6;" value="PasswordService&lt;br/&gt;(bcrypt)" vertex="1">
+          <mxGeometry height="60" width="240" x="1480" y="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="im_token" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=13;fontStyle=1;spacing=6;" value="JwtTokenService&lt;br/&gt;(Flask-JWT-Extended)" vertex="1">
+          <mxGeometry height="60" width="240" x="1480" y="1320" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="dom_documento" style="endArrow=open;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="enum_tipo_documento" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="dom_usuario" style="endArrow=none;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1.004;exitY=0.2;exitDx=0;exitDy=0;entryX=0.01;entryY=0.076;entryDx=0;entryDy=0;entryPerimeter=0;endFill=0;exitPerimeter=0;" target="dom_consulta" value="paciente">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5-sl" connectable="0" parent="e5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.7" as="geometry">
+            <mxPoint x="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5-tl" connectable="0" parent="e5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.7" as="geometry">
+            <mxPoint x="5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="dom_usuario" style="endArrow=none;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1.001;exitY=0.399;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.003;entryY=0.652;entryDx=0;entryDy=0;entryPerimeter=0;endFill=0;" target="dom_consulta" value="medico">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6-sl" connectable="0" parent="e6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.7" as="geometry">
+            <mxPoint x="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6-tl" connectable="0" parent="e6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.7" as="geometry">
+            <mxPoint x="13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="dom_especialidade" style="endArrow=none;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="dom_consulta" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7-sl" connectable="0" parent="e7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.7" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7-tl" connectable="0" parent="e7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.7" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="dom_usuario" style="endArrow=none;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=1.002;exitY=0.467;exitDx=0;exitDy=0;exitPerimeter=0;endFill=0;" target="dom_especialidade" value="medico_especialidades">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8-sl" connectable="0" parent="e8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="-0.7" as="geometry">
+            <mxPoint x="-19" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8-tl" connectable="0" parent="e8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.7" as="geometry">
+            <mxPoint x="16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="dom_usuario" style="endArrow=none;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=none;startFill=0;startSize=14;exitX=0.997;exitY=0.934;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitPerimeter=0;" target="dom_horario" value="medico">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9-sl" connectable="0" parent="e9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.7" as="geometry">
+            <mxPoint x="-16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9-tl" connectable="0" parent="e9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.7" as="geometry">
+            <mxPoint x="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="dom_especialidade" style="endArrow=none;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="dom_horario" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10-sl" connectable="0" parent="e10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.7" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10-tl" connectable="0" parent="e10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.7" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="dom_usuario" style="endArrow=none;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;startArrow=none;startFill=0;startSize=14;exitX=1.002;exitY=0.067;exitDx=0;exitDy=0;exitPerimeter=0;" target="dom_documento" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11-sl" connectable="0" parent="e11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.7" as="geometry">
+            <mxPoint x="-22" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11-tl" connectable="0" parent="e11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.7" as="geometry">
+            <mxPoint x="22" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="im_usuario" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="ct_usuario" value="«implementa»">
+          <mxGeometry relative="1" x="-0.0012" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="im_consulta" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="ct_consulta" value="«implementa»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="im_especialidade" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="ct_especialidade" value="«implementa»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="im_horario" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="ct_horario" value="«implementa»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="im_documento" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="ct_documento" value="«implementa»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="im_password" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="ct_password" value="«implementa»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="im_token" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="ct_token" value="«implementa»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

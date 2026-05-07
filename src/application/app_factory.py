@@ -126,6 +126,7 @@ def _register_models() -> None:
 def _register_blueprints(app: Flask) -> None:
     from src.application.controllers.auth_controller import auth_bp
     from src.application.controllers.consulta_controller import consulta_bp
+    from src.application.controllers.documentos_controller import documento_bp
     from src.application.controllers.especialidade_controller import especialidade_bp
     from src.application.controllers.horario_disponivel_controller import horario_disponivel_bp
     from src.application.controllers.usuario_controller import usuario_bp
@@ -135,6 +136,45 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(consulta_bp)
     app.register_blueprint(especialidade_bp)
     app.register_blueprint(horario_disponivel_bp)
+    app.register_blueprint(documento_bp)
+
+    _register_medico_pendente_restriction(app)
+
+
+def _register_medico_pendente_restriction(app: Flask) -> None:
+    from flask import jsonify, request
+    from flask_jwt_extended import get_jwt, get_jwt_identity, verify_jwt_in_request
+
+    from src.domain.models.usuario import StatusAprovacao, TipoUsuario
+
+    @app.before_request
+    def _restricao_medico_pendente():
+        if request.method == "OPTIONS":
+            return  # CORS preflight — sem token, sem verificacao
+
+        try:
+            verify_jwt_in_request(optional=True)
+        except Exception:
+            return  # Token invalido sera tratado pelo decorator da rota
+
+        claims = get_jwt()
+        if not claims:
+            return  # Rota publica
+
+        tipo = claims.get("tipo")
+        status = claims.get("status_aprovacao")
+
+        if tipo == TipoUsuario.MEDICO.value and status != StatusAprovacao.APROVADO.value:
+            import re
+            usuario_id = get_jwt_identity()
+            rota_permitida = f"/usuarios/{usuario_id}"
+            if request.method == "GET" and request.path == rota_permitida:
+                return  # Permite acesso ao proprio perfil
+            if request.method == "GET" and request.path == f"/especialidades/medico/{usuario_id}":
+                return  # Permite acesso às próprias especialidades
+            if request.method == "GET" and re.match(r"^/documentos/\d+/download$", request.path):
+                return  # Use case verifica propriedade do documento
+            return jsonify({"erro": "Acesso restrito. Seu cadastro ainda esta em analise."}), 403
 
 
 def _register_routes(app: Flask) -> None:
@@ -154,7 +194,7 @@ def _jwt_missing_token(reason: str):
 
 @jwt.invalid_token_loader
 def _jwt_invalid_token(reason: str):
-    return {"erro": "Token invalido.", "detalhe": reason}, 401
+    return {"erro": "Token invalido.", "detalhe": reason}, 422
 
 
 @jwt.expired_token_loader
@@ -166,12 +206,32 @@ def _create_tables(app: Flask) -> None:
     with app.app_context():
         db.create_all()
         _migrate_drop_sobre_mim()
+        _migrate_add_status_aprovacao()
 
 
 def _migrate_drop_sobre_mim() -> None:
     from sqlalchemy import text
     try:
         db.session.execute(text("ALTER TABLE usuarios DROP COLUMN IF EXISTS sobre_mim"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+
+
+def _migrate_add_status_aprovacao() -> None:
+    from sqlalchemy import text
+    try:
+        db.session.execute(text(
+            "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS status_aprovacao VARCHAR(20)"
+        ))
+        db.session.execute(text(
+            "UPDATE usuarios SET status_aprovacao = 'aprovado' "
+            "WHERE tipo = 'medico' AND ativo = TRUE AND status_aprovacao IS NULL"
+        ))
+        db.session.execute(text(
+            "UPDATE usuarios SET status_aprovacao = 'novo' "
+            "WHERE tipo = 'medico' AND ativo = FALSE AND status_aprovacao IS NULL"
+        ))
         db.session.commit()
     except Exception:
         db.session.rollback()

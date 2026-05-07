@@ -36,3 +36,7 @@ class HorarioDisponivelRepositoryContract(ABC):
     @abstractmethod
     def excluir(self, horario_id: int) -> None:
         ...
+
+    @abstractmethod
+    def deletar_por_medico_e_especialidade(self, medico_id: int, especialidade_id: int) -> None:
+        ...

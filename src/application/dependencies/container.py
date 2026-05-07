@@ -7,20 +7,29 @@ from src.repositories.documento_repository import DocumentoRepository
 from src.repositories.especialidade_repository import EspecialidadeRepository
 from src.repositories.horario_disponivel_repository import HorarioDisponivelRepository
 from src.repositories.usuario_repository import UsuarioRepository
-from src.usecases.adicionar_horario_disponivel.adicionar_horario_disponivel_usecase import AdicionarHorarioDisponivelUseCase
-from src.usecases.alterar_status_usuario.alterar_status_usuario_usecase import AlterarStatusUsuarioUseCase
-from src.usecases.associar_especialidade_medico.associar_especialidade_medico_usecase import AssociarEspecialidadeMedicoUseCase
-from src.usecases.cadastrar_consulta.cadastrar_consulta_usecase import CadastrarConsultaUseCase
-from src.usecases.consultar_disponibilidade.consultar_disponibilidade_usecase import ConsultarDisponibilidadeUseCase
-from src.usecases.listar_horarios_disponivel_medico.listar_horarios_disponivel_medico_usecase import ListarHorariosDisponivelMedicoUseCase
-from src.usecases.cadastrar_especialidade.cadastrar_especialidade_usecase import CadastrarEspecialidadeUseCase
-from src.usecases.cadastrar_usuario.cadastrar_usuario_usecase import CadastrarUsuarioUseCase
-from src.usecases.listar_consultas.listar_consultas_usecase import ListarConsultaUseCase
-from src.usecases.listar_especialidades.listar_especialidades_usecase import ListarEspecialidadesUseCase
-from src.usecases.listar_especialidades_medico.listar_especialidades_medico_usecase import ListarEspecialidadesMedicoUseCase
-from src.usecases.listar_usuarios.listar_usuarios_usecase import ListarUsuariosUseCase
-from src.usecases.buscar_usuario.buscar_usuario_usecase import BuscarUsuarioUseCase
-from src.usecases.login_usuario.login_usuario_usecase import LoginUsuarioUseCase
+from src.usecases.consultas.cancelar_consulta.cancelar_consulta_usecase import CancelarConsultaUseCase
+from src.usecases.horarios.adicionar_horario_disponivel.adicionar_horario_disponivel_usecase import AdicionarHorarioDisponivelUseCase
+from src.usecases.usuarios.alterar_status_usuario.alterar_status_usuario_usecase import AlterarStatusUsuarioUseCase
+from src.usecases.especialidades.associar_especialidade_medico.associar_especialidade_medico_usecase import AssociarEspecialidadeMedicoUseCase
+from src.usecases.consultas.cadastrar_consulta.cadastrar_consulta_usecase import CadastrarConsultaUseCase
+from src.usecases.horarios.consultar_disponibilidade.consultar_disponibilidade_usecase import ConsultarDisponibilidadeUseCase
+from src.usecases.horarios.listar_horarios_disponivel_medico.listar_horarios_disponivel_medico_usecase import ListarHorariosDisponivelMedicoUseCase
+from src.usecases.especialidades.cadastrar_especialidade.cadastrar_especialidade_usecase import CadastrarEspecialidadeUseCase
+from src.usecases.usuarios.cadastrar_usuario.cadastrar_usuario_usecase import CadastrarUsuarioUseCase
+from src.usecases.consultas.listar_consultas.listar_consultas_usecase import ListarConsultaUseCase
+from src.usecases.especialidades.listar_especialidades.listar_especialidades_usecase import ListarEspecialidadesUseCase
+from src.usecases.especialidades.listar_especialidades_medico.listar_especialidades_medico_usecase import ListarEspecialidadesMedicoUseCase
+from src.usecases.usuarios.listar_usuarios.listar_usuarios_usecase import ListarUsuariosUseCase
+from src.usecases.usuarios.buscar_usuario.buscar_usuario_usecase import BuscarUsuarioUseCase
+from src.usecases.usuarios.baixar_documento.baixar_documento_usecase import BaixarDocumentoUseCase
+from src.usecases.usuarios.editar_usuario.editar_usuario_usecase import EditarUsuarioUseCase
+from src.usecases.auth.login_usuario.login_usuario_usecase import LoginUsuarioUseCase
+from src.usecases.usuarios.alterar_senha.alterar_senha_usecase import AlterarSenhaUseCase
+from src.usecases.usuarios.excluir_conta.excluir_conta_usecase import ExcluirContaUseCase
+from src.usecases.usuarios.upload_documento.upload_documento_usecase import UploadDocumentoUseCase
+from src.usecases.especialidades.desassociar_especialidade_medico.desassociar_especialidade_medico_usecase import DesassociarEspecialidadeMedicoUseCase
+from src.usecases.especialidades.editar_especialidade.editar_especialidade_usecase import EditarEspecialidadeUseCase
+from src.usecases.especialidades.excluir_especialidade.excluir_especialidade_usecase import ExcluirEspecialidadeUseCase
 
 
 def _get_request_cache() -> dict:
@@ -114,6 +123,13 @@ def get_listar_usuarios() -> ListarUsuariosUseCase:
     )
 
 
+def get_cancelar_consulta() -> CancelarConsultaUseCase:
+    return _scoped(
+        "cancelar_consulta_use_case",
+        lambda: CancelarConsultaUseCase(_get_consulta_repository()),
+    )
+
+
 def get_listar_consultas() -> ListarConsultaUseCase:
     return _scoped(
         "listar_consultas_use_case",
@@ -190,4 +206,73 @@ def get_alterar_status_usuario_use_case() -> AlterarStatusUsuarioUseCase:
     return _scoped(
         "alterar_status_usuario_use_case",
         lambda: AlterarStatusUsuarioUseCase(_get_usuario_repository()),
+    )
+
+
+def get_baixar_documento() -> BaixarDocumentoUseCase:
+    return _scoped(
+        "baixar_documento_use_case",
+        lambda: BaixarDocumentoUseCase(_get_documento_repository()),
+    )
+
+
+def get_editar_usuario() -> EditarUsuarioUseCase:
+    return _scoped(
+        "editar_usuario_use_case",
+        lambda: EditarUsuarioUseCase(
+            _get_usuario_repository(),
+            _get_especialidade_repository(),
+        ),
+    )
+
+
+def get_alterar_senha_use_case() -> AlterarSenhaUseCase:
+    return _scoped(
+        "alterar_senha_use_case",
+        lambda: AlterarSenhaUseCase(
+            _get_usuario_repository(),
+            _get_password_service(),
+        ),
+    )
+
+
+def get_excluir_conta_use_case() -> ExcluirContaUseCase:
+    return _scoped(
+        "excluir_conta_use_case",
+        lambda: ExcluirContaUseCase(_get_usuario_repository()),
+    )
+
+
+def get_upload_documento() -> UploadDocumentoUseCase:
+    return _scoped(
+        "upload_documento_use_case",
+        lambda: UploadDocumentoUseCase(
+            _get_documento_repository(),
+            _get_usuario_repository(),
+        ),
+    )
+
+
+def get_desassociar_especialidade_medico() -> DesassociarEspecialidadeMedicoUseCase:
+    return _scoped(
+        "desassociar_especialidade_medico_use_case",
+        lambda: DesassociarEspecialidadeMedicoUseCase(
+            _get_especialidade_repository(),
+            _get_usuario_repository(),
+            _get_horario_disponivel_repository(),
+        ),
+    )
+
+
+def get_editar_especialidade() -> EditarEspecialidadeUseCase:
+    return _scoped(
+        "editar_especialidade_use_case",
+        lambda: EditarEspecialidadeUseCase(_get_especialidade_repository()),
+    )
+
+
+def get_excluir_especialidade() -> ExcluirEspecialidadeUseCase:
+    return _scoped(
+        "excluir_especialidade_use_case",
+        lambda: ExcluirEspecialidadeUseCase(_get_especialidade_repository()),
     )

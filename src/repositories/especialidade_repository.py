@@ -2,6 +2,7 @@ from src.domain.contracts.especialidade_repository_contract import Especialidade
 from src.domain.models.especialidade import Especialidade
 from src.infrastructure.config.database import db
 from src.infrastructure.models.especialidade_model import EspecialidadeModel
+from src.infrastructure.models.horario_disponivel_model import HorarioDisponivelModel
 from src.infrastructure.models.usuario_model import UsuarioModel
 
 
@@ -47,6 +48,76 @@ class EspecialidadeRepository(EspecialidadeRepositoryContract):
             raise ValueError("Especialidade ja associada a este medico.")
 
         medico.especialidades.append(especialidade)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+    def definir_especialidades_medico(self, medico_id: int, especialidade_ids: list[int]) -> None:
+        medico = UsuarioModel.query.get(medico_id)
+        if not medico:
+            raise ValueError("Medico nao encontrado.")
+
+        medico.especialidades.clear()
+        for esp_id in especialidade_ids:
+            especialidade = EspecialidadeModel.query.get(esp_id)
+            if especialidade:
+                medico.especialidades.append(especialidade)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+    def desassociar_medico(self, medico_id: int, especialidade_id: int) -> None:
+        medico = UsuarioModel.query.get(medico_id)
+        especialidade = EspecialidadeModel.query.get(especialidade_id)
+
+        if not medico or especialidade not in medico.especialidades:
+            raise ValueError("Associacao nao encontrada.")
+
+        medico.especialidades.remove(especialidade)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+    def atualizar(self, especialidade: Especialidade) -> Especialidade:
+        existente = EspecialidadeModel.query.filter(
+            EspecialidadeModel.nome == especialidade.nome,
+            EspecialidadeModel.id != especialidade.id,
+        ).first()
+        if existente:
+            raise ValueError(f"Especialidade '{especialidade.nome}' ja cadastrada.")
+
+        model = EspecialidadeModel.query.get(especialidade.id)
+        if not model:
+            raise ValueError("Especialidade nao encontrada.")
+
+        model.nome = especialidade.nome
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+        return self._to_domain(model)
+
+    def deletar(self, especialidade_id: int) -> None:
+        model = EspecialidadeModel.query.get(especialidade_id)
+        if not model:
+            raise ValueError("Especialidade nao encontrada.")
+
+        HorarioDisponivelModel.query.filter_by(especialidade_id=especialidade_id).delete()
+
+        model.medicos.clear()
+
+        db.session.delete(model)
 
         try:
             db.session.commit()

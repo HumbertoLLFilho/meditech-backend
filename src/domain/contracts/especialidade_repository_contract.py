@@ -24,3 +24,19 @@ class EspecialidadeRepositoryContract(ABC):
     @abstractmethod
     def associar_medico(self, medico_id: int, especialidade_id: int) -> None:
         ...
+
+    @abstractmethod
+    def definir_especialidades_medico(self, medico_id: int, especialidade_ids: list[int]) -> None:
+        ...
+
+    @abstractmethod
+    def desassociar_medico(self, medico_id: int, especialidade_id: int) -> None:
+        ...
+
+    @abstractmethod
+    def atualizar(self, especialidade: Especialidade) -> Especialidade:
+        ...
+
+    @abstractmethod
+    def deletar(self, especialidade_id: int) -> None:
+        ...

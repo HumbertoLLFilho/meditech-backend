@@ -38,3 +38,15 @@ class UsuarioRepositoryContract(ABC):
     @abstractmethod
     def atualizar(self, usuario: Usuario) -> None:
         ...
+
+    @abstractmethod
+    def atualizar_perfil(self, usuario: Usuario) -> Usuario:
+        ...
+
+    @abstractmethod
+    def atualizar_senha(self, usuario_id: int, nova_senha_hash: str) -> None:
+        ...
+
+    @abstractmethod
+    def excluir(self, usuario_id: int) -> None:
+        ...
